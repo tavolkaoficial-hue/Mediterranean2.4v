@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusWMS - Sucursales y Almacenes</title>
+  
+  <!-- FUENTES Y LIBRERÍAS EXTERNAS -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  
+  <!-- LEAFLET MAPS API (OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      /* PALETA CLAYMORPHIC AZUL GRISÁCEO (SLATE) */
+      --bg-main: #ffffff;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+      --accent-cyan: #0284c7;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      /* SOMBRAS Y RELIEVES CLAYMORPHISM */
+      --clay-shadow-outer: 12px 12px 24px #cbd5e1, -8px -8px 20px #ffffff;
+      --clay-shadow-card: 14px 14px 28px #cbd5e1, -10px -10px 22px #ffffff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #cbd5e1, -4px -4px 10px #ffffff;
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --sidebar-width: 280px;
+    }
+
+    body.sidebar-collapsed {
+      --sidebar-width: 90px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #70a2ec 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    #tsparticles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      background-color: #70a2ec;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SIDEBAR CLAYMORPHIC */
+    .sidebar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      bottom: 16px;
+      width: var(--sidebar-width);
+      z-index: 5000;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 20px;
+      margin-bottom: 15px;
+    }
+
+    .brand-logo-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+      transition: var(--transition);
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.05) translateY(-3px);
+    }
+
+    .menu-label {
+      padding: 16px 12px 8px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .side-link {
+      width: 100%;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 20px;
+      color: var(--text-secondary);
+      background: transparent;
+      font: 600 14px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+
+    .side-link:hover {
+      background: #e2e8f0;
+      color: var(--accent-cyan);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-light);
+      transform: translateY(-2px);
+    }
+
+    .side-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25), var(--clay-inset-glow);
+    }
+
+    .side-icon {
+      font-size: 20px;
+      min-width: 24px;
+      display: inline-block;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+
+    .system-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      color: var(--green);
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .languages {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 6px;
+      border-radius: 18px;
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .languages button {
+      flex: 1;
+      padding: 8px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--text-muted);
+      background: transparent;
+      font: 800 12px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .languages button.active-language {
+      color: var(--text-primary);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .logout-btn {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-radius: 18px;
+      color: var(--danger);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* MODO COLAPSADO */
+    body.sidebar-collapsed .brand-logo-img { width: 45px; height: 45px; }
+    body.sidebar-collapsed .menu-label,
+    body.sidebar-collapsed .side-link span:not(.side-icon),
+    body.sidebar-collapsed .system-status-box span,
+    body.sidebar-collapsed .languages,
+    body.sidebar-collapsed .logout-btn span:not(.side-icon) {
+      display: none;
+    }
+
+    body.sidebar-collapsed .side-link,
+    body.sidebar-collapsed .logout-btn {
+      justify-content: center;
+      padding: 0;
+    }
+
+    /* TOPBAR CLAYMORPHIC */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-outer);
+      z-index: 4000;
+      transition: var(--transition);
+    }
+
+    .top-left-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toggle-sidebar-btn {
+      background: var(--clay-surface);
+      border: none;
+      color: var(--accent-cyan);
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      color: #fff;
+      background: var(--accent-cyan);
+    }
+
+    .welcome {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .welcome strong { color: var(--text-primary); }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .clock-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--clay-bg);
+      padding: 8px 18px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .clock-icon {
+      color: var(--accent-cyan);
+      font-size: 16px;
+    }
+
+    .today {
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .profile-badge {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    .profile-badge:hover {
+      transform: scale(1.08) translateY(-2px);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: calc(var(--sidebar-width) + 32px);
+      padding-top: 102px;
+      padding-right: 16px;
+      padding-bottom: 80px;
+      width: 100%;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+
+    .heading h1 {
+      margin: 0;
+      color: var(--text-primary);
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+      font-size: 34px;
+    }
+
+    .heading p { 
+      margin: 6px 0 0; 
+      color: var(--text-secondary); 
+      font-size: 14px; 
+    }
+
+    .panel {
+      border-radius: 28px;
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--clay-shadow-card);
+      padding: 28px;
+      margin-top: 24px;
+    }
+
+    /* MAPA */
+    #map-container {
+      width: 100%;
+      height: 380px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--clay-shadow-outer);
+      z-index: 10;
+    }
+
+    /* GRID Y ANIMACIÓN DE TARJETAS DE SUCURSALES (BOTONES) */
+    .branches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .branch-card {
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animación Hover */
+    .branch-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 12px 16px 28px rgba(15, 23, 42, 0.12), -8px -8px 20px #ffffff, var(--clay-inset-glow);
+    }
+
+    /* Animación Click (Active) */
+    .branch-card:active {
+      transform: translateY(-2px) scale(0.98);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .branch-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent-blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .branch-arrow {
+      font-size: 18px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .branch-card:hover .branch-arrow {
+      transform: translateX(6px);
+      color: var(--accent-cyan);
+    }
+
+    .branch-info {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* FOOTER */
+    .copyright-fixed {
+      position: fixed;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      color: var(--text-muted);
+      font-size: 12px;
+      z-index: 3000;
+      border-radius: 20px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    @media (max-width: 1000px) {
+      :root { --sidebar-width: 90px; }
+      .brand-logo-img { width: 45px; height: 45px; }
+      .menu-label, .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; }
+      .side-link, .logout-btn { justify-content: center; padding: 0; }
+    }
+
+    @media (max-width: 620px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; }
+      body.mobile-open .sidebar { transform: translateX(0); }
+      .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; }
+      .top-bar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- EFECTO FONDO PARTÍCULAS -->
+  <div id="tsparticles"></div>
+
+  <div class="app-container">
+    
+    <!-- SIDEBAR CLAYMORPHIC -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+      </div>
+      
+      <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link">
+        <span class="side-icon">⌂</span><span data-es="Menu Principal" data-en="Main Menu">Menu Principal</span>
+      </a>
+      <a href="stock.html" class="side-link">
+        <span class="side-icon">📦</span><span data-es="Inventario & Stock" data-en="Stock & Inventory">Inventario & Stock</span>
+      </a>
+      <a href="sucursales.html" class="side-link active">
+        <span class="side-icon">🏢</span><span data-es="Sucursales / Almacenes" data-en="Branches / Warehouses">Sucursales / Almacenes</span>
+      </a>
+      <a href="movimientos.html" class="side-link">
+        <span class="side-icon">🔄</span><span data-es="Kardex / Movimientos" data-en="Movement Log">Kardex / Movimientos</span>
+      </a>
+
+      <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+      <a href="usuarios.html" class="side-link">
+        <span class="side-icon">👤</span><span data-es="Usuarios & Roles" data-en="Users & Roles">Usuarios & Roles</span>
+      </a>
+      <a href="reportes.html" class="side-link">
+        <span class="side-icon">📊</span><span data-es="Reportes & Analítica" data-en="BI Reports">Reportes & Analítica</span>
+      </a>
+      <a href="utilidades.html" class="side-link">
+        <span class="side-icon">🛠</span><span data-es="Auditoría & Ajustes" data-en="Audit & Settings">Auditoría & Ajustes</span>
+      </a>
+      <a href="configuracion.html" class="side-link">
+        <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración ERP</span>
+      </a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box">
+          <span class="online-dot"></span>
+          <span data-es="ERP En Línea" data-en="ERP Online">ERP En Línea</span>
+        </div>
+
+        <div class="languages">
+          <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+          <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+
+        <a href="login.html" class="logout-btn">
+          <span class="side-icon">⍈</span>
+          <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- BARRA SUPERIOR (TOPBAR) -->
+    <header class="top-bar">
+      <div class="top-left-group">
+        <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+        <div class="welcome">
+          Bienvenido, <strong>Carlos Mendoza</strong> (ID: EMP-8092)
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="clock-container">
+          <span class="clock-icon">🕒</span>
+          <span class="today" id="current-time">12:00 PM</span>
+        </div>
+        <div class="profile-badge">CM</div>
+      </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="main-content">
+      <div class="heading">
+        <h1 data-es="Sucursales y Almacenes" data-en="Branches & Warehouses">Sucursales y Almacenes</h1>
+        <p data-es="Administración general de sedes físicas e inventarios distribuidos." data-en="General management of physical locations and distributed inventory.">Administración general de sedes físicas e inventarios distribuidos.</p>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top:0; margin-bottom: 16px;" data-es="Mapa de Ubicaciones" data-en="Location Map">Mapa de Ubicaciones</h3>
+        
+        <!-- MAPA DE INTERACCIÓN -->
+        <div id="map-container"></div>
+
+        <h3 style="margin-bottom: 16px;" data-es="Sedes Registradas" data-en="Registered Locations">Sedes Registradas</h3>
+
+        <!-- GRID DE TARJETAS TIPO BOTÓN -->
+        <div class="branches-grid">
+          <a href="norte.html" class="branch-card">
+            <div class="branch-title">
+              <span>Almacén Central - Norte</span>
+              <span class="branch-arrow">➔</span>
+            </div>
+            <div class="branch-info">📍 Av. Industrial #402</div>
+            <div class="branch-info">📞 +52 (55) 0123-4567</div>
+            <div class="branch-info">📦 Capacidad: 85% Ocupado</div>
+          </a>
+
+          <a href="centro.html" class="branch-card">
+            <div class="branch-title">
+              <span>Sucursal Centro</span>
+              <span class="branch-arrow">➔</span>
+            </div>
+            <div class="branch-info">📍 Calle Comercio #12</div>
+            <div class="branch-info">📞 +52 (55) 9876-5432</div>
+            <div class="branch-info">📦 Capacidad: 42% Ocupado</div>
+          </a>
+
+          <a href="kennedy.html" class="branch-card">
+            <div class="branch-title">
+              <span>Depósito Sur</span>
+              <span class="branch-arrow">➔</span>
+            </div>
+            <div class="branch-info">📍 Carretera Sur Km 15</div>
+            <div class="branch-info">📞 +52 (55) 5555-0011</div>
+            <div class="branch-info">📦 Capacidad: 60% Ocupado</div>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER FIJO -->
+    <footer class="copyright-fixed">
+      <span>© 2026 NexusWMS • Sistema de Gestión Logística. Diseñado con interfaz Claymorphism.</span>
+    </footer>
+  </div>
+
+  <!-- SCRIPT LÓGICA DE APLICACIÓN Y MAPAS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      initParticles();
+      updateClock();
+      setInterval(updateClock, 1000);
+    });
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 620) {
+        document.body.classList.toggle('mobile-open');
+      } else {
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+    }
+
+    function cambiarIdioma(lang) {
+      document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+      document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+      
+      document.querySelectorAll('[data-es]').forEach(el => {
+        el.innerText = el.getAttribute(`data-${lang}`);
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('current-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function initMap() {
+      const map = L.map('map-container').setView([4.6097, -74.0817], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const locations = [
+        {
+          name: "Almacén Central - Norte",
+          coords: [4.7110, -74.0721],
+          address: "Cl. 170 #15-20, Suba / Usaquén",
+          url: "norte.html"
+        },
+        {
+          name: "Sucursal Centro",
+          coords: [4.6010, -74.0721],
+          address: "Carrera 7 #12-34, Centro",
+          url: "centro.html"
+        },
+        {
+          name: "Depósito Sur",
+          coords: [4.5300, -74.1500],
+          address: "Av. Boyacá #45-67 Sur, Kennedy",
+          url: "kennedy.html"
+        }
+      ];
+
+      locations.forEach(loc => {
+        L.marker(loc.coords)
+          .addTo(map)
+          .bindPopup(`<b>${loc.name}</b><br>${loc.address}<br><br><a href="${loc.url}">Ver detalles</a>`);
+      });
+    }
+
+    function initParticles() {
+      if (window.tsParticles) {
+        tsParticles.load("tsparticles", {
+          particles: {
+            number: { value: 40, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.7 },
+            size: { value: 3, random: true },
+            line_linked: { 
+              enable: true, 
+              distance: 150, 
+              color: "#ffffff", 
+              opacity: 0.4, 
+              width: 1 
+            },
+            move: { enable: true, speed: 1.5, direction: "none", straight: false }
+          },
+          interactivity: {
+            events: { onhover: { enable: true, mode: "repulse" } }
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

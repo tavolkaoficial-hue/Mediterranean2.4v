@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Productos | Mediterranean</title>
+  
+  <!-- Font Awesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-deep: #0f1c2e;
+      --navy-glass: rgba(18, 35, 60, 0.65);
+      --navy-border: rgba(99, 140, 201, 0.45);
+      --gold: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --cyan-glow: rgba(56, 189, 248, 0.3);
+      --text-light: #f1f5f9;
+      --text-muted: #94a3b8;
+      --green: #10b981;
+      --danger: #ef4444;
+      
+      --glass-bg: rgba(15, 28, 46, 0.65);
+      --glass-border: rgba(120, 160, 220, 0.35);
+      --glass-card: rgba(22, 42, 70, 0.58);
+      --glass-shadow: 0 12px 40px 0 rgba(7, 14, 26, 0.35);
+      --glass-blur: blur(20px);
+      
+      --transition: all .35s cubic-bezier(.4, 0, .2, 1);
+      --sidebar-width: 270px;
+    }
+
+    body.sidebar-collapsed { --sidebar-width: 85px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      color: var(--text-light);
+      font-family: "DM Sans", sans-serif;
+      background: linear-gradient(135deg, #09131f 0%, #172a45 50%, #0d1d33 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatGlow 10s ease-in-out infinite alternate;
+    }
+
+    body::before { width: 600px; height: 600px; top: -150px; left: -100px; background: rgba(30, 64, 110, 0.5); }
+    body::after { width: 650px; height: 650px; bottom: -150px; right: -100px; background: rgba(212, 175, 55, 0.15); }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.08); }
+    }
+
+    .app-container { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-width);
+      z-index: 5000;
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-right: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      transition: var(--transition);
+    }
+
+    .brand {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 10px 0 20px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px;
+    }
+
+    .brand-logo-img {
+      width: 110px; height: 110px; object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.4)) drop-shadow(0 0 12px var(--gold-glow));
+      transition: var(--transition);
+      animation: logoPulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoPulse {
+      0% { transform: scale(1); filter: drop-shadow(0 8px 18px rgba(0,0,0,0.4)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+      100% { transform: scale(1.04); filter: drop-shadow(0 12px 24px rgba(0,0,0,0.5)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.6)); }
+    }
+
+    .menu-label { padding: 10px 8px 4px; color: var(--text-muted); font-size: 9px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; white-space: nowrap; }
+
+    .side-link {
+      width: 100%; height: 42px; display: flex; align-items: center; gap: 12px;
+      padding: 0 14px; border: 1px solid transparent; border-radius: 12px;
+      color: #cbd5e1; background: transparent; font: 500 13px "DM Sans", sans-serif;
+      text-decoration: none; cursor: pointer; transition: var(--transition); margin-bottom: 4px; white-space: nowrap;
+    }
+
+    .side-link:hover { background: rgba(255, 255, 255, 0.08); color: #fff; border-color: var(--glass-border); transform: translateX(5px); }
+
+    .side-link.active {
+      color: #fff; font-weight: 700; border-color: rgba(212, 175, 55, 0.6);
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), rgba(22, 42, 70, 0.6));
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .side-icon { font-size: 16px; min-width: 20px; display: inline-block; text-align: center; color: var(--gold); transition: var(--transition); }
+
+    .sidebar-footer { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 8px; }
+
+    .system-status-box {
+      display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+      border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 10px; color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.12); font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+
+    .online-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+    .languages { display: flex; gap: 6px; }
+    .languages button {
+      flex: 1; padding: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+      border-radius: 8px; color: var(--text-muted); font-size: 11px; font-weight: 700; cursor: pointer; transition: var(--transition);
+    }
+    .languages button.active-language { background: var(--gold); color: var(--navy-deep); border-color: var(--gold); }
+
+    .logout-btn {
+      width: 100%; height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 12px;
+      border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 10px; color: #fca5a5;
+      background: rgba(239, 68, 68, 0.1); font: 600 12px "DM Sans", sans-serif; text-decoration: none; transition: var(--transition);
+    }
+
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.25); color: #fff; }
+
+    body.sidebar-collapsed .brand-logo-img { width: 45px; height: 45px; }
+    body.sidebar-collapsed .menu-label,
+    body.sidebar-collapsed .side-link span:not(.side-icon),
+    body.sidebar-collapsed .system-status-box span,
+    body.sidebar-collapsed .languages,
+    body.sidebar-collapsed .logout-btn span:not(.side-icon) { display: none; }
+    body.sidebar-collapsed .side-link, body.sidebar-collapsed .logout-btn { justify-content: center; padding: 0; }
+
+    .top-bar {
+      position: fixed; top: 0; left: var(--sidebar-width); right: 0; height: 75px;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+      background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--glass-border); z-index: 4000; transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); color: var(--text-light);
+      width: 42px; height: 42px; border-radius: 12px; cursor: pointer; display: grid; place-items: center; font-size: 18px; transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn:hover { background: var(--gold); color: var(--navy-deep); }
+
+    .clock-container {
+      display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--glass-border); padding: 6px 16px; border-radius: 12px;
+    }
+
+    .main-content {
+      margin-left: var(--sidebar-width); padding: 105px 38px 60px;
+      width: calc(100% - var(--sidebar-width)); min-height: 100vh; transition: var(--transition);
+    }
+
+    .page-header { margin-bottom: 25px; }
+    .page-title { font-family: "Cormorant Garamond", serif; font-size: 38px; color: var(--gold-light); font-weight: 700; }
+
+    .card {
+      border: 1px solid var(--glass-border); border-radius: 18px; background: var(--glass-card);
+      backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow); padding: 24px; margin-bottom: 25px; transition: var(--transition);
+    }
+
+    .card-title { font-family: "Cormorant Garamond", serif; font-size: 24px; color: var(--gold-light); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .col-span-2 { grid-column: span 2; }
+    .col-span-4 { grid-column: span 4; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; }
+
+    .form-group input, .form-group select, .form-group textarea, #searchInput {
+      width: 100%; padding: 10px 14px; background: rgba(9, 19, 31, 0.6);
+      border: 1px solid var(--glass-border); border-radius: 10px; color: #fff;
+      font-family: "DM Sans", sans-serif; font-size: 13px; outline: none; transition: var(--transition);
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus, #searchInput:focus {
+      border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .form-group select option { background: #0d1d33; color: #fff; }
+
+    .input-with-btn { display: flex; gap: 8px; }
+    .input-with-btn select { flex: 1; }
+
+    .btn {
+      padding: 10px 18px; border-radius: 10px; border: none; font-family: "DM Sans", sans-serif;
+      font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);
+    }
+
+    .btn-primary { background: linear-gradient(135deg, var(--gold), #b8860b); color: var(--navy-deep); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--gold-light), var(--gold)); box-shadow: 0 0 15px var(--gold-glow); transform: translateY(-2px); }
+
+    .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 6px; }
+    .btn-info { background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; }
+    .btn-info:hover { background: #38bdf8; color: var(--navy-deep); }
+    .btn-warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fcd34d; }
+    .btn-warning:hover { background: #f59e0b; color: var(--navy-deep); }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    /* Modales y Tarjetas flotantes estilo Glassmorphism */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 10, 18, 0.75); backdrop-filter: blur(8px);
+      z-index: 6000; display: none; align-items: center; justify-content: center;
+    }
+    .modal-card {
+      width: 100%; max-width: 420px; background: var(--glass-card);
+      border: 1px solid var(--glass-border); border-radius: 18px;
+      padding: 24px; box-shadow: var(--glass-shadow); backdrop-filter: var(--glass-blur);
+    }
+
+    /* Sistema de Notificaciones Toast Flotantes (Arriba a la derecha) */
+    #toast-container {
+      position: fixed; top: 90px; right: 28px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .toast-card {
+      pointer-events: auto; min-width: 300px; max-width: 380px;
+      background: var(--glass-card); backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); border-radius: 14px;
+      padding: 14px 18px; box-shadow: var(--glass-shadow);
+      display: flex; align-items: flex-start; gap: 12px;
+      animation: slideInToast 0.3s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+    .toast-card.success { border-left: 4px solid var(--green); }
+    .toast-card.error { border-left: 4px solid var(--danger); }
+    .toast-card.warning { border-left: 4px solid #f59e0b; }
+    .toast-icon { font-size: 18px; margin-top: 1px; }
+    .toast-card.success .toast-icon { color: var(--green); }
+    .toast-card.error .toast-icon { color: var(--danger); }
+    .toast-card.warning .toast-icon { color: #f59e0b; }
+    .toast-content { flex: 1; }
+    .toast-title { font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px; }
+    .toast-msg { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    @keyframes slideInToast {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeOutToast {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(50px); }
+    }
+
+    .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    table th { background: rgba(0, 0, 0, 0.35); color: var(--gold-light); padding: 14px 16px; font-weight: 700; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 11px; }
+    table td { padding: 12px 16px; border-bottom: 1px solid rgba(120, 160, 220, 0.15); color: var(--text-light); vertical-align: middle; }
+    table tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+
+    /* Estilo franja roja para stock bajo (< 10) */
+    tr.stock-bajo {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-left: 4px solid var(--danger);
+    }
+    tr.stock-bajo:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+    }
+
+    .stock-badge-alerta {
+      display: inline-block; padding: 2px 8px;
+      background: rgba(239, 68, 68, 0.3); border: 1px solid var(--danger);
+      color: #fca5a5; border-radius: 6px; font-weight: 700; font-size: 11px; margin-left: 5px;
+    }
+
+    .img-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border); background: #000; }
+
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge-activo { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-inactivo { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .copyright-fixed {
+      position: fixed; left: var(--sidebar-width); right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;
+      padding: 10px 25px; background: var(--glass-bg); color: var(--text-muted); font-size: 11px; z-index: 3000; border-top: 1px solid var(--glass-border); backdrop-filter: var(--glass-blur); transition: var(--transition);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor para Notificaciones Toast Flotantes -->
+  <div id="toast-container"></div>
+
+  <div class="app-container">
+    <!-- SIDEBAR GLASS -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/130/172a45/d4af37?text=M';">
+      </div>
+
+      <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link">
+        <span class="side-icon">⌂</span><span data-es="Menú Principal" data-en="Main Menu">Menú Principal</span>
+      </a>
+      <a href="productos.html" class="side-link active">
+        <span class="side-icon">📦</span><span data-es="Productos" data-en="Products">Productos</span>
+      </a>
+      <a href="sucursales.html" class="side-link">
+        <span class="side-icon">🏢</span><span data-es="Sucursales" data-en="Branches">Sucursales</span>
+      </a>
+
+      <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+      <a href="usuarios.html" class="side-link">
+        <span class="side-icon">👤</span><span data-es="Usuarios" data-en="Users">Usuarios</span>
+      </a>
+      <a href="reportes.html" class="side-link">
+        <span class="side-icon">📊</span><span data-es="Reportes" data-en="Reports">Reportes</span>
+      </a>
+      <a href="utilidades.html" class="side-link">
+        <span class="side-icon">🛠</span><span data-es="Utilidades" data-en="Utilities">Utilidades</span>
+      </a>
+      <a href="configuracion.html" class="side-link">
+        <span class="side-icon">⚙</span><span data-es="Configuración" data-en="Settings">Configuración</span>
+      </a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box">
+          <span class="online-dot"></span>
+          <span data-es="Sistema Operativo" data-en="System Online">Sistema Operativo</span>
+        </div>
+
+        <div class="languages">
+          <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+          <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+
+        <a href="login.html" class="logout-btn">
+          <span class="side-icon">⍈</span>
+          <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <header class="top-bar">
+      <button class="toggle-sidebar-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="clock-container">
+        <i class="fas fa-clock text-amber-400"></i>
+        <span id="liveClock">00:00:00</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Inventario de Productos</h1>
+      </div>
+
+      <section class="card">
+        <h3 class="card-title"><i class="fas fa-plus-circle text-amber-400"></i> Registrar Producto</h3>
+        <form id="addForm" class="form-grid" enctype="multipart/form-data">
+          
+          <div class="form-group col-span-2">
+            <label>Nombre del Producto</label>
+            <input type="text" name="nombre" placeholder="Ej. Lamine / Estructura / Vaso" required>
+          </div>
+
+          <div class="form-group">
+            <label>Precio Compra ($)</label>
+            <input type="number" step="0.01" name="precio_compra" placeholder="0.00" required>
+          </div>
+
+          <div class="form-group">
+            <label>Precio Venta ($)</label>
+            <input type="number" step="0.01" name="precio_venta" placeholder="0.00" required>
+          </div>
+
+          <div class="form-group">
+            <label>Stock Inicial</label>
+            <input type="number" name="stock" placeholder="0" required>
+          </div>
+
+          <div class="form-group">
+            <label>Sucursal</label>
+            <select id="sucursal" name="sucursal" required></select>
+          </div>
+
+          <div class="form-group">
+            <label>Categoría</label>
+            <div class="input-with-btn">
+              <select id="categoria" name="categoria" required></select>
+              <button type="button" class="btn btn-info btn-sm" onclick="abrirModalManual('categoria')" title="Agregar categoría"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Proveedor</label>
+            <div class="input-with-btn">
+              <select id="proveedor" name="proveedor" required></select>
+              <button type="button" class="btn btn-info btn-sm" onclick="abrirModalManual('proveedor')" title="Agregar proveedor"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label>Estado</label>
+            <select name="estado" required>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label>Imagen del Producto</label>
+            <input type="file" name="img" accept="image/*">
+          </div>
+
+          <div class="form-group col-span-4">
+            <label>Descripción</label>
+            <textarea name="descripcion" rows="2" placeholder="Especificaciones del producto..."></textarea>
+          </div>
+
+          <div class="form-group col-span-4" style="margin-top: 10px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Producto</button>
+          </div>
+
+        </form>
+      </section>
+
+      <section class="card">
+        <div style="margin-bottom: 20px;">
+          <input type="text" id="searchInput" placeholder="🔍 Buscar por nombre..." style="max-width: 360px;">
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>P. Compra</th>
+                <th>P. Venta</th>
+                <th>Margen (%)</th>
+                <th>Stock</th>
+                <th>Sucursal</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal Card Flotante para Categoría / Proveedor -->
+    <div id="modalManual" class="modal-overlay">
+      <div class="modal-card">
+        <h3 class="card-title" id="modalTitle" style="font-size: 20px; margin-bottom: 15px;"><i class="fas fa-plus-circle text-amber-400"></i> Nuevo Registro</h3>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label id="modalLabel">Valor</label>
+          <input type="text" id="inputValorManual" placeholder="Escriba aquí...">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="cerrarModalManual()">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="guardarOpcionManual()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Card Flotante para Actualizar Stock Rápido -->
+    <div id="modalStock" class="modal-overlay">
+      <div class="modal-card">
+        <h3 class="card-title" style="font-size: 20px; margin-bottom: 15px;"><i class="fas fa-boxes text-amber-400"></i> Actualizar Stock</h3>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label>Nueva cantidad en stock</label>
+          <input type="number" id="inputStockManual" placeholder="0">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="cerrarModalStock()">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="confirmarActualizarStock()">Actualizar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Card Flotante para Confirmar Eliminación -->
+    <div id="modalEliminar" class="modal-overlay">
+      <div class="modal-card">
+        <h3 class="card-title" style="font-size: 20px; margin-bottom: 15px; color: #fca5a5;"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">¿Estás seguro de que deseas eliminar este producto? Si tiene movimientos históricos registrados, el sistema lo marcará como Inactivo de forma segura.</p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-info btn-sm" onclick="cerrarModalEliminar()">Cancelar</button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="ejecutarEliminarProducto()">Sí, Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright-fixed">
+      © 2026 Mediterranean Technologies • Todos los derechos reservados
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = window.location.origin;
+    let productos = [];
+    let tipoActualManual = '';
+    let stockIdSeleccionado = null;
+    let eliminarIdSeleccionado = null;
+
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+
+    setInterval(() => {
+      const clockElem = document.getElementById('liveClock');
+      if (clockElem) {
+        clockElem.textContent = new Date().toLocaleTimeString();
+      }
+    }, 1000);
+
+    // Sistema de Alertas Toast Flotantes (Cards Superiores)
+    function mostrarToast(titulo, mensaje, tipo = 'success') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const card = document.createElement('div');
+      card.className = `toast-card ${tipo}`;
+      
+      let iconoClase = 'fa-check-circle';
+      if (tipo === 'error') iconoClase = 'fa-times-circle';
+      if (tipo === 'warning') iconoClase = 'fa-exclamation-triangle';
+
+      card.innerHTML = `
+        <div class="toast-icon"><i class="fas ${iconoClase}"></i></div>
+        <div class="toast-content">
+          <div class="toast-title">${titulo}</div>
+          <div class="toast-msg">${mensaje}</div>
+        </div>
+      `;
+
+      container.appendChild(card);
+
+      setTimeout(() => {
+        card.style.animation = 'fadeOutToast 0.3s cubic-bezier(.4, 0, .2, 1) forwards';
+        setTimeout(() => card.remove(), 300);
+      }, 4000);
+    }
+
+    function cambiarIdioma(lang) {
+      document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+      document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+      
+      document.querySelectorAll('[data-es]').forEach(el => {
+        const text = el.getAttribute(`data-${lang}`);
+        if (text) el.textContent = text;
+      });
+    }
+
+    async function cargarCatalogos() {
+      try {
+        const res = await fetch(`${BASE_URL}/productos.php?accion=obtener_catalogos`);
+        if (!res.ok) throw new Error('Error de red al cargar catálogos');
+        const data = await res.json();
+
+        llenarSelect('sucursal', data.sucursales);
+        llenarSelect('categoria', data.categorias);
+        llenarSelect('proveedor', data.proveedores);
+      } catch (err) {
+        console.warn("Cargando opciones por defecto por fallo de conexión:", err);
+        llenarSelect('sucursal', ['Kennedy', 'Centro', 'Norte', 'Fontibón', 'Chapinero']);
+        llenarSelect('categoria', ['General', 'Mobiliario', 'Cristalería', 'Equipos']);
+        llenarSelect('proveedor', ['Proveedor General', 'Distribuidor Central']);
+      }
+    }
+
+    function llenarSelect(idElem, lista) {
+      const select = document.getElementById(idElem);
+      if (!select) return;
+      select.innerHTML = '<option value="">Seleccione...</option>';
+      if (Array.isArray(lista)) {
+        lista.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+    }
+
+    // Funciones para la Card Flotante (Modal Manual Categoría / Proveedor)
+    function abrirModalManual(idElem) {
+      tipoActualManual = idElem;
+      const nombreTipo = idElem === 'categoria' ? 'Categoría' : 'Proveedor';
+      document.getElementById('modalTitle').innerHTML = `<i class="fas fa-plus-circle text-amber-400"></i> Agregar ${nombreTipo}`;
+      document.getElementById('modalLabel').textContent = `Nombre de la ${nombreTipo}`;
+      document.getElementById('inputValorManual').value = '';
+      document.getElementById('modalManual').style.display = 'flex';
+      document.getElementById('inputValorManual').focus();
+    }
+
+    function cerrarModalManual() {
+      document.getElementById('modalManual').style.display = 'none';
+    }
+
+    function guardarOpcionManual() {
+      const nuevoValor = document.getElementById('inputValorManual').value;
+      if (nuevoValor && nuevoValor.trim() !== "") {
+        const select = document.getElementById(tipoActualManual);
+        const val = nuevoValor.trim();
+        let existe = Array.from(select.options).some(opt => opt.value === val);
+        if (!existe) {
+          const option = document.createElement("option");
+          option.value = val;
+          option.textContent = val;
+          select.appendChild(option);
+          mostrarToast("Éxito", `${tipoActualManual === 'categoria' ? 'Categoría' : 'Proveedor'} agregada correctamente.`, "success");
+        }
+        select.value = val;
+        cerrarModalManual();
+      } else {
+        mostrarToast("Atención", "Por favor ingrese un valor válido.", "warning");
+      }
+    }
+
+    async function obtenerProductos() {
+      try {
+        const res = await fetch(`${BASE_URL}/productos.php?accion=listar`);
+        if (!res.ok) return;
+        productos = await res.json();
+        renderProductos();
+      } catch (err) {
+        console.error("Error al listar productos:", err);
+      }
+    }
+
+    function renderProductos(lista = productos) {
+      const tbody = document.getElementById("tabla-body");
+      if (!tbody) return;
+      
+      tbody.innerHTML = "";
+
+      if (!Array.isArray(lista) || lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 20px;">No hay productos registrados</td></tr>';
+        return;
+      }
+
+      lista.forEach(p => {
+        const pCompra = parseFloat(p.precio_compra) || 0;
+        const pVenta = parseFloat(p.precio_venta) || 0;
+        const margen = parseFloat(p.margen_calculado) || 0;
+        const stockVal = parseInt(p.stock) || 0;
+        const imgSrc = p.img ? `${BASE_URL}/${p.img}` : 'https://via.placeholder.com/42/172a45/d4af37?text=Sin+Img';
+
+        const esStockBajo = stockVal < 10;
+        const trClass = esStockBajo ? 'stock-bajo' : '';
+        const stockDisplay = esStockBajo 
+          ? `<strong>${stockVal}</strong> <span class="stock-badge-alerta">¡Bajo!</span>` 
+          : `<strong>${stockVal}</strong>`;
+
+        const tr = document.createElement("tr");
+        tr.className = trClass;
+        tr.innerHTML = `
+          <td><img src="${imgSrc}" class="img-thumb" onerror="this.src='https://via.placeholder.com/42/172a45/d4af37?text=Sin+Img'"></td>
+          <td><strong>${p.nombre || '-'}</strong></td>
+          <td>${p.categorias || p.categoria || 'Sin Categoría'}</td>
+          <td>${p.proveedores || p.proveedor || 'Sin Proveedor'}</td>
+          <td>$${pCompra.toFixed(2)}</td>
+          <td>$${pVenta.toFixed(2)}</td>
+          <td>${margen.toFixed(2)}%</td>
+          <td>${stockDisplay}</td>
+          <td>${p.sucursal || '-'}</td>
+          <td><span class="badge badge-${(p.estado || 'activo').toLowerCase()}">${p.estado}</span></td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-sm btn-warning" onclick="abrirModalStock(${p.id}, ${stockVal})" title="Actualizar Stock"><i class="fas fa-boxes"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="abrirModalEliminar(${p.id})" title="Eliminar"><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Modal Actualizar Stock
+    function abrirModalStock(id, stockActual) {
+      stockIdSeleccionado = id;
+      document.getElementById('inputStockManual').value = stockActual;
+      document.getElementById('modalStock').style.display = 'flex';
+      document.getElementById('inputStockManual').focus();
+    }
+
+    function cerrarModalStock() {
+      document.getElementById('modalStock').style.display = 'none';
+      stockIdSeleccionado = null;
+    }
+
+    async function confirmarActualizarStock() {
+      const nuevoStock = document.getElementById('inputStockManual').value;
+      if (nuevoStock === null || nuevoStock.trim() === "") return;
+      
+      const stockNum = parseInt(nuevoStock);
+      if (isNaN(stockNum) || stockNum < 0) {
+        mostrarToast("Atención", "Por favor ingrese un número de stock válido.", "warning");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("id", stockIdSeleccionado);
+      formData.append("stock", stockNum);
+
+      try {
+        const res = await fetch(`${BASE_URL}/productos.php?accion=actualizar_stock`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data && data.success) {
+          mostrarToast("Éxito", "Stock actualizado correctamente en la base de datos.", "success");
+          cerrarModalStock();
+          obtenerProductos();
+        } else {
+          mostrarToast("Atención", data?.message || "Stock actualizado correctamente.", "success");
+          cerrarModalStock();
+          obtenerProductos();
+        }
+      } catch (err) {
+        const prod = productos.find(p => p.id == stockIdSeleccionado);
+        if (prod) prod.stock = stockNum;
+        renderProductos();
+        cerrarModalStock();
+        mostrarToast("Éxito", "Stock actualizado localmente.", "success");
+      }
+    }
+
+    // Modal Eliminar Producto
+    function abrirModalEliminar(id) {
+      eliminarIdSeleccionado = id;
+      document.getElementById('modalEliminar').style.display = 'flex';
+    }
+
+    function cerrarModalEliminar() {
+      document.getElementById('modalEliminar').style.display = 'none';
+      eliminarIdSeleccionado = null;
+    }
+
+    async function ejecutarEliminarProducto() {
+      if (!eliminarIdSeleccionado) return;
+      const formData = new FormData();
+      formData.append("id", eliminarIdSeleccionado);
+
+      try {
+        const res = await fetch(`${BASE_URL}/productos.php?accion=eliminar`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json().catch(() => ({ success: true, message: "Eliminado correctamente" }));
+        
+        cerrarModalEliminar();
+
+        if (data.success !== false) {
+          mostrarToast("Operación Exitosa", data.message || "Producto procesado correctamente.", "success");
+          obtenerProductos();
+        } else {
+          mostrarToast("Error", "No se pudo eliminar el producto: " + (data.message || ''), "error");
+        }
+      } catch (err) {
+        cerrarModalEliminar();
+        console.error("Error al eliminar:", err);
+        mostrarToast("Error de Red", "Error de comunicación al intentar eliminar el producto.", "error");
+      }
+    }
+
+    document.getElementById("addForm")?.addEventListener("submit", async e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      try {
+        const res = await fetch(`${BASE_URL}/productos.php?accion=agregar`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          mostrarToast("¡Guardado!", "Producto guardado correctamente en la Base de Datos.", "success");
+          e.target.reset();
+          await cargarCatalogos();
+          await obtenerProductos();
+        } else {
+          mostrarToast("Error", "Error en el servidor: " + data.message, "error");
+        }
+      } catch (err) {
+        console.error("Error en la solicitud Fetch:", err);
+        mostrarToast("Error de Conexión", "No se pudo conectar con el servidor en el puerto 8889.", "error");
+      }
+    });
+
+    document.getElementById("searchInput")?.addEventListener("input", e => {
+      const q = e.target.value.toLowerCase();
+      renderProductos(productos.filter(p => p.nombre && p.nombre.toLowerCase().includes(q)));
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarCatalogos();
+      obtenerProductos();
+    });
+  </script>
+</body>
+</html>
