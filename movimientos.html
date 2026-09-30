@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movimientos de Producto - Mediterranean ERP</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --accent-cyan: #0284c7;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      --clay-shadow-outer: 12px 12px 24px #cbd5e1, -8px -8px 20px #ffffff;
+      --clay-shadow-card: 14px 14px 28px #cbd5e1, -10px -10px 22px #ffffff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #cbd5e1, -4px -4px 10px #ffffff;
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --sidebar-width: 280px;
+    }
+
+    body.sidebar-collapsed { --sidebar-width: 90px; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #70a2ec 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    #tsparticles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 0; z-index: -1;
+      background-color: #70a2ec;
+    }
+
+    .app-container { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+    .sidebar {
+      position: fixed; top: 16px; left: 16px; bottom: 16px;
+      width: var(--sidebar-width); z-index: 5000;
+      padding: 24px 16px; display: flex; flex-direction: column;
+      overflow-y: auto; overflow-x: hidden;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px; box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .brand { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 20px; }
+    .brand-logo-img { width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); transition: var(--transition); }
+    .brand-logo-img:hover { transform: scale(1.05) translateY(-3px); }
+
+    .menu-label { padding: 16px 12px 8px; color: var(--text-muted); font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+
+    .side-link {
+      width: 100%; height: 52px; display: flex; align-items: center; gap: 14px;
+      padding: 0 18px; border: none; border-radius: 20px;
+      color: var(--text-secondary); background: transparent;
+      font: 600 14px "Plus Jakarta Sans", sans-serif; text-decoration: none; cursor: pointer; transition: var(--transition); margin-bottom: 8px; white-space: nowrap;
+    }
+
+    .side-link:hover { background: #e2e8f0; color: var(--accent-cyan); box-shadow: var(--clay-btn-shadow), var(--clay-inset-light); transform: translateY(-2px); }
+    .side-link.active { color: #fff; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25), var(--clay-inset-glow); }
+    .side-icon { font-size: 20px; min-width: 24px; text-align: center; }
+
+    .sidebar-footer { margin-top: auto; padding-top: 15px; }
+    .system-status-box { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 12px 16px; border-radius: 18px; color: var(--green); background: var(--clay-bg); box-shadow: var(--clay-inset-light); font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .online-dot { width: 10px; height: 10px; min-width: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: pulse 2s infinite; }
+
+    @keyframes pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
+
+    .languages { display: flex; margin-bottom: 12px; padding: 6px; border-radius: 18px; background: var(--clay-bg); box-shadow: var(--clay-inset-light); }
+    .languages button { flex: 1; padding: 8px; border: 0; border-radius: 12px; color: var(--text-muted); background: transparent; font: 800 12px "Plus Jakarta Sans", sans-serif; cursor: pointer; transition: var(--transition); }
+    .languages button.active-language { color: var(--text-primary); background: var(--clay-surface); box-shadow: var(--clay-btn-shadow); }
+
+    .logout-btn { width: 100%; height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 18px; color: var(--danger); background: var(--clay-surface); box-shadow: var(--clay-btn-shadow); font: 700 13px "Plus Jakarta Sans", sans-serif; text-decoration: none; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .logout-btn:hover { background: var(--danger); color: #fff; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3); transform: translateY(-2px); }
+
+    body.sidebar-collapsed .brand-logo-img { width: 45px; height: 45px; }
+    body.sidebar-collapsed .menu-label, body.sidebar-collapsed .side-link span:not(.side-icon), body.sidebar-collapsed .system-status-box span, body.sidebar-collapsed .languages, body.sidebar-collapsed .logout-btn span:not(.side-icon) { display: none; }
+    body.sidebar-collapsed .side-link, body.sidebar-collapsed .logout-btn { justify-content: center; padding: 0; }
+
+    .top-bar { position: fixed; top: 16px; left: calc(var(--sidebar-width) + 32px); right: 16px; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: linear-gradient(145deg, #ffffff, #f1f5f9); border-radius: 28px; box-shadow: var(--clay-shadow-outer); z-index: 4000; transition: var(--transition); }
+    .top-left-group { display: flex; align-items: center; gap: 16px; }
+    .toggle-sidebar-btn { background: var(--clay-surface); border: none; color: var(--accent-cyan); width: 44px; height: 44px; border-radius: 16px; cursor: pointer; display: grid; place-items: center; font-size: 18px; box-shadow: var(--clay-btn-shadow); transition: var(--transition); }
+    .toggle-sidebar-btn:hover { transform: translateY(-2px) scale(1.05); color: #fff; background: var(--accent-cyan); }
+    .welcome { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+    .welcome strong { color: var(--text-primary); }
+    .top-actions { display: flex; align-items: center; gap: 16px; }
+    .clock-container { display: flex; align-items: center; gap: 10px; background: var(--clay-bg); padding: 8px 18px; border-radius: 16px; box-shadow: var(--clay-inset-light); }
+    .clock-icon { color: var(--accent-cyan); font-size: 16px; }
+    .today { color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+    .profile-badge { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 16px; color: #fff; background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo)); font-size: 14px; font-weight: 800; cursor: pointer; transition: var(--transition); box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow); }
+
+    .main-content { margin-left: calc(var(--sidebar-width) + 32px); padding-top: 102px; padding-right: 16px; padding-bottom: 80px; width: 100%; min-height: 100vh; transition: var(--transition); }
+    .heading h1 { margin: 0; color: var(--text-primary); font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 34px; }
+    .heading p { margin: 6px 0 0; color: var(--text-secondary); font-size: 14px; }
+
+    .panel { border-radius: 28px; background: linear-gradient(145deg, #e0e8f5, #cbd8ed); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: var(--clay-shadow-card); padding: 28px; margin-top: 24px; position: relative; transition: var(--transition); }
+    .panel h3 { font-size: 20px; margin: 0 0 16px; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
+
+    .btn-type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .btn-type-option { background: var(--clay-surface); border: 2px solid transparent; padding: 12px; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 13px; color: var(--text-secondary); box-shadow: var(--clay-btn-shadow); display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
+    .btn-type-option.active[data-type="Entrada"] { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+    .btn-type-option.active[data-type="Salida"] { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+    .btn-type-option.active[data-type="Transferencia"] { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #fff; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .form-group-full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+
+    .clay-input, .clay-select, textarea.clay-input { width: 100%; background: var(--clay-bg); border: none; padding: 12px 16px; border-radius: 16px; box-shadow: var(--clay-inset-light); font: 600 13px "Plus Jakarta Sans", sans-serif; color: var(--text-primary); outline: none; transition: var(--transition); }
+    .clay-input:focus, .clay-select:focus { box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(2, 132, 199, 0.3), 0 0 0 2px var(--accent-cyan); }
+
+    .clay-btn { background: linear-gradient(145deg, #e0e8f5, #cbd8ed); color: var(--accent-cyan); padding: 12px 22px; border-radius: 18px; border: none; cursor: pointer; font: 700 13px "Plus Jakarta Sans", sans-serif; box-shadow: var(--clay-btn-shadow); transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
+    .clay-btn:hover { background: var(--accent-cyan); color: #fff; transform: translateY(-3px); }
+    .clay-btn-primary { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #fff; }
+    .clay-btn-ghost { background: var(--clay-surface); color: var(--text-secondary); }
+
+    .mensaje { margin-top: 14px; font-weight: 700; font-size: 13px; }
+
+    .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
+    .data-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .data-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; padding: 0 16px 10px; text-align: left; }
+    .data-table td { padding: 14px 16px; background: rgba(255, 255, 255, 0.75); font-size: 13px; color: var(--text-primary); font-weight: 600; transition: var(--transition); }
+    .data-table tr td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .data-table tr td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+
+    .entrada { color: var(--green); font-weight: 700; }
+    .salida { color: var(--danger); font-weight: 700; }
+    .transferencia { color: var(--accent-blue); font-weight: 700; }
+
+    .copyright-fixed { position: fixed; left: calc(var(--sidebar-width) + 32px); right: 16px; bottom: 12px; display: flex; align-items: center; justify-content: center; padding: 12px; background: linear-gradient(145deg, #ffffff, #f1f5f9); color: var(--text-muted); font-size: 12px; z-index: 3000; border-radius: 20px; box-shadow: var(--clay-shadow-outer); transition: var(--transition); }
+    .copyright-fixed a { color: var(--accent-cyan); text-decoration: none; font-weight: 700; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .clay-modal { width: 100%; max-width: 520px; background: linear-gradient(145deg, #ffffff, #f1f5f9); border-radius: 32px; box-shadow: var(--clay-shadow-outer); padding: 28px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
+    .modal-close { background: var(--clay-surface); border: none; width: 36px; height: 36px; border-radius: 12px; font-size: 18px; color: var(--text-muted); cursor: pointer; display: grid; place-items: center; }
+    .modal-field { margin-bottom: 16px; }
+    .small-muted { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; display: block; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+
+    #previewPanel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 90%; max-width: 850px; max-height: 85vh; background: linear-gradient(145deg, #ffffff, #f1f5f9); border-radius: 28px; box-shadow: var(--clay-shadow-outer); z-index: 9500; padding: 24px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: var(--transition); }
+    #previewPanel.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+
+    @media (max-width: 1000px) { :root { --sidebar-width: 90px; } .menu-label, .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; } }
+    @media (max-width: 620px) { :root { --sidebar-width: 0px; } .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; } body.mobile-open .sidebar { transform: translateX(0); } .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; } }
+  </style>
+</head>
+
+<body>
+  <div id="tsparticles"></div>
+
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" id="imgBrandLogo" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+      </div>
+      
+      <div class="menu-label">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link"><span class="side-icon">⌂</span><span>Menu Principal</span></a>
+      <a href="stock.html" class="side-link"><span class="side-icon">📦</span><span>Inventario & Stock</span></a>
+      <a href="sucursales.html" class="side-link"><span class="side-icon">🏢</span><span>Sucursales / Almacenes</span></a>
+      <a href="movimientos.html" class="side-link active"><span class="side-icon">🔄</span><span>Kardex / Movimientos</span></a>
+
+      <div class="menu-label">ADMINISTRACIÓN</div>
+      <a href="configuracion.html" class="side-link"><span class="side-icon">⚙</span><span>Configuración</span></a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box"><span class="online-dot"></span><span>En Línea</span></div>
+        <div class="languages">
+          <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+          <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+        <a href="login.html" class="logout-btn"><span class="side-icon">⍈</span><span>Cerrar Sesión</span></a>
+      </div>
+    </aside>
+
+    <header class="top-bar">
+      <div class="top-left-group">
+        <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+        <div class="welcome">Bienvenido, <strong>Juan Sebastian Calvo Rojas</strong></div>
+      </div>
+      <div class="top-actions">
+        <div class="clock-container"><span class="clock-icon">🕒</span><span class="today" id="current-time">12:00 PM</span></div>
+        <div class="profile-badge">JS</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="heading">
+        <h1>Kardex / Movimientos</h1>
+        <p>Registro, consulta y trazabilidad de entradas, salidas y transferencias de productos.</p>
+      </div>
+
+      <div class="panel">
+        <h3>📦 Registrar Movimiento de Producto</h3>
+        
+        <div class="btn-type-selector">
+          <button type="button" class="btn-type-option active" data-type="Entrada" onclick="seleccionarTipo('Entrada')">
+            <i class="fa-solid fa-circle-arrow-down" style="color:#10b981;"></i> Entrada
+          </button>
+          <button type="button" class="btn-type-option" data-type="Salida" onclick="seleccionarTipo('Salida')">
+            <i class="fa-solid fa-circle-arrow-up" style="color:#ef4444;"></i> Salida
+          </button>
+          <button type="button" class="btn-type-option" data-type="Transferencia" onclick="seleccionarTipo('Transferencia')">
+            <i class="fa-solid fa-right-left" style="color:var(--accent-blue);"></i> Entre Sucursales
+          </button>
+        </div>
+
+        <form id="formMovimiento">
+          <input type="hidden" id="tipo" name="tipo" value="Entrada">
+
+          <div class="form-grid">
+            <div class="form-group" id="group-sucursal-origen">
+              <label for="sucursal" id="label-sucursal">Sucursal Origen</label>
+              <select name="sucursal" id="sucursal" class="clay-select" required onchange="cargarProductosPorSucursal()">
+                <option value="Kennedy">Kennedy</option>
+                <option value="Centro">Centro</option>
+                <option value="Norte">Norte</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="group-sucursal-destino" style="display: none;">
+              <label for="sucursal_destino">Sucursal Destino</label>
+              <select name="sucursal_destino" id="sucursal_destino" class="clay-select">
+                <option value="Centro">Centro</option>
+                <option value="Kennedy">Kennedy</option>
+                <option value="Norte">Norte</option>
+              </select>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="productos">Producto</label>
+              <select name="productos" id="productos" class="clay-select" required>
+                <option value="">Cargando productos...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="cantidad">Cantidad</label>
+              <input type="number" name="cantidad" id="cantidad" class="clay-input" required min="1" placeholder="Ej: 10">
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="comentario">Comentario / Nota</label>
+              <textarea name="comentario" id="comentario" class="clay-input" rows="2" placeholder="Ej: Traspaso de mercadería o compra a proveedor"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="clay-btn clay-btn-primary">💾 Registrar Movimiento</button>
+          </div>
+
+          <div class="mensaje" id="mensajeMovimiento"></div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="margin:0;">📜 Últimos Movimientos</h3>
+          <button id="btnReporte" class="clay-btn clay-btn-primary">📄 Generar Reporte PDF</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="tablaMovimientos">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Comentario</th>
+                <th>Sucursal</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="copyright-fixed">
+      <a href="politica-completa.html">© 2026 Mediterranean Technologies</a>
+    </footer>
+  </div>
+
+  <div class="modal-overlay" id="modalReporte">
+    <div class="clay-modal">
+      <div class="modal-header">
+        <h3>📄 Generar Reporte PDF</h3>
+        <button class="modal-close" id="btnCerrarReporte">✕</button>
+      </div>
+      <div class="modal-field"><label class="small-muted">Desde</label><input type="date" id="fechaDesde" class="clay-input" /></div>
+      <div class="modal-field"><label class="small-muted">Hasta</label><input type="date" id="fechaHasta" class="clay-input" /></div>
+      <div class="modal-field">
+        <label class="small-muted">Sucursal</label>
+        <select id="filtroSucursal" class="clay-select">
+          <option value="">Todas</option>
+          <option value="Kennedy">Kennedy</option>
+          <option value="Centro">Centro</option>
+          <option value="Norte">Norte</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label class="small-muted">Tipo de Movimiento</label>
+        <select id="filtroTipo" class="clay-select">
+          <option value="">Todos</option>
+          <option value="Entrada">Entrada</option>
+          <option value="Salida">Salida</option>
+          <option value="Transferencia">Transferencia</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="btnPrevisualizar" class="clay-btn clay-btn-ghost" style="flex: 1;">🔎 Consultar</button>
+        <button id="btnGenerarReporte" class="clay-btn clay-btn-primary" style="flex: 1;">📥 Descargar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="previewPanel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h4 style="margin:0;">Consulta de Movimientos</h4>
+      <button id="closePreview" class="modal-close">✕</button>
+    </div>
+    <div id="previewMeta" class="small-muted" style="margin-bottom:12px;">Mostrando resultados...</div>
+    <div class="table-responsive" style="max-height: 50vh; overflow-y: auto;">
+      <table class="data-table" id="previewTable">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Comentario</th><th>Sucursal</th>
+          </tr>
+        </thead>
+        <tbody id="previewBody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+      <button id="downloadFromPreview" class="clay-btn clay-btn-primary">📥 Descargar Reporte PDF</button>
+      <button id="closePreviewFooter" class="clay-btn clay-btn-ghost">Volver</button>
+    </div>
+  </div>
+
+  <script>
+    let movimientosLocales = [];
+
+    // Inicialización de partículas de fondo
+    function initParticles() {
+      if (window.tsParticles) {
+        tsParticles.load("tsparticles", {
+          particles: {
+            number: { value: 40, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.7 },
+            size: { value: 3, random: true },
+            line_linked: { 
+              enable: true, 
+              distance: 150, 
+              color: "#ffffff", 
+              opacity: 0.4, 
+              width: 1 
+            },
+            move: { enable: true, speed: 1.5, direction: "none", straight: false }
+          },
+          interactivity: {
+            events: { onhover: { enable: true, mode: "repulse" } }
+          }
+        });
+      }
+    }
+
+    function seleccionarTipo(tipo) {
+      document.getElementById('tipo').value = tipo;
+      document.querySelectorAll('.btn-type-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === tipo);
+      });
+
+      const groupDestino = document.getElementById('group-sucursal-destino');
+      const selectDestino = document.getElementById('sucursal_destino');
+
+      if (tipo === 'Transferencia') {
+        groupDestino.style.display = 'block';
+        selectDestino.setAttribute('required', 'required');
+      } else {
+        groupDestino.style.display = 'none';
+        selectDestino.removeAttribute('required');
+      }
+
+      cargarProductosPorSucursal();
+    }
+
+    async function cargarProductosPorSucursal() {
+      const sucursal = document.getElementById('sucursal').value;
+      const selectProd = document.getElementById('productos');
+      selectProd.innerHTML = '<option value="">Cargando productos...</option>';
+
+      try {
+        const resp = await fetch(`productos.php?accion=listar_por_sucursal&sucursal=${encodeURIComponent(sucursal)}`);
+        const prods = await resp.json();
+        
+        selectProd.innerHTML = '<option value="">-- Seleccione un Producto --</option>';
+        if (Array.isArray(prods) && prods.length > 0) {
+          prods.forEach(p => {
+            selectProd.innerHTML += `<option value="${p.id}">${p.nombre} (Stock: ${p.stock ?? 0})</option>`;
+          });
+        } else {
+          selectProd.innerHTML = '<option value="">Sin productos registrados en esta sucursal</option>';
+        }
+      } catch (err) {
+        console.error("Error al cargar productos:", err);
+        selectProd.innerHTML = '<option value="">Error cargando productos</option>';
+      }
+    }
+
+    async function cargarMovimientos() {
+      const tbody = document.querySelector("#tablaMovimientos tbody");
+      if (!tbody) return;
+
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando movimientos...</td></tr>';
+
+      try {
+        const resp = await fetch(`movimientos_recientes.php`);
+        const data = await resp.json();
+
+        tbody.innerHTML = "";
+        movimientosLocales = Array.isArray(data) ? data : [];
+
+        if (movimientosLocales.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Sin movimientos registrados</td></tr>';
+          return;
+        }
+
+        movimientosLocales.forEach(m => {
+          const tipoClase = (m.tipo || 'Entrada').toLowerCase();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${m.fecha || 'Reciente'}</td>
+            <td><strong>${m.producto_nombre || ('ID: ' + m.producto_id)}</strong></td>
+            <td class="${tipoClase}">${m.tipo}</td>
+            <td><strong>${m.cantidad}</strong></td>
+            <td>${m.comentario || '-'}</td>
+            <td>${m.sucursal_destino ? `${m.sucursal} ➔${m.sucursal_destino}` : m.sucursal}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Error al cargar auditoría de movimientos:", err);
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger);">Error al cargar registros.</td></tr>';
+      }
+    }
+
+    document.getElementById("formMovimiento").addEventListener("submit", async e => {
+      e.preventDefault();
+      const mensaje = document.getElementById("mensajeMovimiento");
+      const tipo = document.getElementById('tipo').value;
+      const origen = document.getElementById('sucursal').value;
+      const destino = document.getElementById('sucursal_destino').value;
+
+      if (tipo === 'Transferencia' && origen === destino) {
+        mensaje.innerHTML = `<span style="color:var(--warning);">La sucursal de origen y destino deben ser diferentes.</span>`;
+        return;
+      }
+
+      mensaje.innerHTML = "Procesando registro...";
+      const formData = new FormData(e.target);
+
+      try {
+        const resp = await fetch(`agregar_movimiento.php`, {
+          method: "POST",
+          body: formData
+        });
+
+        const res = await resp.json();
+
+        if (res.success) {
+          mensaje.innerHTML = `<span style="color:var(--green);">${res.message}</span>`;
+          e.target.reset();
+          seleccionarTipo('Entrada');
+          await cargarProductosPorSucursal();
+          await cargarMovimientos();
+        } else {
+          mensaje.innerHTML = `<span style="color:var(--danger);">${res.message}</span>`;
+        }
+      } catch (error) {
+        console.error("Error en la petición AJAX:", error);
+        mensaje.innerHTML = `<span style="color:var(--danger);">Error de comunicación con el servidor.</span>`;
+      }
+    });
+
+    function obtenerDatosFiltrados() {
+      const fDesde = document.getElementById("fechaDesde").value;
+      const fHasta = document.getElementById("fechaHasta").value;
+      const fSucursal = document.getElementById("filtroSucursal").value.toLowerCase();
+      const fTipo = document.getElementById("filtroTipo").value.toLowerCase();
+
+      return movimientosLocales.filter(m => {
+        const fechaMov = (m.fecha || '').slice(0, 10);
+        const sucursalMov = (m.sucursal || '').toLowerCase();
+        const tipoMov = (m.tipo || '').toLowerCase();
+
+        let cumpleFecha = true;
+        if (fDesde && fechaMov && fechaMov < fDesde) cumpleFecha = false;
+        if (fHasta && fechaMov && fechaMov > fHasta) cumpleFecha = false;
+
+        let cumpleSucursal = !fSucursal || sucursalMov.includes(fSucursal);
+        let cumpleTipo = !fTipo || tipoMov === fTipo;
+
+        return cumpleFecha && cumpleSucursal && cumpleTipo;
+      });
+    }
+
+    function generarPDFReporte() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+      const datos = obtenerDatosFiltrados();
+
+      doc.setFillColor(2, 132, 199);
+      doc.rect(0, 0, 210, 38, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('MEDITERRANEAN', 14, 18);
+
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Reporte Oficial de Movimientos de Productos', 14, 26);
+
+      const tableBody = datos.map(m => [
+        m.fecha || 'Reciente',
+        m.producto_nombre || ('ID: ' + m.producto_id),
+        m.tipo,
+        m.cantidad,
+        m.comentario || '-',
+        m.sucursal_destino ? `${m.sucursal} -> ${m.sucursal_destino}` : m.sucursal
+      ]);
+
+      doc.autoTable({
+        startY: 44,
+        head: [['Fecha', 'Producto', 'Tipo', 'Cant.', 'Comentario', 'Sucursal']],
+        body: tableBody,
+        theme: 'striped',
+        headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold' }
+      });
+
+      doc.save(`Reporte_Movimientos_${new Date().toISOString().slice(0,10)}.pdf`);
+    }
+
+    document.getElementById("btnGenerarReporte")?.addEventListener("click", () => {
+      generarPDFReporte();
+      document.getElementById("modalReporte").classList.remove("active");
+    });
+
+    document.getElementById("downloadFromPreview")?.addEventListener("click", () => {
+      generarPDFReporte();
+    });
+
+    document.getElementById("btnPrevisualizar")?.addEventListener("click", () => {
+      const filtrados = obtenerDatosFiltrados();
+      const tbody = document.getElementById("previewBody");
+      tbody.innerHTML = "";
+
+      if (filtrados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No se encontraron registros.</td></tr>';
+      } else {
+        filtrados.forEach(m => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${m.fecha || 'Reciente'}</td>
+            <td><strong>${m.producto_nombre || m.producto_id}</strong></td>
+            <td class="${(m.tipo || '').toLowerCase()}">${m.tipo}</td>
+            <td><strong>${m.cantidad}</strong></td>
+            <td>${m.comentario || '-'}</td>
+            <td>${m.sucursal_destino ? `${m.sucursal} ➔${m.sucursal_destino}` : m.sucursal}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document.getElementById("previewMeta").innerText = `Resultados: ${filtrados.length} registros`;
+      document.getElementById("previewPanel").classList.add("open");
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initParticles();
+      cargarProductosPorSucursal();
+      cargarMovimientos();
+      updateClock();
+      setInterval(updateClock, 1000);
+    });
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 620) {
+        document.body.classList.toggle('mobile-open');
+      } else {
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const timeElem = document.getElementById('current-time');
+      if (timeElem) timeElem.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    const modal = document.getElementById("modalReporte");
+    const preview = document.getElementById("previewPanel");
+
+    document.getElementById("btnReporte")?.addEventListener("click", () => {
+      const hoy = new Date().toISOString().slice(0,10);
+      document.getElementById("fechaHasta").value = hoy;
+      document.getElementById("fechaDesde").value = new Date(Date.now() - 7*24*60*60*1000).toISOString().slice(0,10);
+      modal.classList.add("active");
+    });
+
+    document.getElementById("btnCerrarReporte")?.addEventListener("click", () => modal.classList.remove("active"));
+    document.getElementById("closePreview")?.addEventListener("click", () => preview.classList.remove("open"));
+    document.getElementById("closePreviewFooter")?.addEventListener("click", () => preview.classList.remove("open"));
+  </script>
+</body>
+</html>

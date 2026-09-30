@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mediterranean | Sucursal Norte</title>
+
+  <!-- Fuentes & Estilos Externos -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Librerías JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #70a2ec;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+      --accent-cyan: #0284c7;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      --clay-shadow-outer: 12px 12px 24px #5b8bc9, -8px -8px 20px #85b9ff;
+      --clay-shadow-card: 14px 14px 28px #5b8bc9, -10px -10px 22px #85b9ff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #5b8bc9, -4px -4px 10px #85b9ff;
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --sidebar-width: 280px;
+    }
+
+    body.sidebar-collapsed {
+      --sidebar-width: 90px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background-color: #70a2ec;
+      overflow-x: hidden;
+    }
+
+    #tsparticles {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      background-color: #70a2ec;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      bottom: 16px;
+      width: var(--sidebar-width);
+      z-index: 5000;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 20px;
+      margin-bottom: 15px;
+    }
+
+    .brand-logo-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+      transition: var(--transition);
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.05) translateY(-3px);
+    }
+
+    .sidebar-center-nav {
+      margin: auto 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .back-btn {
+      width: 100%;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 20px;
+      color: var(--accent-cyan);
+      background: var(--clay-surface);
+      font: 700 15px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+    }
+
+    .back-btn:hover {
+      background: var(--accent-cyan);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+
+    .system-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      color: var(--green);
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .languages {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 6px;
+      border-radius: 18px;
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .languages button {
+      flex: 1;
+      padding: 8px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--text-muted);
+      background: transparent;
+      font: 800 12px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .languages button.active-language {
+      color: var(--text-primary);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .logout-btn {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-radius: 18px;
+      color: var(--danger);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* MODO COLAPSADO */
+    body.sidebar-collapsed .brand-logo-img { width: 45px; height: 45px; }
+    body.sidebar-collapsed .back-btn span:not(.side-icon),
+    body.sidebar-collapsed .system-status-box span,
+    body.sidebar-collapsed .languages,
+    body.sidebar-collapsed .logout-btn span:not(.side-icon) {
+      display: none;
+    }
+
+    body.sidebar-collapsed .back-btn,
+    body.sidebar-collapsed .logout-btn {
+      justify-content: center;
+      padding: 0;
+    }
+
+    /* TOPBAR CLAYMORPHIC */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-outer);
+      z-index: 4000;
+      transition: var(--transition);
+    }
+
+    .top-left-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toggle-sidebar-btn {
+      background: var(--clay-surface);
+      border: none;
+      color: var(--accent-cyan);
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      color: #fff;
+      background: var(--accent-cyan);
+    }
+
+    .welcome {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .welcome strong { color: var(--text-primary); }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .clock-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--clay-bg);
+      padding: 8px 18px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .clock-icon {
+      color: var(--accent-cyan);
+      font-size: 16px;
+    }
+
+    .today {
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .profile-badge {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    .profile-badge:hover {
+      transform: scale(1.08) translateY(-2px);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: calc(var(--sidebar-width) + 32px);
+      padding-top: 102px;
+      padding-right: 16px;
+      padding-bottom: 90px;
+      width: 100%;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+
+    .header-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .branch-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .branch-card-header i {
+      font-size: 32px;
+      color: var(--accent-cyan);
+    }
+
+    .branch-info h1 {
+      margin: 0;
+      font-size: 24px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .branch-info p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    /* PANELS / CARDS CON HOVER Y CLICK */
+    .panel {
+      border-radius: 28px;
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--clay-shadow-card);
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .panel:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 16px 16px 32px #5381be, -10px -10px 24px #8dbfff;
+    }
+
+    .panel:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      margin: 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .view-more-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      background: rgba(255,255,255,0.7);
+      padding: 4px 10px;
+      border-radius: 12px;
+      box-shadow: var(--clay-inset-glow);
+    }
+
+    .clay-btn {
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      color: var(--accent-cyan);
+      padding: 10px 18px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .clay-btn:hover {
+      background: var(--accent-cyan);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .clay-btn:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    .clay-input {
+      background: var(--clay-bg);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+      font: 600 13px "Plus Jakarta Sans", sans-serif;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 12px 8px;
+      text-align: left;
+    }
+
+    td {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.65);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    tr td:first-child { border-radius: 12px 0 0 12px; }
+    tr td:last-child { border-radius: 0 12px 12px 0; }
+
+    #map {
+      height: 280px;
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    /* FOOTER */
+    .copyright-fixed {
+      position: fixed;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      color: var(--text-muted);
+      font-size: 12px;
+      z-index: 3000;
+      border-radius: 20px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .copyright-fixed a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    /* MODAL DE DETALLES Y POLÍTICAS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 800px;
+      max-height: 85vh;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: var(--clay-shadow-outer);
+      padding: 32px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--clay-bg);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .close-modal {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .modal-body {
+      overflow-y: auto;
+      padding-right: 6px;
+      flex: 1;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 1100px) {
+      .grid-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; }
+      body.mobile-open .sidebar { transform: translateX(0); }
+      .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; }
+      .top-bar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="tsparticles"></div>
+
+<div class="app-container">
+
+  <!-- SIDEBAR CLAYMORPHIC -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+    </div>
+    
+    <div class="sidebar-center-nav">
+      <a href="sucursales.html" class="back-btn" title="Ir a Sucursales">
+        <i class="fa-solid fa-arrow-left side-icon"></i>
+        <span data-i18n="back_branches">Volver a Sucursales</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="system-status-box">
+        <span class="online-dot"></span>
+        <span data-i18n="erp_online">En Línea</span>
+      </div>
+
+      <div class="languages">
+        <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+        <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+      </div>
+
+      <a href="login.html" class="logout-btn">
+        <span class="side-icon">⍈</span>
+        <span data-i18n="logout">Cerrar Sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="top-left-group">
+      <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="welcome">
+        <span data-i18n="welcome">Bienvenido</span>, <strong>Juean Sebastian Calvo Rojas</strong> (ID: EMP-8092)
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div class="clock-container">
+        <span class="clock-icon">🕒</span>
+        <span class="today" id="current-time">12:00 PM</span>
+      </div>
+      <div class="profile-badge">CM</div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <div class="header-panel">
+      <div class="branch-card-header">
+        <i class="fa-solid fa-store"></i>
+        <div class="branch-info">
+          <h1 data-i18n="branch_title">Sucursal Norte</h1>
+          <p><strong data-i18n="address">Dirección:</strong> Autopista Norte # 183-15, Bogotá Norte | <strong data-i18n="phone">Tel:</strong> +57 310 987 6543</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="searchInput" class="clay-input" placeholder="Buscar producto..." data-i18n-ph="search_ph" />
+        <button id="btnExportExcel" class="clay-btn"><i class="fa-solid fa-file-excel"></i> Excel</button>
+        <button id="btnExportPDF" class="clay-btn"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+      </div>
+    </div>
+
+    <div class="grid-layout">
+      <!-- Columna Izquierda: Cards Interactivas -->
+      <div>
+        <div class="panel" onclick="abrirModalDetalles('stock')">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-boxes-stacked"></i> <span data-i18n="current_stock">Stock actual</span></h3>
+            <span class="view-more-badge"><i class="fa-solid fa-expand"></i> <span data-i18n="click_expand">Ver Todo</span></span>
+          </div>
+          <div class="table-wrap">
+            <table id="stockTable">
+              <thead>
+                <tr>
+                  <th data-i18n="th_product">Producto</th>
+                  <th data-i18n="th_category">Categoría</th>
+                  <th data-i18n="th_quantity">Cantidad</th>
+                  <th data-i18n="th_last_update">Última</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" onclick="abrirModalDetalles('entradas')">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-circle-arrow-up"></i> <span data-i18n="recent_inputs">Entradas recientes</span></h3>
+            <span class="view-more-badge"><i class="fa-solid fa-expand"></i> <span data-i18n="click_expand">Ver Todo</span></span>
+          </div>
+          <div class="table-wrap">
+            <table id="entradasTable">
+              <thead>
+                <tr>
+                  <th data-i18n="th_product">Producto</th>
+                  <th data-i18n="th_quantity">Cantidad</th>
+                  <th data-i18n="th_date">Fecha</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" onclick="abrirModalDetalles('salidas')">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-circle-arrow-down"></i> <span data-i18n="recent_outputs">Salidas recientes</span></h3>
+            <span class="view-more-badge"><i class="fa-solid fa-expand"></i> <span data-i18n="click_expand">Ver Todo</span></span>
+          </div>
+          <div class="table-wrap">
+            <table id="salidasTable">
+              <thead>
+                <tr>
+                  <th data-i18n="th_product">Producto</th>
+                  <th data-i18n="th_quantity">Cantidad</th>
+                  <th data-i18n="th_date">Fecha</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Gráfico y Mapa -->
+      <div>
+        <div class="panel" style="cursor: default;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-chart-column"></i> <span data-i18n="chart_title">Inventario — Stock / Movimientos</span></h3>
+          </div>
+          <canvas id="inventoryChart"></canvas>
+        </div>
+        
+        <div class="panel" style="cursor: default;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="location">Ubicación</span></h3>
+          </div>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+   <!-- FOOTER -->
+<footer class="copyright-fixed">
+  <a href="politica-completa.html">© <?php echo date('Y'); ?> 2026 Mediterranean Technologies</a>
+</footer>
+
+</div>
+
+<!-- MODAL PARA DESPLIEGUE COMPLETO DE CARDS -->
+<div id="detailsModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="modalTitle"><i class="fa-solid fa-list"></i> Detalle Completo</h2>
+      <div class="close-modal" onclick="cerrarModal('detailsModal')">&times;</div>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrap">
+        <table id="modalTable">
+          <thead id="modalTableHead"></thead>
+          <tbody id="modalTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POLÍTICAS -->
+<div id="policyModal" class="modal-overlay">
+  <div class="modal-card" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2 data-i18n="privacy_policy">Política de Privacidad y Seguridad</h2>
+      <div class="close-modal" onclick="cerrarModal('policyModal')">&times;</div>
+    </div>
+    <div class="modal-body">
+      <p data-i18n="policy_text">En Mediterranean Technologies, valoramos tu privacidad. Todos los datos son tratados conforme al RGPD y nuestras medidas de seguridad garantizan la integridad de la información.</p>
+      <p><a href="politica-completa.html" style="color: var(--accent-cyan); font-weight: bold;" data-i18n="read_full_policy">Leer política completa</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- JAVASCRIPT CONSOLIDADO Y FUNCIONAL -->
+<script>
+  // DICCIONARIOS DE IDIOMA (ES/EN)
+  const translations = {
+    es: {
+      back_branches: "Volver a Sucursales",
+      erp_online: "ERP En Línea",
+      logout: "Cerrar Sesión",
+      welcome: "Bienvenido",
+      branch_title: "Sucursal Norte",
+      address: "Dirección:",
+      phone: "Tel:",
+      search_ph: "Buscar producto...",
+      current_stock: "Stock actual",
+      recent_inputs: "Entradas recientes",
+      recent_outputs: "Salidas recientes",
+      click_expand: "Ver Todo",
+      chart_title: "Inventario — Stock / Movimientos",
+      location: "Ubicación",
+      privacy_policy: "Política de Privacidad y Seguridad",
+      policy_text: "En Mediterranean Technologies, valoramos tu privacidad. Todos los datos son tratados conforme al RGPD y nuestras medidas de seguridad garantizan la integridad de la información.",
+      read_full_policy: "Leer política completa",
+      th_product: "Producto",
+      th_category: "Categoría",
+      th_quantity: "Cantidad",
+      th_last_update: "Última",
+      th_date: "Fecha",
+      th_type: "Tipo",
+      modal_stock_title: "Despliegue Completo - Stock Actual",
+      modal_entradas_title: "Despliegue Completo - Entradas Recientes",
+      modal_salidas_title: "Despliegue Completo - Salidas Recientes",
+      chart_stock: "Stock",
+      chart_inputs: "Entradas",
+      chart_outputs: "Salidas"
+    },
+    en: {
+      back_branches: "Back to Branches",
+      erp_online: "ERP Online",
+      logout: "Logout",
+      welcome: "Welcome",
+      branch_title: "North Branch",
+      address: "Address:",
+      phone: "Phone:",
+      search_ph: "Search product...",
+      current_stock: "Current Stock",
+      recent_inputs: "Recent Inputs",
+      recent_outputs: "Recent Outputs",
+      click_expand: "View All",
+      chart_title: "Inventory — Stock / Movements",
+      location: "Location",
+      privacy_policy: "Privacy and Security Policy",
+      policy_text: "At Mediterranean Technologies, we value your privacy. All data is handled in accordance with GDPR and our security measures guarantee the integrity of information.",
+      read_full_policy: "Read full policy",
+      th_product: "Product",
+      th_category: "Category",
+      th_quantity: "Quantity",
+      th_last_update: "Last Update",
+      th_date: "Date",
+      th_type: "Type",
+      modal_stock_title: "Full Breakdown - Current Stock",
+      modal_entradas_title: "Full Breakdown - Recent Inputs",
+      modal_salidas_title: "Full Breakdown - Recent Outputs",
+      chart_stock: "Stock",
+      chart_inputs: "Inputs",
+      chart_outputs: "Outputs"
+    }
+  };
+
+  let currentLang = 'es';
+  let globalProductos = [];
+  let globalEntradas = [];
+  let globalSalidas = [];
+  let globalStockMap = new Map();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    setInterval(updateClock, 1000);
+    cargarDatosNorte();
+  });
+
+  // Reloj activo
+  function updateClock() {
+    const now = new Date();
+    const timeElem = document.getElementById('current-time');
+    if (timeElem) {
+      timeElem.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+
+  // Sidebar toggle
+  function toggleSidebar() {
+    if (window.innerWidth <= 620) {
+      document.body.classList.toggle('mobile-open');
+    } else {
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+  }
+
+  // CAMBIO DE IDIOMA COMPLETO
+  function cambiarIdioma(lang) {
+    currentLang = lang;
+    document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+    document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+
+    // Traducir textos con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) {
+        el.innerText = translations[lang][key];
+      }
+    });
+
+    // Traducir Placeholders
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (translations[lang][key]) {
+        el.placeholder = translations[lang][key];
+      }
+    });
+
+    // Re-renderizar gráfico con etiquetas traducidas
+    if (globalStockMap.size > 0) {
+      renderGrafico(globalStockMap, globalEntradas, globalSalidas);
+    }
+  }
+
+  // Mapa Leaflet para Sucursal Norte (Bogotá Norte: 4.7631, -74.0435)
+  const map = L.map('map').setView([4.7631, -74.0435], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([4.7631, -74.0435]).addTo(map).bindPopup('<b>Sucursal Norte</b>').openPopup();
+
+  // Carga de Datos desde Backend PHP (productos.php con filtro por sucursal Norte)
+  async function cargarDatosNorte() {
+    try {
+      let data = [];
+      try {
+        const resp = await fetch('productos.php?accion=listar_por_sucursal&sucursal=Norte');
+        if (resp.ok) {
+          data = await resp.json();
+        } else {
+          throw new Error('Error al obtener datos del servidor');
+        }
+      } catch (err) {
+        console.warn("Conexión con PHP fallida, cargando datos de prueba:", err);
+        data = [
+          { nombre: "Aceite de Oliva Extra Virgen 1L", categorias: "Alimentos", stock: 180 },
+          { nombre: "Pasta Penne Rigate 500g", categorias: "Alimentos", stock: 300 },
+          { nombre: "Salsa de Tomate Bolognesa", categorias: "Conservas", stock: 110 },
+          { nombre: "Queso Parmesano 250g", categorias: "Lácteos", stock: 95 }
+        ];
+      }
+
+      globalProductos = Array.isArray(data) ? data : [];
+      globalStockMap.clear();
+      globalEntradas = [];
+      globalSalidas = [];
+
+      const hoy = new Date().toISOString().split('T')[0];
+
+      globalProductos.forEach(p => {
+        const nombre = p.nombre;
+        const cant = parseInt(p.stock) || 0;
+        const categoria = p.categorias || 'General';
+
+        globalStockMap.set(nombre, { stock: cant, categoria: categoria });
+
+        // Entradas y Salidas simuladas basándose en el inventario registrado
+        globalEntradas.push({ producto: nombre, cantidad: cant, fecha: hoy });
+        globalSalidas.push({ producto: nombre, cantidad: Math.floor(cant * 0.2), fecha: hoy });
+      });
+
+      renderTabla(globalEntradas, globalSalidas, globalStockMap);
+      renderGrafico(globalStockMap, globalEntradas, globalSalidas);
+    } catch (e) {
+      console.error("Error general en cargarDatosNorte:", e);
+    }
+  }
+
+  function renderTabla(entradas, salidas, stockMap) {
+    const stockBody = document.querySelector("#stockTable tbody");
+    const entBody = document.querySelector("#entradasTable tbody");
+    const salBody = document.querySelector("#salidasTable tbody");
+    stockBody.innerHTML = entBody.innerHTML = salBody.innerHTML = "";
+
+    // Muestra resumida en la vista principal (máximo 4 elementos)
+    Array.from(stockMap.entries()).slice(0, 4).forEach(([prod, info]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td>${info.stock}</td><td>${new Date().toLocaleDateString()}</td>`;
+      stockBody.appendChild(tr);
+    });
+
+    entradas.slice(0, 4).forEach(e => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${e.producto}</td><td>${e.cantidad}</td><td>${e.fecha}</td>`;
+      entBody.appendChild(tr);
+    });
+
+    salidas.slice(0, 4).forEach(s => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${s.producto}</td><td>${s.cantidad}</td><td>${s.fecha}</td>`;
+      salBody.appendChild(tr);
+    });
+  }
+
+  // ABRIR CARDS DESPLEGABLES (MODAL DETALLADO)
+  function abrirModalDetalles(tipo) {
+    const modal = document.getElementById("detailsModal");
+    const title = document.getElementById("modalTitle");
+    const head = document.getElementById("modalTableHead");
+    const body = document.getElementById("modalTableBody");
+    body.innerHTML = "";
+
+    const t = translations[currentLang];
+
+    if (tipo === 'stock') {
+      title.innerHTML = `<i class="fa-solid fa-boxes-stacked"></i> ${t.modal_stock_title}`;
+      head.innerHTML = `<tr><th>${t.th_product}</th><th>${t.th_category}</th><th>${t.th_quantity}</th><th>${t.th_last_update}</th></tr>`;
+      
+      globalStockMap.forEach((info, prod) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td><strong>${info.stock}</strong></td><td>${new Date().toLocaleDateString()}</td>`;
+        body.appendChild(tr);
+      });
+    } else if (tipo === 'entradas') {
+      title.innerHTML = `<i class="fa-solid fa-circle-arrow-up"></i> ${t.modal_entradas_title}`;
+      head.innerHTML = `<tr><th>${t.th_product}</th><th>${t.th_quantity}</th><th>${t.th_date}</th></tr>`;
+      
+      globalEntradas.forEach(e => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${e.producto}</td><td><span style="color:var(--green); font-weight:bold;">+${e.cantidad}</span></td><td>${e.fecha}</td>`;
+        body.appendChild(tr);
+      });
+    } else if (tipo === 'salidas') {
+      title.innerHTML = `<i class="fa-solid fa-circle-arrow-down"></i> ${t.modal_salidas_title}`;
+      head.innerHTML = `<tr><th>${t.th_product}</th><th>${t.th_quantity}</th><th>${t.th_date}</th></tr>`;
+      
+      globalSalidas.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${s.producto}</td><td><span style="color:var(--danger); font-weight:bold;">-${s.cantidad}</span></td><td>${s.fecha}</td>`;
+        body.appendChild(tr);
+      });
+    }
+
+    modal.style.display = "flex";
+  }
+
+  function cerrarModal(id) {
+    document.getElementById(id).style.display = "none";
+  }
+
+  // Gráfico Interactivo
+  let chart;
+  function renderGrafico(stockMap, entradas, salidas) {
+    const ctx = document.getElementById("inventoryChart").getContext("2d");
+    if (chart) chart.destroy();
+
+    const labels = Array.from(stockMap.keys());
+    const stockData = Array.from(stockMap.values()).map(item => item.stock);
+    const entradaData = entradas.map(e => e.cantidad);
+    const salidaData = salidas.map(s => -Math.abs(s.cantidad));
+
+    const t = translations[currentLang];
+
+    chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { label: t.chart_stock, data: stockData, backgroundColor: "#0284c7", borderRadius: 6 },
+          { label: t.chart_inputs, data: entradaData, backgroundColor: "#10b981", borderRadius: 6 },
+          { label: t.chart_outputs, data: salidaData, backgroundColor: "#ef4444", borderRadius: 6 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "top", labels: { color: "#334155" } } },
+        scales: {
+          x: { ticks: { color: "#334155" }, grid: { color: "rgba(0,0,0,0.05)" } },
+          y: { ticks: { color: "#334155" }, grid: { color: "rgba(0,0,0,0.05)" } }
+        }
+      }
+    });
+  }
+
+  // Filtro de Búsqueda
+  document.getElementById("searchInput").addEventListener("input", e => {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll("#stockTable tbody tr, #entradasTable tbody tr, #salidasTable tbody tr").forEach(tr => {
+      tr.style.display = tr.innerText.toLowerCase().includes(term) ? "" : "none";
+    });
+  });
+
+  // Exportar Excel y PDF
+  document.getElementById("btnExportExcel").addEventListener("click", () => {
+    const wb = XLSX.utils.table_to_book(document.getElementById('stockTable'));
+    XLSX.writeFile(wb, "Stock_Norte.xlsx");
+  });
+
+  document.getElementById('btnExportPDF').addEventListener('click', async () => {
+    const { jsPDF } = window.jspdf;
+    doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Mediterranean - Sucursal Norte", 14, 20);
+    doc.setFontSize(12);
+    doc.text("Reporte de Inventario", 14, 28);
+    doc.autoTable({ html: "#stockTable", startY: 35, headStyles: { fillColor: [2, 132, 199] } });
+    doc.save("Reporte_Norte.pdf");
+  });
+
+  // Abrir modal política
+  document.getElementById("openPolicy").onclick = (e) => {
+    e.preventDefault();
+    document.getElementById("policyModal").style.display = "flex";
+  };
+
+  window.onclick = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      e.target.style.display = "none";
+    }
+  };
+
+  // Partículas
+  tsParticles.load("tsparticles", {
+    background: { color: { value: "#70a2ec" } },
+    particles: {
+      number: { value: 60, density: { enable: true, value_area: 800 } },
+      color: { value: "#ffffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.6 },
+      size: { value: 3, random: true },
+      line_linked: { enable: true, distance: 140, color: "#ffffff", opacity: 0.4, width: 1 },
+      move: { enable: true, speed: 1.8 }
+    },
+    interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+  });
+</script>
+</body>
+</html>

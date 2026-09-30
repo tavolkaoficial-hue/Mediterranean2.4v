@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusWMS - Mapa de Pasillos y Ocupación</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  
+  <script type="text/javascript">
+    (function(){
+      emailjs.init({ publicKey: "1G-_KS3FktYn6LH0q" });
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+      --accent-cyan: #0284c7;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      --clay-shadow-outer: 12px 12px 24px #cbd5e1, -8px -8px 20px #ffffff;
+      --clay-shadow-card: 14px 14px 28px #cbd5e1, -10px -10px 22px #ffffff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #cbd5e1, -4px -4px 10px #ffffff;
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --sidebar-width: 280px;
+    }
+
+    body.sidebar-collapsed { --sidebar-width: 90px; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0; min-height: 100vh; color: var(--text-primary); font-family: "Plus Jakarta Sans", sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #70a2ec 100%); background-attachment: fixed; overflow-x: hidden;
+    }
+
+    #tsparticles { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; background-color: #70a2ec; }
+    .app-container { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; top: 16px; left: 16px; bottom: 16px; width: var(--sidebar-width); z-index: 5000; padding: 24px 16px;
+      display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px; box-shadow: var(--clay-shadow-outer); transition: var(--transition);
+    }
+
+    .brand { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 20px; margin-bottom: 15px; }
+    .brand-logo-img { width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15)); transition: var(--transition); }
+    .brand-logo-img:hover { transform: scale(1.05) translateY(-3px); }
+
+    .menu-label { padding: 16px 12px 8px; color: var(--text-muted); font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+
+    .side-link {
+      width: 100%; height: 52px; display: flex; align-items: center; gap: 14px; padding: 0 18px; border: none; border-radius: 20px;
+      color: var(--text-secondary); background: transparent; font: 600 14px "Plus Jakarta Sans", sans-serif; text-decoration: none;
+      cursor: pointer; transition: var(--transition); margin-bottom: 8px; white-space: nowrap;
+    }
+
+    .side-link:hover { background: #e2e8f0; color: var(--accent-cyan); box-shadow: var(--clay-btn-shadow), var(--clay-inset-light); transform: translateY(-2px); }
+    .side-link.active { color: #fff; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25), var(--clay-inset-glow); }
+    .side-icon { font-size: 20px; min-width: 24px; display: inline-block; text-align: center; }
+    .side-link.active .side-icon { color: #fff; }
+
+    .sidebar-footer { margin-top: auto; padding-top: 15px; }
+    .system-status-box { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 12px 16px; border-radius: 18px; color: var(--green); background: var(--clay-bg); box-shadow: var(--clay-inset-light); font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+    .online-dot {
+      display: inline-block; width: 10px; height: 10px; min-width: 10px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 12px var(--green); animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+
+    .languages { display: flex; margin-bottom: 12px; padding: 6px; border-radius: 18px; background: var(--clay-bg); box-shadow: var(--clay-inset-light); }
+    .languages button { flex: 1; padding: 8px; border: 0; border-radius: 12px; color: var(--text-muted); background: transparent; font: 800 12px "Plus Jakarta Sans", sans-serif; cursor: pointer; transition: var(--transition); }
+    .languages button.active-language { color: var(--text-primary); background: var(--clay-surface); box-shadow: var(--clay-btn-shadow); }
+
+    .logout-btn { width: 100%; height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-radius: 18px; color: var(--danger); background: var(--clay-surface); box-shadow: var(--clay-btn-shadow); font: 700 13px "Plus Jakarta Sans", sans-serif; text-decoration: none; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .logout-btn:hover { background: var(--danger); color: #fff; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3); transform: translateY(-2px); }
+
+    /* TOPBAR */
+    .top-bar {
+      position: fixed; top: 16px; left: calc(var(--sidebar-width) + 32px); right: 16px; height: 70px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 24px; background: linear-gradient(145deg, #ffffff, #f1f5f9); border-radius: 28px;
+      box-shadow: var(--clay-shadow-outer); z-index: 4000; transition: var(--transition);
+    }
+
+    .top-left-group { display: flex; align-items: center; gap: 16px; }
+    .toggle-sidebar-btn { background: var(--clay-surface); border: none; color: var(--accent-cyan); width: 44px; height: 44px; border-radius: 16px; cursor: pointer; display: grid; place-items: center; font-size: 18px; box-shadow: var(--clay-btn-shadow); transition: var(--transition); }
+    .toggle-sidebar-btn:hover { transform: translateY(-2px) scale(1.05); color: #fff; background: var(--accent-cyan); }
+
+    .welcome { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+    .welcome strong { color: var(--text-primary); }
+
+    .top-actions { display: flex; align-items: center; gap: 16px; }
+    .clock-container { display: flex; align-items: center; gap: 10px; background: var(--clay-bg); padding: 8px 18px; border-radius: 16px; box-shadow: var(--clay-inset-light); }
+    .clock-icon { color: var(--accent-cyan); font-size: 16px; }
+    .today { color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+
+    .profile-badge {
+      width: 44px; height: 44px; display: grid; place-items: center; border-radius: 16px; color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo)); font-size: 14px; font-weight: 800; cursor: pointer;
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: calc(var(--sidebar-width) + 32px); padding-top: 102px; padding-right: 16px; width: 100%; min-height: 100vh; transition: var(--transition);
+    }
+
+    .panel {
+      border-radius: 28px; background: linear-gradient(145deg, #e0e8f5, #cbd8ed); border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--clay-shadow-card); padding: 28px; margin-bottom: 80px;
+    }
+
+    .panel-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+    .panel h3 { font-family: "Space Grotesk", sans-serif; font-size: 20px; margin: 0; color: var(--text-primary); }
+
+    .clay-btn {
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed); color: var(--accent-cyan); padding: 12px 22px; border-radius: 18px; border: none;
+      cursor: pointer; font: 700 13px "Plus Jakarta Sans", sans-serif; text-decoration: none; box-shadow: var(--clay-btn-shadow); transition: var(--transition);
+      display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+    }
+
+    .clay-btn:hover { background: var(--accent-cyan); color: #fff; transform: translateY(-3px); }
+    .clay-btn-primary { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #fff; box-shadow: 0 8px 16px rgba(2, 132, 199, 0.25), var(--clay-inset-glow); }
+    .clay-btn-dark { background: linear-gradient(135deg, #334155, #0f172a); color: #fff; box-shadow: var(--clay-btn-shadow); }
+
+    .clay-select {
+      background: var(--clay-bg); border: none; padding: 10px 16px; border-radius: 16px; box-shadow: var(--clay-inset-light);
+      font: 600 13px "Plus Jakarta Sans", sans-serif; color: var(--text-primary); outline: none; transition: var(--transition);
+    }
+
+    .aisle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; }
+    .aisle-card { background: rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 18px; box-shadow: var(--clay-btn-shadow); }
+    .aisle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .shelf-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+    .shelf-slot {
+      background: var(--clay-bg); padding: 16px 6px; text-align: center; border-radius: 14px; font-size: 12px; font-weight: 800;
+      box-shadow: var(--clay-inset-light); color: var(--text-primary); cursor: pointer; transition: var(--transition);
+    }
+
+    .shelf-slot:hover { transform: scale(1.05); box-shadow: var(--clay-btn-shadow); }
+    .shelf-slot.occupied { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #fff; box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3); }
+
+    .status-badge { padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; display: inline-block; }
+    .status-ok { background: rgba(16, 185, 129, 0.15); color: var(--green); }
+    .status-warn { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .status-low { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+    .copyright-fixed {
+      position: fixed; left: calc(var(--sidebar-width) + 32px); right: 16px; bottom: 12px; display: flex; align-items: center;
+      justify-content: center; padding: 12px; background: linear-gradient(145deg, #ffffff, #f1f5f9); color: var(--text-muted);
+      font-size: 12px; z-index: 3000; border-radius: 20px; box-shadow: var(--clay-shadow-outer); transition: var(--transition);
+    }
+
+    /* MODAL DETALLE DE UBICACIÓN */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+      z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px;
+      transition: var(--transition);
+    }
+    .modal-overlay.active { display: flex; }
+
+    .clay-modal {
+      width: 100%; max-width: 440px; background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px; box-shadow: var(--clay-shadow-outer); padding: 28px; text-align: center;
+      transform: scale(0.9); transition: var(--transition); position: relative;
+    }
+
+    .modal-overlay.active .clay-modal { transform: scale(1); }
+
+    .slot-detail-icon {
+      width: 64px; height: 64px; border-radius: 20px; background: var(--clay-surface);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+      font-size: 28px; color: var(--accent-cyan); box-shadow: var(--clay-btn-shadow);
+    }
+
+    @media (max-width: 1100px) { .aisle-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1000px) {
+      :root { --sidebar-width: 90px; }
+      .menu-label, .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; }
+      .side-link, .logout-btn { justify-content: center; padding: 0; }
+    }
+
+    @media (max-width: 620px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; }
+      body.mobile-open .sidebar { transform: translateX(0); }
+      .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tsparticles"></div>
+
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+      </div>
+      
+      <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link">
+        <span class="side-icon">⌂</span><span data-es="Menu Principal" data-en="Main Menu">Menu Principal</span>
+      </a>
+      <a href="stock.html" class="side-link active">
+        <span class="side-icon">📦</span><span data-es="Inventario & Stock" data-en="Stock & Inventory">Inventario & Stock</span>
+      </a>
+      <a href="sucursales.html" class="side-link">
+        <span class="side-icon">🏢</span><span data-es="Sucursales / Almacenes" data-en="Branches / Warehouses">Sucursales / Almacenes</span>
+      </a>
+      <a href="movimientos.html" class="side-link">
+        <span class="side-icon">🔄</span><span data-es="Kardex / Movimientos" data-en="Movement Log">Kardex / Movimientos</span>
+      </a>
+
+      <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+      <a href="configuracion.html" class="side-link">
+        <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración</span>
+      </a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box">
+          <span class="online-dot"></span>
+          <span data-es="ERP En Línea" data-en="ERP Online">En Línea</span>
+        </div>
+
+        <div class="languages">
+          <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+          <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+
+        <a href="login.html" class="logout-btn">
+          <span class="side-icon">⍈</span>
+          <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <header class="top-bar">
+      <div class="top-left-group">
+        <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+        <div class="welcome">Bienvenido, <strong id="username-display">Cargando...</strong></div>
+      </div>
+
+      <div class="top-actions">
+        <div class="clock-container">
+          <span class="clock-icon">🕒</span>
+          <span class="today" id="current-time">--:--</span>
+        </div>
+        <div class="profile-badge" id="user-badge">--</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>🗺️ Mapa de Pasillos y Ocupación</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Monitoreo en tiempo real de espacios disponibles por rack.</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <select id="map-branch-select" class="clay-select" onchange="cargarMapaOcupacion()">
+              <option value="centro">Sucursal Centro</option>
+              <option value="kennedy">Sucursal Kennedy</option>
+              <option value="norte">Sucursal Norte</option>
+            </select>
+            <a href="stock.html" class="clay-btn"><i class="fas fa-arrow-left"></i> Volver al Inventario</a>
+          </div>
+        </div>
+
+        <div class="aisle-grid" id="aisle-container">
+          <!-- Pasillo 1 -->
+          <div class="aisle-card">
+            <div class="aisle-header">
+              <strong>Pasillo 01 (Secos)</strong>
+              <span class="status-badge status-ok">83% Ocupado</span>
+            </div>
+            <div class="shelf-matrix">
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('A-01', true, 'Harina de Trigo 25kg', 120)">A-01</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('A-02', true, 'Aceite de Oliva 1L', 85)">A-02</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('A-03', true, 'Arroz Integral 5kg', 200)">A-03</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('B-01', true, 'Azúcar Morena 1kg', 150)">B-01</div>
+              <div class="shelf-slot" onclick="verDetalleUbicacion('B-02', false, null, 0)">B-02</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('B-03', true, 'Fideos Espagueti 500g', 310)">B-03</div>
+            </div>
+          </div>
+
+          <!-- Pasillo 2 -->
+          <div class="aisle-card">
+            <div class="aisle-header">
+              <strong>Pasillo 02 (Conservas)</strong>
+              <span class="status-badge status-warn">50% Ocupado</span>
+            </div>
+            <div class="shelf-matrix">
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('C-01', true, 'Atún en Aceite 170g', 450)">C-01</div>
+              <div class="shelf-slot" onclick="verDetalleUbicacion('C-02', false, null, 0)">C-02</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('C-05', true, 'Salsa de Tomate 400g', 180)">C-05</div>
+              <div class="shelf-slot" onclick="verDetalleUbicacion('D-01', false, null, 0)">D-01</div>
+              <div class="shelf-slot" onclick="verDetalleUbicacion('D-02', false, null, 0)">D-02</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('D-03', true, 'Maíz Dulce 300g', 220)">D-03</div>
+            </div>
+          </div>
+
+          <!-- Pasillo 3 -->
+          <div class="aisle-card">
+            <div class="aisle-header">
+              <strong>Cámara Fría</strong>
+              <span class="status-badge status-low">83% Ocupado</span>
+            </div>
+            <div class="shelf-matrix">
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('F-01', true, 'Queso Mozzarella Block', 60)">F-01</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('F-02', true, 'Mantequilla 250g', 140)">F-02</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('F-03', true, 'Yogurt Natural 1L', 95)">F-03</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('F-04', true, 'Crema de Leche', 110)">F-04</div>
+              <div class="shelf-slot occupied" onclick="verDetalleUbicacion('F-05', true, 'Jamón Serrano 100g', 80)">F-05</div>
+              <div class="shelf-slot" onclick="verDetalleUbicacion('F-06', false, null, 0)">F-06</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+   <!-- FOOTER FIJO CLAYMORPHIC -->
+    <footer class="copyright-fixed">
+      <a href="politica-completa.html">© <span id="currentYear"></span> Mediterranean Technologies</a>
+    </footer>
+  </div>
+
+  <!-- MODAL INTERACTIVO DE DETALLE DE UBICACIÓN -->
+  <div id="slotModal" class="modal-overlay">
+    <div class="clay-modal">
+      <div class="slot-detail-icon" id="modal-icon">
+        <i class="fas fa-boxes-stacked"></i>
+      </div>
+      <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; color: var(--text-primary);" id="modal-title">Ubicación A-01</h3>
+      
+      <div style="margin: 18px 0; text-align: left; background: var(--clay-bg); padding: 16px; border-radius: 18px; box-shadow: var(--clay-inset-light);">
+        <p style="margin: 0 0 8px 0; font-size: 13px;"><strong>Estado:</strong> <span id="modal-status">Ocupado</span></p>
+        <p style="margin: 0 0 8px 0; font-size: 13px;"><strong>Producto:</strong> <span id="modal-product">--</span></p>
+        <p style="margin: 0; font-size: 13px;"><strong>Cantidad Stock:</strong> <span id="modal-qty">0</span> unidades</p>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="clay-btn clay-btn-dark" style="flex: 1;" onclick="cerrarModalUbicacion()">Cerrar</button>
+        <button id="btn-ubicar-modal" class="clay-btn clay-btn-primary" style="flex: 1;" onclick="irAUbicarMercaderia()"><i class="fas fa-download"></i> Ubicar Aquí</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let ubicacionSeleccionada = '';
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 620) {
+        document.body.classList.toggle('mobile-open');
+      } else {
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('current-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function cambiarIdioma(lang) {
+      document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+      document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+      document.querySelectorAll('[data-es]').forEach(el => { el.innerText = el.getAttribute(`data-${lang}`); });
+    }
+
+    // ABRIR DETALLE DE UBICACIÓN AL HACER CLIC EN UN SLOT
+    function verDetalleUbicacion(codigoSlot, ocupado, producto, cantidad) {
+      ubicacionSeleccionada = codigoSlot;
+      document.getElementById('modal-title').innerText = `Ubicación: ${codigoSlot}`;
+      
+      const modalStatus = document.getElementById('modal-status');
+      const modalProduct = document.getElementById('modal-product');
+      const modalQty = document.getElementById('modal-qty');
+      const btnUbicar = document.getElementById('btn-ubicar-modal');
+      const iconBox = document.getElementById('modal-icon');
+
+      if (ocupado) {
+        modalStatus.innerHTML = `<span style="color: var(--accent-cyan); font-weight:800;">Ocupado</span>`;
+        modalProduct.innerText = producto || 'Producto en inventario';
+        modalQty.innerText = cantidad || '0';
+        iconBox.innerHTML = `<i class="fas fa-box" style="color: var(--accent-cyan);"></i>`;
+        btnUbicar.style.display = 'none'; // Ocultar si ya está ocupado
+      } else {
+        modalStatus.innerHTML = `<span style="color: var(--green); font-weight:800;">Disponible</span>`;
+        modalProduct.innerText = 'Ubicación libre';
+        modalQty.innerText = '0';
+        iconBox.innerHTML = `<i class="fas fa-box-open" style="color: var(--green);"></i>`;
+        btnUbicar.style.display = 'inline-flex'; // Mostrar botón de ubicar
+      }
+
+      document.getElementById('slotModal').classList.add('active');
+    }
+
+    function cerrarModalUbicacion() {
+      document.getElementById('slotModal').classList.remove('active');
+    }
+
+    function irAUbicarMercaderia() {
+      const sucursal = document.getElementById('map-branch-select').value;
+      window.location.href = `ubicar.html?sucursal=${encodeURIComponent(sucursal)}&ubicacion=${encodeURIComponent(ubicacionSeleccionada)}`;
+    }
+
+    function cargarMapaOcupacion() {
+      const sucursal = document.getElementById('map-branch-select').value;
+      console.log(`Cargando mapa para sucursal: ${sucursal}`);
+      // Aquí puedes conectar una llamada fetch real si dispones de API backend:
+      // fetch(`obtener_mapa.php?sucursal=${sucursal}`).then(...);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      if (window.tsParticles) {
+        tsParticles.load("tsparticles", {
+          particles: {
+            number: { value: 40, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.7 },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+            move: { enable: true, speed: 1.5, direction: "none", straight: false }
+          },
+          interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+        });
+      }
+
+      // Obtener usuario autenticado
+      fetch('get_user.php')
+        .then(res => res.json())
+        .then(data => {
+          const welcomeEl = document.getElementById('username-display');
+          if (welcomeEl && data.nombre) welcomeEl.textContent = data.nombre;
+          const profileBadgeEl = document.getElementById('user-badge');
+          if (profileBadgeEl && data.iniciales) { profileBadgeEl.textContent = data.iniciales; profileBadgeEl.title = data.nombre; }
+        })
+        .catch(err => console.error('Error al cargar datos del usuario:', err));
+    });
+  </script>
+</body>
+</html>

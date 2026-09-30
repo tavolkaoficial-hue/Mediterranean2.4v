@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusWMS - Lista de Picking y Despacho</title>
+  
+  <!-- FUENTES Y LIBRERÍAS EXTERNAS -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  
+  <script type="text/javascript">
+    (function(){
+      emailjs.init({
+        publicKey: "1G-_KS3FktYn6LH0q",
+      });
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+      --accent-cyan: #0284c7;
+      --accent-blue: #2563eb;
+      --accent-indigo: #4f46e5;
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      --clay-shadow-outer: 12px 12px 24px #cbd5e1, -8px -8px 20px #ffffff;
+      --clay-shadow-card: 14px 14px 28px #cbd5e1, -10px -10px 22px #ffffff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #cbd5e1, -4px -4px 10px #ffffff;
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --sidebar-width: 280px;
+    }
+
+    body.sidebar-collapsed {
+      --sidebar-width: 90px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #70a2ec 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    #tsparticles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      background-color: #70a2ec;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SIDEBAR CLAYMORPHIC */
+    .sidebar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      bottom: 16px;
+      width: var(--sidebar-width);
+      z-index: 5000;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 20px;
+      margin-bottom: 15px;
+    }
+
+    .brand-logo-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+      transition: var(--transition);
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.05) translateY(-3px);
+    }
+
+    .menu-label {
+      padding: 16px 12px 8px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .side-link {
+      width: 100%;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 20px;
+      color: var(--text-secondary);
+      background: transparent;
+      font: 600 14px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+
+    .side-link:hover {
+      background: #e2e8f0;
+      color: var(--accent-cyan);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-light);
+      transform: translateY(-2px);
+    }
+
+    .side-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25), var(--clay-inset-glow);
+    }
+
+    .side-icon {
+      font-size: 20px;
+      min-width: 24px;
+      display: inline-block;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .side-link.active .side-icon { color: #fff; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+
+    .system-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      color: var(--green);
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .languages {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 6px;
+      border-radius: 18px;
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .languages button {
+      flex: 1;
+      padding: 8px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--text-muted);
+      background: transparent;
+      font: 800 12px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .languages button.active-language {
+      color: var(--text-primary);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .logout-btn {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-radius: 18px;
+      color: var(--danger);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TOPBAR */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-outer);
+      z-index: 4000;
+      transition: var(--transition);
+    }
+
+    .top-left-group { display: flex; align-items: center; gap: 16px; }
+
+    .toggle-sidebar-btn {
+      background: var(--clay-surface);
+      border: none;
+      color: var(--accent-cyan);
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      color: #fff;
+      background: var(--accent-cyan);
+    }
+
+    .welcome { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+    .welcome strong { color: var(--text-primary); }
+
+    .top-actions { display: flex; align-items: center; gap: 16px; }
+
+    .clock-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--clay-bg);
+      padding: 8px 18px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .clock-icon { color: var(--accent-cyan); font-size: 16px; }
+    .today { color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+
+    .profile-badge {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: calc(var(--sidebar-width) + 32px);
+      padding-top: 102px;
+      padding-right: 16px;
+      width: 100%;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+
+    .panel {
+      border-radius: 28px;
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--clay-shadow-card);
+      padding: 28px;
+      margin-bottom: 80px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .panel h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .clay-btn {
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      color: var(--accent-cyan);
+      padding: 12px 22px;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .clay-btn:hover {
+      background: var(--accent-cyan);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .clay-btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(2, 132, 199, 0.25), var(--clay-inset-glow);
+    }
+
+    .clay-btn-dark {
+      background: linear-gradient(135deg, #334155, #0f172a);
+      color: #fff;
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .clay-input, .clay-select {
+      background: var(--clay-bg);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+      font: 600 13px "Plus Jakarta Sans", sans-serif;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .table-responsive { width: 100%; overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .data-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; padding: 0 16px 10px; text-align: left; }
+    .data-table td { padding: 14px 16px; background: rgba(255, 255, 255, 0.65); font-size: 13px; color: var(--text-primary); font-weight: 600; }
+    .data-table tr td:first-child { border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+    .data-table tr td:last-child { border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+
+    .location-tag { background: var(--clay-bg); padding: 6px 12px; border-radius: 12px; font-size: 12px; box-shadow: var(--clay-inset-light); }
+    .status-badge { padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; display: inline-block; }
+    .status-ok { background: rgba(16, 185, 129, 0.15); color: var(--green); }
+    .status-warn { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+
+    /* FOOTER */
+    .copyright-fixed {
+      position: fixed;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      color: var(--text-muted);
+      font-size: 12px;
+      z-index: 3000;
+      border-radius: 20px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(8px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), var(--clay-shadow-outer);
+      padding: 28px;
+    }
+
+    .pin-inputs-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+    .pin-digit-input {
+      width: 48px; height: 56px; text-align: center; font-size: 22px; font-weight: 700;
+      border: none; border-radius: 14px; background: var(--clay-bg); box-shadow: var(--clay-inset-light);
+      color: var(--text-primary); outline: none;
+    }
+
+    @media (max-width: 1000px) {
+      :root { --sidebar-width: 90px; }
+      .menu-label, .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; }
+      .side-link, .logout-btn { justify-content: center; padding: 0; }
+    }
+
+    @media (max-width: 620px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; }
+      body.mobile-open .sidebar { transform: translateX(0); }
+      .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tsparticles"></div>
+
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+      </div>
+      
+      <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link">
+        <span class="side-icon">⌂</span><span data-es="Menu Principal" data-en="Main Menu">Menu Principal</span>
+      </a>
+      <a href="stock.html" class="side-link active">
+        <span class="side-icon">📦</span><span data-es="Inventario & Stock" data-en="Stock & Inventory">Inventario & Stock</span>
+      </a>
+      <a href="sucursales.html" class="side-link">
+        <span class="side-icon">🏢</span><span data-es="Sucursales / Almacenes" data-en="Branches / Warehouses">Sucursales / Almacenes</span>
+      </a>
+      <a href="movimientos.html" class="side-link">
+        <span class="side-icon">🔄</span><span data-es="Kardex / Movimientos" data-en="Movement Log">Kardex / Movimientos</span>
+      </a>
+
+      <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+      <a href="configuracion.html" class="side-link">
+        <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración</span>
+      </a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box">
+          <span class="online-dot"></span>
+          <span data-es="ERP En Línea" data-en="ERP Online">En Línea</span>
+        </div>
+
+        <div class="languages">
+          <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
+          <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+
+        <a href="login.html" class="logout-btn">
+          <span class="side-icon">⍈</span>
+          <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <header class="top-bar">
+      <div class="top-left-group">
+        <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+        <div class="welcome">Bienvenido, <strong>Carlos Mendoza</strong> (ID: EMP-8092)</div>
+      </div>
+
+      <div class="top-actions">
+        <div class="clock-container">
+          <span class="clock-icon">🕒</span>
+          <span class="today" id="current-time">12:00 PM</span>
+        </div>
+        <div class="profile-badge">CM</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="panel">
+        <div class="panel-header">
+          <h3>📦 Lista de Picking y Despacho Asignada</h3>
+          <div style="display: flex; gap: 10px;">
+            <button class="clay-btn clay-btn-primary" onclick="openCreateOrderModal()">➕ Agregar Orden</button>
+            <a href="stock.html" class="clay-btn">← Volver al Inventario</a>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Orden ID</th>
+                <th>Cliente</th>
+                <th>Producto a Retirar</th>
+                <th>Sucursal / Ubicación</th>
+                <th>Cantidad</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="picking-table-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+     <!-- FOOTER FIJO CLAYMORPHIC -->
+    <footer class="copyright-fixed">
+      <a href="politica-completa.html">© <span id="currentYear"></span> Mediterranean Technologies</a>
+    </footer>
+
+  </div>
+
+  <!-- MODAL DE CLAVE -->
+  <div class="modal-backdrop" id="modalClave">
+    <div class="modal-card" style="max-width: 420px; text-align: center;">
+      <div style="font-size: 38px; margin-bottom: 8px;">🔒</div>
+      <h3 style="margin: 0 0 6px;">Confirmación de Seguridad</h3>
+      <p id="modalSubtitle" style="font-size: 12px; color: var(--text-secondary); margin: 0;">Ingresa tu clave de 5 dígitos para continuar</p>
+      
+      <div class="pin-inputs-container">
+        <input type="password" maxlength="1" class="pin-digit-input" pattern="[0-9]" inputmode="numeric" />
+        <input type="password" maxlength="1" class="pin-digit-input" pattern="[0-9]" inputmode="numeric" />
+        <input type="password" maxlength="1" class="pin-digit-input" pattern="[0-9]" inputmode="numeric" />
+        <input type="password" maxlength="1" class="pin-digit-input" pattern="[0-9]" inputmode="numeric" />
+        <input type="password" maxlength="1" class="pin-digit-input" pattern="[0-9]" inputmode="numeric" />
+      </div>
+
+      <div id="pinError" style="color: var(--danger); font-size: 12px; font-weight: 700; margin-bottom: 16px; display: none;">
+        ❌ Clave incorrecta. Inténtalo de nuevo.
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button type="button" class="clay-btn clay-btn-dark" style="flex:1;" onclick="cerrarModalClave()">Cancelar</button>
+        <button type="button" class="clay-btn clay-btn-primary" style="flex:1;" id="btnConfirmarPin">Validar y Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AGREGAR CLIENTE -->
+  <div class="modal-backdrop" id="create-client-modal" style="z-index: 9500;">
+    <div class="modal-card" style="max-width: 400px;">
+      <h3 style="margin: 0 0 10px;">👤 Agregar Nuevo Cliente</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">NOMBRE DEL CLIENTE</label>
+          <input type="text" id="new-client-name" class="clay-input" style="width:100%; margin-top:4px;" placeholder="Ej: Comercial La Estrella S.A.S" required>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 10px;">
+          <button type="button" class="clay-btn clay-btn-dark" style="flex:1;" onclick="closeCreateClientModal()">Cancelar</button>
+          <button type="button" class="clay-btn clay-btn-primary" style="flex:1;" onclick="saveNewClient()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AGREGAR ORDEN -->
+  <div class="modal-backdrop" id="create-order-modal">
+    <div class="modal-card">
+      <h3 style="margin: 0 0 10px;">➕ Crear Nueva Orden de Picking</h3>
+      <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Seleccione el cliente, sucursal origen y producto de la base de datos.</p>
+      
+      <form id="form-new-order" onsubmit="handleCreateOrder(event)" style="display: flex; flex-direction: column; gap: 12px;">
+        
+        <!-- SELECCIÓN Y CREACIÓN DE CLIENTE -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">CLIENTE</label>
+            <button type="button" onclick="openCreateClientModal()" style="border: none; background: transparent; color: var(--accent-cyan); font-size: 11px; font-weight: 800; cursor: pointer;">+ Nuevo Cliente</button>
+          </div>
+          <select id="order-client-select" class="clay-select" style="width:100%; margin-top:4px;" required>
+            <option value="">-- Seleccionar Cliente --</option>
+          </select>
+        </div>
+
+        <!-- SUCURSAL ORIGEN -->
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">SUCURSAL ORIGEN</label>
+          <select id="order-branch-select" class="clay-select" style="width:100%; margin-top:4px;" onchange="updateProductBranchDetails(event)" required>
+            <option value="">-- Seleccionar Sucursal --</option>
+          </select>
+        </div>
+
+        <!-- PRODUCTO A RETIRAR -->
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">PRODUCTO A RETIRAR</label>
+          <select id="order-product-select" class="clay-select" style="width:100%; margin-top:4px;" onchange="updateProductBranchDetails(event)" required>
+            <option value="">-- Seleccionar Producto --</option>
+          </select>
+        </div>
+
+        <!-- DETALLES DE UBICACIÓN Y STOCK -->
+        <div style="display: flex; gap: 10px;">
+          <div style="flex:1;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">UBICACIÓN DETECTADA</label>
+            <input type="text" id="order-location" class="clay-input" style="width:100%; margin-top:4px;" placeholder="Autodetectado" readonly>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">STOCK DISPONIBLE</label>
+            <input type="text" id="order-stock-avail" class="clay-input" style="width:100%; margin-top:4px;" placeholder="0" readonly>
+          </div>
+        </div>
+
+        <!-- CANTIDAD -->
+        <div>
+          <label style="font-size: 11px; font-weight: 800; color: var(--text-muted);">CANTIDAD A DESPACHAR</label>
+          <input type="number" id="order-qty" class="clay-input" min="1" style="width:100%; margin-top:4px;" placeholder="Ingrese cantidad (uds/cajas)" required>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 15px;">
+          <button type="button" class="clay-btn clay-btn-dark" style="flex:1;" onclick="closeCreateOrderModal()">Cancelar</button>
+          <button type="submit" class="clay-btn clay-btn-primary" style="flex:1;">Procesar Despacho</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let pickingOrders = [];
+    let initialData = { productos: [], clientes: [], sucursales: [] };
+
+    const AUTH_PIN = "12345";
+    let accionPendienteAcceso = null;
+
+    // Configuración de PIN
+    const inputsPin = document.querySelectorAll('.pin-digit-input');
+    inputsPin.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value && index < inputsPin.length - 1) inputsPin[index + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) inputsPin[index - 1].focus();
+      });
+    });
+
+    function solicitarClaveAcceso(subtitulo, callbackExito) {
+      document.getElementById('modalSubtitle').innerText = subtitulo;
+      document.getElementById('pinError').style.display = 'none';
+      inputsPin.forEach(i => i.value = '');
+      accionPendienteAcceso = callbackExito;
+      document.getElementById('modalClave').style.display = 'flex';
+      setTimeout(() => inputsPin[0].focus(), 100);
+    }
+
+    function cerrarModalClave() {
+      document.getElementById('modalClave').style.display = 'none';
+      accionPendienteAcceso = null;
+    }
+
+    document.getElementById('btnConfirmarPin').addEventListener('click', () => {
+      const pinIngresado = Array.from(inputsPin).map(i => i.value).join('');
+      if (pinIngresado === AUTH_PIN) {
+        document.getElementById('modalClave').style.display = 'none';
+        if (accionPendienteAcceso) accionPendienteAcceso();
+      } else {
+        document.getElementById('pinError').style.display = 'block';
+        inputsPin.forEach(i => i.value = '');
+        inputsPin[0].focus();
+      }
+    });
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 620) {
+        document.body.classList.toggle('mobile-open');
+      } else {
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+    }
+
+    // CARGAR DATOS DESDE LA BASE DE DATOS
+    async function loadDatabaseData() {
+      try {
+        const response = await fetch('api_picking.php?action=get_initial_data');
+        const rawText = await response.text();
+        let data;
+        
+        try {
+          data = JSON.parse(rawText);
+        } catch (e) {
+          console.error("Respuesta invalida del servidor:", rawText);
+          return;
+        }
+
+        if (data.success) {
+          initialData = data;
+          populateSelects();
+
+          // Formatear pedidos leídos de la BD
+          if (data.pedidos) {
+            pickingOrders = data.pedidos.map(p => ({
+              id: `#ORD-${String(p.id).padStart(4, '0')}`,
+              dbId: p.id,
+              client: p.cliente_nombre || 'Cliente General',
+              branchId: p.sucursal_id,
+              branchName: p.sucursal_nombre || 'Almacén Principal',
+              productId: p.producto_id,
+              productName: p.producto_nombre || 'Producto N/A',
+              location: p.ubicacion || 'General',
+              qty: p.cantidad || 0,
+              status: p.estado === 'Entregado' ? 'Completado' : 'Pendiente',
+              statusClass: p.estado === 'Entregado' ? 'status-warn' : 'status-ok'
+            }));
+            renderPickingOrders();
+          }
+        } else {
+          console.error("Error al cargar datos:", data.error);
+        }
+      } catch (err) {
+        console.error("No se pudo conectar a api_picking.php:", err);
+      }
+    }
+
+    function populateSelects() {
+      // Cargar Clientes
+      const clientSelect = document.getElementById('order-client-select');
+      clientSelect.innerHTML = '<option value="">-- Seleccionar Cliente --</option>';
+      if (initialData.clientes && initialData.clientes.length > 0) {
+        initialData.clientes.forEach(c => {
+          clientSelect.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
+        });
+      }
+
+      // Cargar Sucursales
+      const branchSelect = document.getElementById('order-branch-select');
+      branchSelect.innerHTML = '<option value="">-- Seleccionar Sucursal --</option>';
+      if (initialData.sucursales && initialData.sucursales.length > 0) {
+        initialData.sucursales.forEach(s => {
+          branchSelect.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
+        });
+      }
+    }
+
+    // CONSULTAR UBICACIÓN Y STOCK POR SUCURSAL SELECCIONADA
+    async function updateProductBranchDetails(evt) {
+      const branchSelect = document.getElementById('order-branch-select');
+      const productSelect = document.getElementById('order-product-select');
+      const branchId = branchSelect.value;
+
+      // Si el evento fue disparado al cambiar de sucursal, actualizar lista de productos
+      if (evt && evt.target && evt.target.id === 'order-branch-select') {
+        productSelect.innerHTML = '<option value="">-- Seleccionar Producto --</option>';
+        if (branchId && initialData.productos) {
+          const productosFiltrados = initialData.productos.filter(p => String(p.sucursal) === String(branchId) || !p.sucursal);
+          productosFiltrados.forEach(p => {
+            productSelect.innerHTML += `<option value="${p.id}">${p.nombre} (${p.sku || 'SKU N/A'})</option>`;
+          });
+        }
+        document.getElementById('order-location').value = '';
+        document.getElementById('order-stock-avail').value = '0';
+        return;
+      }
+
+      const productId = parseInt(productSelect.value) || 0;
+      if (productId <= 0 || !branchId) {
+        document.getElementById('order-location').value = '';
+        document.getElementById('order-stock-avail').value = '0';
+        return;
+      }
+
+      try {
+        const res = await fetch(`api_picking.php?action=get_product_branch_info&producto_id=${productId}&sucursal_id=${branchId}`);
+        const result = await res.json();
+
+        if (result.success && result.data) {
+          document.getElementById('order-location').value = result.data.ubicacion || 'General';
+          document.getElementById('order-stock-avail').value = result.data.cantidad !== undefined ? result.data.cantidad : 0;
+        }
+      } catch (e) {
+        console.error("Error al obtener stock por sucursal:", e);
+      }
+    }
+
+    // MODAL DE CREAR NUEVO CLIENTE
+    function openCreateClientModal() { document.getElementById('create-client-modal').style.display = 'flex'; }
+    function closeCreateClientModal() { document.getElementById('create-client-modal').style.display = 'none'; document.getElementById('new-client-name').value = ''; }
+
+    async function saveNewClient() {
+      const clientInput = document.getElementById('new-client-name');
+      if (!clientInput || !clientInput.value.trim()) {
+        alert("⚠️ Por favor ingrese el nombre del cliente.");
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('action', 'add_client');
+        formData.append('nombre', clientInput.value.trim());
+
+        const res = await fetch('api_picking.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const rawText = await res.text();
+
+        try {
+          const result = JSON.parse(rawText);
+          if (result.success) {
+            alert("✅ Cliente guardado con éxito.");
+            closeCreateClientModal();
+            await loadDatabaseData();
+            document.getElementById('order-client-select').value = result.nombre;
+          } else {
+            alert("❌ Error desde PHP: " + result.error);
+          }
+        } catch (jsonErr) {
+          console.error("Respuesta completa del servidor (HTML/Error):", rawText);
+          alert("❌ El servidor devolvió un error de sintaxis/HTML. Revisa la consola.");
+        }
+
+      } catch (e) {
+        console.error("Error en la petición:", e);
+      }
+    }
+
+    function renderPickingOrders() {
+      const tbody = document.getElementById('picking-table-body');
+      tbody.innerHTML = '';
+
+      if (pickingOrders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No hay órdenes registradas.</td></tr>';
+        return;
+      }
+
+      pickingOrders.forEach((order, index) => {
+        const tr = document.createElement('tr');
+        const isCompleted = order.status === 'Completado';
+        
+        tr.style.opacity = isCompleted ? '0.5' : '1';
+        tr.innerHTML = `
+          <td><b>${order.id}</b></td>
+          <td>${order.client}</td>
+          <td>${order.productName}</td>
+          <td><span class="location-tag">🏢 ${order.branchName} • 📍 ${order.location}</span></td>
+          <td>${order.qty} uds.</td>
+          <td><span class="status-badge ${order.statusClass}">${order.status}</span></td>
+          <td>
+            <button class="clay-btn clay-btn-primary" ${isCompleted ? 'disabled' : ''} onclick="confirmDispatch(${index}, this)">
+              ${isCompleted ? '✅ Despachado' : 'Confirmar y Restar Stock'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openCreateOrderModal() { document.getElementById('create-order-modal').style.display = 'flex'; }
+    function closeCreateOrderModal() { 
+      document.getElementById('create-order-modal').style.display = 'none'; 
+      document.getElementById('form-new-order').reset();
+      document.getElementById('order-location').value = '';
+      document.getElementById('order-stock-avail').value = '0';
+    }
+
+    // CREAR ORDEN Y GUARDAR EN BD
+    async function handleCreateOrder(e) {
+      e.preventDefault();
+      
+      const client = document.getElementById('order-client-select').value;
+      const branchId = document.getElementById('order-branch-select').value;
+      const productId = document.getElementById('order-product-select').value;
+      const location = document.getElementById('order-location').value;
+      const qty = parseInt(document.getElementById('order-qty').value) || 0;
+      const stockAvail = parseInt(document.getElementById('order-stock-avail').value) || 0;
+
+      if (qty > stockAvail) {
+        alert(`⚠️ La cantidad a despachar (${qty}) supera el stock disponible (${stockAvail}).`);
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('action', 'create_order');
+        formData.append('cliente', client);
+        formData.append('sucursal_id', branchId);
+        formData.append('producto_id', productId);
+        formData.append('cantidad', qty);
+        formData.append('ubicacion', location);
+
+        const res = await fetch('api_picking.php', { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (result.success) {
+          closeCreateOrderModal();
+          await loadDatabaseData();
+        } else {
+          alert("❌ Error al crear la orden: " + result.error);
+        }
+      } catch (err) {
+        console.error("Error al registrar la orden:", err);
+      }
+    }
+
+    // SOLICITAR CLAVE DE SEGURIDAD Y DESCONTAR DEL STOCK BD
+    function confirmDispatch(index, btn) {
+      const order = pickingOrders[index];
+
+      solicitarClaveAcceso(`Autorizar despacho de ${order.qty} uds. de ${order.productName}`, async () => {
+        try {
+          const formData = new FormData();
+          formData.append('action', 'process_picking');
+          formData.append('pedido_id', order.dbId);
+
+          const res = await fetch('api_picking.php', { method: 'POST', body: formData });
+          const result = await res.json();
+
+          if (result.success) {
+            alert("✅ " + result.message);
+            await loadDatabaseData();
+          } else {
+            alert("❌ Error al descontar del stock: " + result.error);
+          }
+        } catch (e) {
+          console.error("Error al procesar despacho:", e);
+        }
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('current-time').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function cambiarIdioma(lang) {
+      document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+      document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+      document.querySelectorAll('[data-es]').forEach(el => { el.innerText = el.getAttribute(`data-${lang}`); });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDatabaseData();
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      if (window.tsParticles) {
+        tsParticles.load("tsparticles", {
+          particles: {
+            number: { value: 40, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.7 },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+            move: { enable: true, speed: 1.5, direction: "none", straight: false }
+          },
+          interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+        });
+      }
+
+      fetch('get_user.php')
+        .then(res => res.json())
+        .then(data => {
+          const welcomeEl = document.querySelector('.welcome strong');
+          if (welcomeEl) welcomeEl.textContent = data.nombre;
+          const profileBadgeEl = document.querySelector('.profile-badge');
+          if (profileBadgeEl) { profileBadgeEl.textContent = data.iniciales; profileBadgeEl.title = data.nombre; }
+        })
+        .catch(err => console.error('Error al cargar datos del usuario:', err));
+    });
+  </script>
+</body>
+</html>

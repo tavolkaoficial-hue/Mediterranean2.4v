@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Biométrico | Mediterranean Core</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- MediaPipe Face Mesh -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+  
+  <!-- tsParticles Library -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient: #1192e7;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e2e8f0;
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+      --accent-sky-light: #bae6fd;
+      --accent-sky: #7dd3fc;
+      --accent-cyan: #38bdf8;
+      --accent-blue: #0284c7;
+      
+      --green: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      --clay-shadow-card: 20px 20px 45px rgba(14, 116, 144, 0.15), -12px -12px 25px rgba(255, 255, 255, 0.9);
+      --clay-shadow-btn: 6px 6px 14px rgba(14, 116, 144, 0.15), -5px -5px 12px rgba(255, 255, 255, 0.9);
+      --clay-inset-light: inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(15, 23, 42, 0.1);
+      --clay-inset-glow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 6px rgba(2, 132, 199, 0.2);
+
+      --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background: var(--bg-gradient);
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CONTENEDOR DE PARTÍCULAS PRINCIPAL */
+    #tsparticles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    /* CONTENEDOR LOGIN CENTRADO */
+    .login-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-card {
+      width: 100%;
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      border-radius: 36px;
+      box-shadow: var(--clay-shadow-card);
+      padding: 36px 28px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      height: 65px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+      margin-bottom: 12px;
+      transition: var(--transition);
+    }
+
+    .logo:hover {
+      transform: scale(1.04);
+    }
+
+    h2 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 24px;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 4px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* BOTÓN SELECCIONAR EMPLEADO */
+    .btn-select-user {
+      width: 100%;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 20px;
+      background: var(--clay-surface);
+      color: var(--text-primary);
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      box-shadow: var(--clay-shadow-btn);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn-select-user:hover {
+      background: var(--accent-sky);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(56, 189, 248, 0.4);
+    }
+
+    /* CONTENEDOR AVATAR Y WEBCAM */
+    .avatar-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      padding: 8px;
+      background: linear-gradient(145deg, #ffffff, #cbd5e1);
+      box-shadow: var(--clay-shadow-btn), var(--clay-inset-light);
+    }
+
+    .biometric-scanner-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 3px dashed var(--accent-cyan);
+      animation: rotateRing 12s linear infinite;
+    }
+
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .avatar-view {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .avatar-view img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-view video {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .avatar-view canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(-1);
+    }
+
+    .scanner-laser {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--accent-sky), #ffffff, var(--accent-sky), transparent);
+      box-shadow: 0 0 15px var(--accent-sky);
+      animation: scanLaser 2s ease-in-out infinite alternate;
+      z-index: 5;
+    }
+
+    @keyframes scanLaser {
+      0% { top: 0%; }
+      100% { top: 95%; }
+    }
+
+    /* DETALLES DE USUARIO */
+    .user-name {
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      margin-bottom: 20px;
+    }
+
+    /* BOTÓN FACE ID (CLAYMORPHISM) */
+    .bio-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 20px;
+      background: #f1f5f9;
+      color: var(--text-primary);
+      font: 700 14px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      box-shadow: 8px 8px 20px rgba(166, 180, 200, 0.4),
+                  -8px -8px 20px rgba(255, 255, 255, 0.9),
+                  inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+                  inset -2px -2px 4px rgba(166, 180, 200, 0.3);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .bio-btn:hover:not(:disabled) {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+      box-shadow: 10px 10px 24px rgba(166, 180, 200, 0.5),
+                  -10px -10px 24px rgba(255, 255, 255, 1);
+    }
+
+    .bio-btn:active:not(:disabled) {
+      box-shadow: inset 4px 4px 8px rgba(166, 180, 200, 0.5),
+                  inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+      transform: scale(0.98);
+    }
+
+    .bio-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    #bio-status {
+      margin-top: 14px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      min-height: 16px;
+    }
+
+    /* PASOS Y DOTS */
+    .step-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      transition: var(--transition);
+    }
+
+    .dot.active {
+      background: var(--accent-cyan);
+      transform: scale(1.2);
+    }
+
+    .dot.completed {
+      background: var(--green);
+    }
+
+    /* MODAL LISTA DE USUARIOS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+
+    .close-modal {
+      background: var(--clay-surface);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: var(--clay-shadow-btn);
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+    }
+
+    .user-list {
+      max-height: 280px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: var(--clay-shadow-btn);
+      transition: var(--transition);
+    }
+
+    .user-item:hover {
+      background: #f0f9ff;
+      transform: translateY(-2px);
+    }
+
+    .user-item img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-item-info {
+      text-align: left;
+    }
+
+    .user-item-info .name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .user-item-info .email {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* PANTALLA DE TRANSICIÓN AZUL CLARO */
+    .welcome-overlay {
+      position: fixed;
+      inset: 0;
+      background: #e0f2fe; 
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: var(--text-primary);
+    }
+
+    .welcome-overlay.active {
+      display: flex;
+      animation: welcomeFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes welcomeFadeIn {
+      from { opacity: 0; transform: scale(1.08); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* CONTENEDOR DE PARTÍCULAS EXCLUSIVO PARA LA TRANSICIÓN */
+    #welcome-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 2; /* Para que quede por encima de las partículas del overlay */
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* LOGO GRANDE Y LLAMATIVO */
+    .welcome-logo {
+      height: 400px;
+      width: auto;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 10px 20px rgba(14, 116, 144, 0.25));
+      animation: logoPulse 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoPulse {
+      0% { transform: scale(1) translateY(0); }
+      100% { transform: scale(1.08) translateY(-8px); }
+    }
+
+    .welcome-badge {
+      background: rgba(14, 116, 144, 0.1);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      animation: bounceIn 0.8s ease-out;
+    }
+
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: 1; transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+
+    .welcome-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    .welcome-loader {
+      width: 240px;
+      height: 8px;
+      background: rgba(14, 116, 144, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .welcome-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+      box-shadow: 0 0 12px var(--accent-cyan);
+      animation: progressAnim 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes progressAnim {
+      to { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- FONDO CON PARTICULAS PRINCIPAL -->
+  <div id="tsparticles"></div>
+
+  <!-- LOGIN PRINCIPAL -->
+  <div class="login-container">
+    <div class="login-card">
+
+      <!-- LOGO -->
+      <img
+        src="images/LogoMediterranean1992.png"
+        alt="Mediterranean Logo"
+        class="logo"
+        onerror="this.onerror=null; this.src='https://via.placeholder.com/160x60/38bdf8/ffffff?text=MEDITERRANEAN';"
+      >
+
+      <!-- TÍTULO -->
+      <h2>Acceso Biométrico</h2>
+      <div class="subtitle">
+        <i class="fas fa-shield-halved"></i>
+        Facial ID Verification
+      </div>
+
+      <!-- BOTÓN SELECCIÓN USUARIO -->
+      <button type="button" class="btn-select-user" id="openUserModal">
+        <i class="fas fa-users"></i>
+        Seleccionar Empleado Registrado
+      </button>
+
+      <!-- AVATAR Y WEBCAM -->
+      <div class="avatar-wrapper">
+        <div class="biometric-scanner-ring"></div>
+        <div class="avatar-view">
+          <img
+            src="https://ui-avatars.com/api/?name=Seleccionar+Usuario&background=38bdf8&color=fff&size=128"
+            alt="Usuario"
+            id="userAvatar"
+          >
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="meshCanvas"></canvas>
+          <div class="scanner-laser" id="laser"></div>
+        </div>
+      </div>
+
+      <!-- DATOS DEL EMPLEADO SELECCIONADO -->
+      <div class="user-name" id="displayName">Seleccione un Usuario</div>
+      <div class="user-email" id="displayEmail">Haga clic en el botón superior</div>
+
+      <!-- BOTÓN FACE ID -->
+      <button type="button" class="bio-btn" id="startBiometricBtn" disabled>
+        <i class="fas fa-face-smile"></i>
+        Iniciar Face ID
+      </button>
+
+      <!-- ESTADO DE LA VERIFICACIÓN -->
+      <div id="bio-status">Selección de usuario requerida</div>
+
+      <!-- INDICADORES DE PASO -->
+      <div class="step-dots" id="stepDotsContainer" style="display:none;">
+        <div class="dot active" id="dot0"></div>
+        <div class="dot" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+      </div>
+
+      <!-- FORMULARIO OCULTO -->
+      <form id="loginForm" action="login.php" method="POST" style="display:none;">
+        <input type="hidden" name="biometric_login" value="1">
+        <input type="hidden" name="user_id" id="userIdInput">
+        <input type="hidden" name="correo" id="userCorreoInput">
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE SELECCIÓN DE EMPLEADOS -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-check"></i> Usuarios Registrados</h3>
+        <button type="button" class="close-modal" id="closeUserModal">&times;</button>
+      </div>
+      <div class="user-list" id="userListContainer"></div>
+    </div>
+  </div>
+
+  <!-- OVERLAY DE BIENVENIDA CON SUS PROPIAS PARTÍCULAS -->
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div id="welcome-particles"></div>
+    <div class="welcome-content">
+      <img
+        src="images/LogoMediterranean1992.png"
+        alt="Mediterranean Logo"
+        class="welcome-logo"
+        onerror="this.onerror=null; this.src='https://via.placeholder.com/350x140/38bdf8/ffffff?text=MEDITERRANEAN';"
+      >
+      <div class="welcome-badge">
+        <i class="fas fa-circle-check"></i> Autenticación Biométrica Exitosa
+      </div>
+      <div class="welcome-title">Bienvenido a Mediterranean</div>
+      <div class="welcome-loader">
+        <div class="welcome-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const openModalBtn = document.getElementById('openUserModal');
+    const closeModalBtn = document.getElementById('closeUserModal');
+    const userModal = document.getElementById('userModal');
+    const userListContainer = document.getElementById('userListContainer');
+    const displayName = document.getElementById('displayName');
+    const displayEmail = document.getElementById('displayEmail');
+    const userAvatar = document.getElementById('userAvatar');
+    const userIdInput = document.getElementById('userIdInput');
+    const userCorreoInput = document.getElementById('userCorreoInput');
+    const startBiometricBtn = document.getElementById('startBiometricBtn');
+    const bioStatus = document.getElementById('bio-status');
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('meshCanvas');
+    const laser = document.getElementById('laser');
+    const stepDotsContainer = document.getElementById('stepDotsContainer');
+    const welcomeOverlay = document.getElementById('welcomeOverlay');
+
+    let selectedUserData = null;
+    let faceMesh = null;
+    let mediaStream = null;
+    let currentStep = 0;
+    let isCompleted = false;
+    let isStepChanging = false;
+    let cameraRunning = false;
+
+    openModalBtn.addEventListener('click', async () => {
+      userModal.classList.add('active');
+      userListContainer.innerHTML = `
+        <div style="text-align:center; padding:20px; color:var(--text-muted);">
+          <i class="fas fa-spinner fa-spin"></i> Cargando empleados...
+        </div>
+      `;
+
+      try {
+        const response = await fetch('login.php?get_users=1', { method: 'GET', cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        const usuarios = await response.json();
+        if (!Array.isArray(usuarios) || usuarios.length === 0) {
+          userListContainer.innerHTML = `
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">
+              <i class="fas fa-user-slash"></i><br><br>No hay empleados activos con biometría registrada.
+            </div>
+          `;
+          return;
+        }
+
+        userListContainer.innerHTML = '';
+        usuarios.forEach(usr => {
+          const fotoSrc = usr.foto_biometrica && usr.foto_biometrica.trim() !== ''
+            ? usr.foto_biometrica
+            : `https://ui-avatars.com/api/?name=${encodeURIComponent(usr.nombre_completo || 'Usuario')}&background=38bdf8&color=fff`;
+
+          const item = document.createElement('div');
+          item.className = 'user-item';
+          item.innerHTML = `
+            <img src="${fotoSrc}" alt="Foto" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(usr.nombre_completo || 'Usuario')}&background=38bdf8&color=fff';">
+            <div class="user-item-info">
+              <div class="name">${escapeHtml(usr.nombre_completo || 'Sin nombre')}</div>
+              <div class="email">${escapeHtml(usr.correo || 'Sin correo')}</div>
+            </div>
+          `;
+          item.addEventListener('click', () => seleccionarUsuario(usr, fotoSrc));
+          userListContainer.appendChild(item);
+        });
+      } catch (error) {
+        console.error('Error cargando empleados:', error);
+        userListContainer.innerHTML = `
+          <div style="text-align:center; padding:20px; color:var(--danger);">
+            <i class="fas fa-triangle-exclamation"></i><br><br>Error al obtener los empleados.
+          </div>
+        `;
+      }
+    });
+
+    function seleccionarUsuario(usuario, fotoSrc) {
+      selectedUserData = usuario;
+      displayName.textContent = usuario.nombre_completo || 'Usuario seleccionado';
+      displayEmail.textContent = usuario.correo || 'Sin correo';
+      userAvatar.src = fotoSrc;
+      userAvatar.style.display = 'block';
+
+      userIdInput.value = usuario.id || '';
+      userCorreoInput.value = usuario.correo || '';
+
+      startBiometricBtn.disabled = false;
+      startBiometricBtn.innerHTML = `<i class="fas fa-face-smile"></i> Iniciar Face ID`;
+      bioStatus.innerText = 'Usuario preparado. Haga clic en Iniciar Face ID';
+      bioStatus.style.color = 'var(--accent-blue)';
+
+      currentStep = 0;
+      isCompleted = false;
+      isStepChanging = false;
+      cameraRunning = false;
+
+      updateStepDots(0);
+      stepDotsContainer.style.display = 'none';
+      userModal.classList.remove('active');
+    }
+
+    closeModalBtn.addEventListener('click', () => userModal.classList.remove('active'));
+    userModal.addEventListener('click', e => { if (e.target === userModal) userModal.classList.remove('active'); });
+
+    function escapeHtml(val) {
+      return String(val ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    const steps = [
+      { text: '1. MIRE DE FRENTE AL CENTRO', check: yaw => Math.abs(yaw) < 0.07 },
+      { text: '2. GIRE A LA IZQUIERDA', check: yaw => yaw > 0.10 },
+      { text: '3. GIRE A LA DERECHA', check: yaw => yaw < -0.10 }
+    ];
+
+    function updateStepDots(step) {
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        if (!dot) continue;
+        if (i < step) dot.className = 'dot completed';
+        else if (i === step) dot.className = 'dot active';
+        else dot.className = 'dot';
+      }
+    }
+
+    function drawMesh(landmarks) {
+      if (!canvasElement) return;
+      const ctx = canvasElement.getContext('2d');
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      ctx.fillStyle = '#38bdf8';
+
+      const keyPoints = [1, 33, 263, 61, 291, 199, 10, 152, 234, 454];
+      keyPoints.forEach(idx => {
+        const pt = landmarks[idx];
+        if (!pt) return;
+        ctx.beginPath();
+        ctx.arc(pt.x * canvasElement.width, pt.y * canvasElement.height, 2, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    function onResults(results) {
+      if (isCompleted) return;
+
+      if (videoElement.videoWidth && canvasElement.width !== videoElement.videoWidth) {
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+      }
+
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        laser.style.display = 'block';
+        const landmarks = results.multiFaceLandmarks[0];
+        drawMesh(landmarks);
+
+        const nose = landmarks[1];
+        const leftCheek = landmarks[234];
+        const rightCheek = landmarks[454];
+        const yaw = nose.x - (leftCheek.x + rightCheek.x) / 2;
+
+        if (currentStep < steps.length && !isStepChanging) {
+          bioStatus.innerText = steps[currentStep].text;
+
+          if (steps[currentStep].check(yaw)) {
+            isStepChanging = true;
+            currentStep++;
+            updateStepDots(currentStep);
+
+            if (currentStep === steps.length) {
+              isCompleted = true;
+              laser.style.display = 'none';
+              const ctx = canvasElement.getContext('2d');
+              if (ctx) ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+              detenerCamara();
+              procesarLoginBiometrico();
+            } else {
+              setTimeout(() => { isStepChanging = false; }, 1000);
+            }
+          }
+        }
+      } else {
+        laser.style.display = 'none';
+        const ctx = canvasElement.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        bioStatus.innerText = 'UBIQUE SU ROSTRO EN LA CÁMARA';
+        bioStatus.style.color = 'var(--accent-blue)';
+      }
+    }
+
+    startBiometricBtn.addEventListener('click', async () => {
+      if (!selectedUserData || !selectedUserData.id) {
+        bioStatus.innerText = 'Seleccione primero un empleado.';
+        return;
+      }
+
+      currentStep = 0;
+      isCompleted = false;
+      isStepChanging = false;
+      updateStepDots(0);
+
+      userAvatar.style.display = 'none';
+      videoElement.style.display = 'block';
+      stepDotsContainer.style.display = 'flex';
+      startBiometricBtn.disabled = true;
+      startBiometricBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analizando...`;
+      bioStatus.innerText = 'Solicitando acceso a la cámara...';
+
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 480 }, height: { ideal: 480 }, facingMode: 'user' },
+          audio: false
+        });
+
+        videoElement.srcObject = mediaStream;
+        await videoElement.play();
+
+        faceMesh = new FaceMesh({
+          locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+        });
+
+        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: false, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+        faceMesh.onResults(onResults);
+
+        cameraRunning = true;
+        bioStatus.innerText = 'UBIQUE SU ROSTRO EN LA CÁMARA';
+        iniciarProcesamientoFrames();
+      } catch (error) {
+        console.error('Error cámara:', error);
+        detenerCamara();
+        userAvatar.style.display = 'block';
+        videoElement.style.display = 'none';
+        startBiometricBtn.disabled = false;
+        startBiometricBtn.innerHTML = `<i class="fas fa-face-smile"></i> Intentar nuevamente`;
+        bioStatus.innerText = error.name === 'NotAllowedError' ? 'Permiso de cámara rechazado.' : 'Error al acceder a la cámara.';
+        bioStatus.style.color = 'var(--danger)';
+      }
+    });
+
+    async function iniciarProcesamientoFrames() {
+      if (!cameraRunning) return;
+      try {
+        if (faceMesh && videoElement.readyState >= 2 && !isCompleted) {
+          await faceMesh.send({ image: videoElement });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      if (cameraRunning && !isCompleted) {
+        requestAnimationFrame(iniciarProcesamientoFrames);
+      }
+    }
+
+    function detenerCamara() {
+      cameraRunning = false;
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+      videoElement.srcObject = null;
+    }
+
+    async function procesarLoginBiometrico() {
+      bioStatus.innerText = "VERIFICACIÓN CORRECTA — VALIDANDO ACCESO...";
+      bioStatus.style.color = "var(--green)";
+      startBiometricBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> VALIDANDO...`;
+
+      const formData = new FormData();
+      formData.append("biometric_login", "1");
+      formData.append("user_id", selectedUserData.id);
+      formData.append("correo", selectedUserData.correo);
+
+      try {
+        const response = await fetch("login.php", {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+
+        if (!response.ok) throw new Error("Servidor respondió HTTP " + response.status);
+        const data = await response.json();
+
+        if (data.status === "success") {
+          bioStatus.innerText = "ACCESO AUTORIZADO";
+          startBiometricBtn.innerHTML = `<i class="fas fa-circle-check"></i> ACCESO AUTORIZADO`;
+          welcomeOverlay.classList.add('active');
+
+          setTimeout(() => {
+            window.location.replace(data.redirect || "mediterranean.php");
+          }, 3000);
+          return;
+        }
+
+        throw new Error(data.message || "La autenticación fue rechazada.");
+      } catch (error) {
+        console.error("ERROR LOGIN:", error);
+        bioStatus.innerText = error.message || "Error al autenticar.";
+        bioStatus.style.color = "var(--danger)";
+        startBiometricBtn.disabled = false;
+        startBiometricBtn.innerHTML = `<i class="fas fa-face-smile"></i> INTENTAR NUEVAMENTE`;
+        alert("⚠ " + (error.message || "No fue posible iniciar sesión."));
+      }
+    }
+
+    window.addEventListener('beforeunload', () => detenerCamara());
+
+    /* =========================================================
+       CONFIGURACIÓN DE PARTÍCULAS
+    ========================================================== */
+    // Partículas del fondo principal
+    tsParticles.load("tsparticles", {
+      particles: {
+        number: { value: 75, density: { enable: true, value_area: 800 } },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.6, random: true },
+        size: { value: 3.5, random: true },
+        line_linked: {
+          enable: true,
+          distance: 140,
+          color: "#ffffff",
+          opacity: 0.35,
+          width: 1.2
+        },
+        move: { enable: true, speed: 1.2, direction: "none", straight: false }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: "grab" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          grab: { distance: 180, line_linked: { opacity: 0.7 } }
+        }
+      }
+    });
+
+    // Partículas exclusivas de la pantalla de transición (en tonos azules/blancos para contraste)
+    tsParticles.load("welcome-particles", {
+      particles: {
+        number: { value: 50, density: { enable: true, value_area: 800 } },
+        color: { value: ["#0284c7", "#38bdf8", "#ffffff"] },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: true },
+        size: { value: 4, random: true },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#0284c7",
+          opacity: 0.2,
+          width: 1
+        },
+        move: { enable: true, speed: 1.5, direction: "none", straight: false }
+      }
+    });
+  </script>
+
+</body>
+</html>
