@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 // Desactivar impresión de errores HTML para no corromper la respuesta JSON
+=======
+// Desactivar impresión de errores HTML para evitar corromper la respuesta HTTP JSON
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
@@ -15,7 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 try {
     $host = "127.0.0.1";
+<<<<<<< HEAD
     $port = 8889; // Puerto MAMP
+=======
+    $port = 8889; // Cambia este puerto solo si MySQL en tu MAMP usa otro puerto
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     $user = "root";
     $pass = "root"; 
     $dbname = "mediterranean";
@@ -26,6 +34,7 @@ try {
         throw new Exception("Error de conexión BD: " . $conn->connect_error);
     }
 
+<<<<<<< HEAD
     $conn->set_charset("utf8mb4");
     $accion = $_GET['accion'] ?? '';
     $rawInput = file_get_json_input();
@@ -149,10 +158,25 @@ try {
             }
         }
 
+=======
+    $conn->set_charset("utf8");
+    $accion = $_GET['accion'] ?? '';
+
+    // 1. LISTAR PRODUCTOS
+    if ($accion === 'listar') {
+        $result = $conn->query("SELECT * FROM productos ORDER BY id DESC");
+        $productos = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $productos[] = $row;
+            }
+        }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         echo json_encode($productos);
         exit;
     }
 
+<<<<<<< HEAD
     // 3. AGREGAR PRODUCTO A LA TABLA CORRESPONDIENTE
     if ($accion === 'agregar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $rawSucursal = $_POST['sucursal'] ?? $rawInput['sucursal'] ?? 'kennedy';
@@ -200,6 +224,27 @@ try {
         if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
             $dir = "uploads/";
             if (!is_dir($dir)) mkdir($dir, 0777, true);
+=======
+    // 2. AGREGAR PRODUCTO
+    if ($accion === 'agregar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nombre = $_POST['nombre'] ?? '';
+        $categorias = $_POST['categoria'] ?? $_POST['categorias'] ?? '';
+        $proveedores = $_POST['proveedor'] ?? $_POST['proveedores'] ?? '';
+        $precio_compra = floatval($_POST['precio_compra'] ?? 0);
+        $precio_venta = floatval($_POST['precio_venta'] ?? 0);
+        $stock = intval($_POST['stock'] ?? 0);
+        $sucursal = $_POST['sucursal'] ?? '';
+        $descripcion = $_POST['descripcion'] ?? '';
+        $estado = $_POST['estado'] ?? 'Activo';
+
+        // Procesamiento de la Imagen
+        $img_path = "";
+        if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+            $dir = "uploads/";
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
             $filename = time() . "_" . basename($_FILES['img']['name']);
             $target_file = $dir . $filename;
             if (move_uploaded_file($_FILES['img']['tmp_name'], $target_file)) {
@@ -207,6 +252,7 @@ try {
             }
         }
 
+<<<<<<< HEAD
         $sql = "INSERT INTO {$tabla} 
                 (sucursal, sku, nombre, abc, precio_compra, precio_venta, stock, reorder, tipo_empaque, batch, expiry, codigo_qr, categoria, proveedor, estado, img, descripcion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -228,6 +274,13 @@ try {
                 "message" => "Producto guardado con éxito en la sucursal {$sucursalNombre}.", 
                 "id" => $conn->insert_id
             ]);
+=======
+        $stmt = $conn->prepare("INSERT INTO productos (nombre, categorias, proveedores, precio_compra, precio_venta, stock, sucursal, img, descripcion, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssddissss", $nombre, $categorias, $proveedores, $precio_compra, $precio_venta, $stock, $sucursal, $img_path, $descripcion, $estado);
+
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true, "message" => "Guardado con éxito"]);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         } else {
             echo json_encode(["success" => false, "message" => "Error SQL: " . $stmt->error]);
         }
@@ -235,6 +288,7 @@ try {
         exit;
     }
 
+<<<<<<< HEAD
     // 4. ACTUALIZAR STOCK EN LA TABLA DE ORIGEN
     if ($accion === 'actualizar_stock' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($_POST['id'] ?? $rawInput['id'] ?? 0);
@@ -252,10 +306,43 @@ try {
             $stmt->close();
         } else {
             echo json_encode(["success" => false, "message" => "ID no válido."]);
+=======
+    // 3. ELIMINAR PRODUCTO (Con control de Llave Foránea / Soft Delete)
+    if ($accion === 'eliminar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = intval($_POST['id'] ?? 0);
+        if ($id > 0) {
+            // Intentar borrado físico directo
+            $stmt = $conn->prepare("DELETE FROM productos WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            
+            if ($stmt->execute()) {
+                echo json_encode(["success" => true, "message" => "Producto eliminado correctamente"]);
+            } else {
+                // Si choca con la llave foránea de movimientos, aplicamos Soft Delete (cambiar estado a Inactivo)
+                $stmt->close();
+                $stmtUpdate = $conn->prepare("UPDATE productos SET estado = 'Inactivo' WHERE id = ?");
+                $stmtUpdate->bind_param("i", $id);
+                
+                if ($stmtUpdate->execute()) {
+                    echo json_encode([
+                        "success" => true, 
+                        "message" => "El producto tiene movimientos históricos registrados, por lo que fue marcado como 'Inactivo' de manera segura."
+                    ]);
+                } else {
+                    echo json_encode(["success" => false, "message" => "No se pudo actualizar el estado del producto."]);
+                }
+                $stmtUpdate->close();
+                exit;
+            }
+            $stmt->close();
+        } else {
+            echo json_encode(["success" => false, "message" => "ID de producto inválido."]);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         }
         exit;
     }
 
+<<<<<<< HEAD
     // 5. ELIMINAR PRODUCTO DE LA TABLA DE ORIGEN
     if ($accion === 'eliminar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($_POST['id'] ?? $rawInput['id'] ?? 0);
@@ -272,15 +359,61 @@ try {
             $stmt->close();
         } else {
             echo json_encode(["success" => false, "message" => "ID no válido."]);
+=======
+    // 3.1 ACTUALIZAR STOCK INDIVIDUAL (Nuevo endpoint requerido por la interfaz)
+    if ($accion === 'actualizar_stock' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = intval($_POST['id'] ?? 0);
+        $stock = intval($_POST['stock'] ?? 0);
+
+        if ($id > 0) {
+            $stmt = $conn->prepare("UPDATE productos SET stock = ? WHERE id = ?");
+            $stmt->bind_param("ii", $stock, $id);
+            if ($stmt->execute()) {
+                echo json_encode(["success" => true, "message" => "Stock actualizado correctamente"]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Error al actualizar stock: " . $stmt->error]);
+            }
+            $stmt->close();
+        } else {
+            echo json_encode(["success" => false, "message" => "ID inválido"]);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         }
         exit;
     }
 
+<<<<<<< HEAD
+=======
+    // 4. OBTENER OPCIONES DE CATÁLOGOS
+    if ($accion === 'obtener_catalogos') {
+        $sucursalesRes = $conn->query("SELECT DISTINCT sucursal FROM productos WHERE sucursal IS NOT NULL AND sucursal != ''");
+        $categoriasRes = $conn->query("SELECT DISTINCT categorias FROM productos WHERE categorias IS NOT NULL AND categorias != ''");
+        $proveedoresRes = $conn->query("SELECT DISTINCT proveedores FROM productos WHERE proveedores IS NOT NULL AND proveedores != ''");
+
+        $sucursales = ["Centro", "Kennedy", "Fontibón", "Chapinero", "Suba"];
+        if ($sucursalesRes) { while ($r = $sucursalesRes->fetch_assoc()) { if (!in_array($r['sucursal'], $sucursales)) $sucursales[] = $r['sucursal']; } }
+
+        $categorias = ["Construcción", "Herramientas", "Pinturas", "Eléctricos", "Plomería", "Hogar", "Mobiliario"];
+        if ($categoriasRes) { while ($r = $categoriasRes->fetch_assoc()) { if (!in_array($r['categorias'], $categorias)) $categorias[] = $r['categorias']; } }
+
+        $proveedores = ["Homecenter", "Nestlé", "Valleta Glass", "Avianca", "Argos"];
+        if ($proveedoresRes) { while ($r = $proveedoresRes->fetch_assoc()) { if (!in_array($r['proveedores'], $proveedores)) $proveedores[] = $r['proveedores']; } }
+
+        echo json_encode([
+            "success" => true,
+            "sucursales" => array_values($sucursales),
+            "categorias" => array_values($categorias),
+            "proveedores" => array_values($proveedores)
+        ]);
+        exit;
+    }
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
     exit;
 }
+<<<<<<< HEAD
 
 function file_get_json_input() {
     $input = file_get_contents('php://input');
@@ -290,4 +423,6 @@ function file_get_json_input() {
     }
     return [];
 }
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 ?>

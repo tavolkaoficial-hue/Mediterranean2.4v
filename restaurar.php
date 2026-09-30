@@ -28,4 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "<h2>Restauración completada con éxito.</h2>";
     echo "<a href='backup_center.php'>Volver</a>";
 }
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

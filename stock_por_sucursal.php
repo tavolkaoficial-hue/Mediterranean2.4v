@@ -29,4 +29,8 @@ echo json_encode($productos);
 
 $stmt->close();
 $conn->close();
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

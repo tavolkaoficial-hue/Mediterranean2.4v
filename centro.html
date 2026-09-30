@@ -667,7 +667,11 @@
     <div class="sidebar-footer">
       <div class="system-status-box">
         <span class="online-dot"></span>
+<<<<<<< HEAD
         <span data-i18n="erp_online">En Línea</span>
+=======
+        <span data-i18n="erp_online">ERP En Línea</span>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       </div>
 
       <div class="languages">
@@ -682,14 +686,22 @@
     </div>
   </aside>
 
+<<<<<<< HEAD
  <!-- TOP BAR -->
+=======
+  <!-- TOP BAR -->
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   <header class="top-bar">
     <div class="top-left-group">
       <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="welcome">
+<<<<<<< HEAD
         <span data-i18n="welcome">Bienvenido</span>, <strong>Juean Sebastian Calvo Rojas</strong> (ID: EMP-8092)
+=======
+        <span data-i18n="welcome">Bienvenido</span>, <strong>Carlos Mendoza</strong> (ID: EMP-8092)
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       </div>
     </div>
 
@@ -698,7 +710,11 @@
         <span class="clock-icon">🕒</span>
         <span class="today" id="current-time">12:00 PM</span>
       </div>
+<<<<<<< HEAD
       <div class="profile-badge">JS</div>
+=======
+      <div class="profile-badge">CM</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     </div>
   </header>
 
@@ -709,7 +725,11 @@
         <i class="fa-solid fa-store"></i>
         <div class="branch-info">
           <h1 data-i18n="branch_title">Sucursal Centro</h1>
+<<<<<<< HEAD
           <p><strong data-i18n="address">Dirección:</strong> Carrera 7 # 19-28, Bogotá Centro | <strong data-i18n="phone">Tel:</strong> +57 310 123 4567</p>
+=======
+          <p><strong data-i18n="address">Dirección:</strong> Carrera 13 # 26-30, Bogotá Centro | <strong data-i18n="phone">Tel:</strong> +57 310 789 3344</p>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         </div>
       </div>
 
@@ -801,10 +821,17 @@
     </div>
   </main>
 
+<<<<<<< HEAD
   <!-- FOOTER -->
 <footer class="copyright-fixed">
   <a href="politica-completa.html">© <?php echo date('Y'); ?> 2026 Mediterranean Technologies</a>
 </footer>
+=======
+  <!-- BARRA INFERIOR (FOOTER) -->
+  <footer class="copyright-fixed">
+    © 2025 Mediterranean Technologies | &nbsp;<a href="#" id="openPolicy" data-i18n="privacy_policy">Política de Privacidad y Seguridad</a>
+  </footer>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
 </div>
 
@@ -909,7 +936,11 @@
   };
 
   let currentLang = 'es';
+<<<<<<< HEAD
   let globalProductos = [];
+=======
+  let globalMovimientos = [];
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   let globalEntradas = [];
   let globalSalidas = [];
   let globalStockMap = new Map();
@@ -966,6 +997,7 @@
     }
   }
 
+<<<<<<< HEAD
   // Mapa Leaflet para Sucursal Centro (Bogotá Centro: 4.6097, -74.0717)
   const map = L.map('map').setView([4.6097, -74.0717], 15);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -1009,12 +1041,57 @@
         // Entradas y Salidas simuladas basándose en el inventario registrado
         globalEntradas.push({ producto: nombre, cantidad: cant, fecha: hoy });
         globalSalidas.push({ producto: nombre, cantidad: Math.floor(cant * 0.2), fecha: hoy });
+=======
+  // Mapa Leaflet - Coordenadas Sucursal Centro Bogotá
+  const map = L.map('map').setView([4.6150, -74.0680], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([4.6150, -74.0680]).addTo(map).bindPopup('<b>Sucursal Centro</b>').openPopup();
+
+  // Carga de Datos simulados/backend
+  async function cargarDatosCentro() {
+    try {
+      let data;
+      try {
+        const resp = await fetch('listar_movimiento.php?sucursal=Centro');
+        data = await resp.json();
+      } catch (err) {
+        // Mock fallback en caso de ejecucion local sin backend PHP
+        data = {
+          status: "success",
+          movimientos: [
+            { producto: "Aceite de Oliva Extra Virgen 1L", tipo: "Entrada", cantidad: 200, fecha: "2025-02-10" },
+            { producto: "Pasta Penne Rigate 500g", tipo: "Entrada", cantidad: 250, fecha: "2025-02-11" },
+            { producto: "Salsa de Tomate Bolognesa", tipo: "Salida", cantidad: 60, fecha: "2025-02-13" },
+            { producto: "Aceite de Oliva Extra Virgen 1L", tipo: "Salida", cantidad: 35, fecha: "2025-02-15" },
+            { producto: "Queso Parmesano Reggiano", tipo: "Entrada", cantidad: 100, fecha: "2025-02-16" },
+            { producto: "Vino Tinto Reserva 750ml", tipo: "Entrada", cantidad: 90, fecha: "2025-02-17" },
+            { producto: "Pasta Penne Rigate 500g", tipo: "Salida", cantidad: 40, fecha: "2025-02-18" },
+            { producto: "Aceitunas Negras Deshuesadas", tipo: "Entrada", cantidad: 150, fecha: "2025-02-19" }
+          ]
+        };
+      }
+
+      globalMovimientos = data.movimientos || [];
+      globalEntradas = globalMovimientos.filter(m => m.tipo === "Entrada");
+      globalSalidas = globalMovimientos.filter(m => m.tipo === "Salida");
+
+      globalStockMap.clear();
+      globalMovimientos.forEach(m => {
+        const nombre = m.producto;
+        const cantidad = parseInt(m.cantidad);
+        if (!globalStockMap.has(nombre)) globalStockMap.set(nombre, 0);
+        globalStockMap.set(nombre, globalStockMap.get(nombre) + (m.tipo === "Entrada" ? cantidad : -cantidad));
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       });
 
       renderTabla(globalEntradas, globalSalidas, globalStockMap);
       renderGrafico(globalStockMap, globalEntradas, globalSalidas);
     } catch (e) {
+<<<<<<< HEAD
       console.error("Error general en cargarDatosCentro:", e);
+=======
+      console.error(e);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
   }
 
@@ -1025,9 +1102,15 @@
     stockBody.innerHTML = entBody.innerHTML = salBody.innerHTML = "";
 
     // Muestra resumida en la vista principal (máximo 4 elementos)
+<<<<<<< HEAD
     Array.from(stockMap.entries()).slice(0, 4).forEach(([prod, info]) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td>${info.stock}</td><td>${new Date().toLocaleDateString()}</td>`;
+=======
+    Array.from(stockMap.entries()).slice(0, 4).forEach(([prod, cant]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${prod}</td><td>General</td><td>${cant}</td><td>${new Date().toLocaleDateString()}</td>`;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       stockBody.appendChild(tr);
     });
 
@@ -1058,9 +1141,15 @@
       title.innerHTML = `<i class="fa-solid fa-boxes-stacked"></i> ${t.modal_stock_title}`;
       head.innerHTML = `<tr><th>${t.th_product}</th><th>${t.th_category}</th><th>${t.th_quantity}</th><th>${t.th_last_update}</th></tr>`;
       
+<<<<<<< HEAD
       globalStockMap.forEach((info, prod) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td><strong>${info.stock}</strong></td><td>${new Date().toLocaleDateString()}</td>`;
+=======
+      globalStockMap.forEach((cant, prod) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${prod}</td><td>General</td><td><strong>${cant}</strong></td><td>${new Date().toLocaleDateString()}</td>`;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         body.appendChild(tr);
       });
     } else if (tipo === 'entradas') {
@@ -1097,7 +1186,11 @@
     if (chart) chart.destroy();
 
     const labels = Array.from(stockMap.keys());
+<<<<<<< HEAD
     const stockData = Array.from(stockMap.values()).map(item => item.stock);
+=======
+    const stockData = Array.from(stockMap.values());
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     const entradaData = entradas.map(e => e.cantidad);
     const salidaData = salidas.map(s => -Math.abs(s.cantidad));
 
@@ -1140,7 +1233,11 @@
 
   document.getElementById('btnExportPDF').addEventListener('click', async () => {
     const { jsPDF } = window.jspdf;
+<<<<<<< HEAD
     doc = new jsPDF();
+=======
+    const doc = new jsPDF();
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     doc.setFontSize(16);
     doc.text("Mediterranean - Sucursal Centro", 14, 20);
     doc.setFontSize(12);
@@ -1175,6 +1272,7 @@
     },
     interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
   });
+<<<<<<< HEAD
   document.addEventListener('DOMContentLoaded', function() {
   fetch('get_user.php')
     .then(response => response.json())
@@ -1196,6 +1294,8 @@
     })
     .catch(err => console.error('Error al cargar datos del usuario:', err));
 });
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 </script>
 </body>
 </html>

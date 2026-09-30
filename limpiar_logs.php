@@ -7,4 +7,8 @@ if ($log && file_exists($log)) {
 } else {
     echo "no_log";
 }
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

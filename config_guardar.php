@@ -43,4 +43,8 @@ if ($check->num_rows == 0) {
 }
 
 echo json_encode(["ok" => true]);
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

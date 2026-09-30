@@ -48,6 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
 
         if ($conn->query($sql) === TRUE) {
             $registro_exitoso = true;
+<<<<<<< HEAD
+=======
+            // Refrescar datos actualizados para mostrarlos en la card de confirmación
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
             $res_user = $conn->query("SELECT * FROM usuarios WHERE token_registro = '$token_post' LIMIT 1");
             if ($res_user && $res_user->num_rows > 0) {
                 $usuario_datos = $res_user->fetch_assoc();
@@ -76,15 +80,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
 
+<<<<<<< HEAD
   <!-- tsParticles -->
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
 
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   <!-- MediaPipe -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
   <style>
     :root {
+<<<<<<< HEAD
       --bg-main: #ffffff;
       --clay-bg: #cbd5e1;
       --clay-surface: #f1f5f9;
@@ -112,10 +120,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+=======
+      --navy-deep: #09131f;
+      --navy-glass: rgba(15, 28, 46, 0.65);
+      --navy-border: rgba(120, 160, 220, 0.35);
+      --glass-card: rgba(22, 42, 70, 0.58);
+      --glass-shadow: 0 12px 40px 0 rgba(7, 14, 26, 0.35);
+      --glass-blur: blur(20px);
+      
+      --gold: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --text-light: #f1f5f9;
+      --text-muted: #94a3b8;
+      
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
     body {
       margin: 0;
       min-height: 100vh;
+<<<<<<< HEAD
       color: var(--text-primary);
       font-family: "Plus Jakarta Sans", sans-serif;
       background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
@@ -174,11 +202,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
     }
 
     /* FaceID */
+=======
+      color: var(--text-light);
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #09131f 0%, #172a45 50%, #0d1d33 100%);
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    /* Ambient Dynamic Lights */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+      animation: floatGlow 10s ease-in-out infinite alternate;
+    }
+    body::before {
+      width: 600px; height: 600px;
+      top: -150px; left: -100px;
+      background: rgba(30, 64, 110, 0.4);
+    }
+    body::after {
+      width: 650px; height: 650px;
+      bottom: -150px; right: -100px;
+      background: rgba(212, 175, 55, 0.15);
+    }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.08); }
+    }
+
+    /* Glassmorphism Card */
+    .glass-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--glass-card);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--navy-border);
+      border-radius: 1.5rem;
+      box-shadow: var(--glass-shadow);
+      transition: var(--transition);
+    }
+
+    .font-garamond { font-family: 'Cormorant Garamond', serif; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+    .brand-logo-img {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.4)) drop-shadow(0 0 12px var(--gold-glow));
+      animation: logoPulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes logoPulse {
+      0% { transform: scale(1); filter: drop-shadow(0 8px 18px rgba(0,0,0,0.4)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+      100% { transform: scale(1.04); filter: drop-shadow(0 12px 24px rgba(0,0,0,0.5)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.6)); }
+    }
+
+    .btn-futuristic {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+      transition: var(--transition);
+    }
+    .btn-futuristic:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Biometric Scan Elements */
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     .faceid-container {
       position: relative;
       width: 210px;
       height: 210px;
       margin: 0 auto;
+<<<<<<< HEAD
       display: grid;
       place-items: center;
     }
@@ -454,10 +564,134 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
+=======
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .faceid-view {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      background: #020617;
+      box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+      border: 2px solid rgba(14, 165, 233, 0.6);
+    }
+
+    #webcam { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    #meshCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: scaleX(-1); pointer-events: none; }
+
+    .progress-ring { position: absolute; top: 0; left: 0; width: 210px; height: 210px; transform: rotate(-90deg); pointer-events: none; }
+    .progress-ring__circle-bg { stroke: rgba(255, 255, 255, 0.08); stroke-width: 6; }
+    .progress-ring__circle {
+      stroke: #0ea5e9; stroke-width: 6; stroke-linecap: round;
+      stroke-dasharray: 600; stroke-dashoffset: 600;
+      transition: stroke-dashoffset 0.3s ease, stroke 0.3s ease;
+      filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.6));
+    }
+
+    .scanner-laser {
+      position: absolute; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #10b981, transparent);
+      top: 0; left: 0; box-shadow: 0 0 12px #38bdf8;
+      animation: scanLaser 1.8s infinite ease-in-out; display: none;
+    }
+    @keyframes scanLaser { 0% { top: 0%; } 50% { top: 98%; } 100% { top: 0%; } }
+
+    .step-dots { display: flex; justify-content: center; gap: 8px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+    .dot.active { background: #0ea5e9; box-shadow: 0 0 10px #0ea5e9; transform: scale(1.3); }
+    .dot.completed { background: #10b981; box-shadow: 0 0 10px #10b981; }
+
+    /* Scenario Caminata */
+    .stage-container {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: radial-gradient(circle at center, rgba(15, 28, 46, 0.9), rgba(9, 19, 31, 0.95));
+      border-radius: 1rem;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .stage-grid {
+      position: absolute; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(120, 160, 220, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 160, 220, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .path-line {
+      position: absolute; bottom: 30px; left: 5%; width: 90%; height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37, #10b981);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+    }
+
+    .walker {
+      position: absolute; bottom: 30px; left: 10px; font-size: 3rem; color: #fbbf24;
+      filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+      animation: walkToBuilding 4s ease-in-out forwards, walkingBounce 0.4s infinite alternate;
+      z-index: 5;
+    }
+
+    .hq-target {
+      position: absolute; bottom: 20px; right: 25px; text-align: center; z-index: 5;
+    }
+
+    .hq-target i {
+      font-size: 3.8rem;
+      background: linear-gradient(180deg, #ffffff, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+    }
+
+    .hq-target span {
+      display: block; font-size: 0.7rem; font-weight: 700; color: #d4af37;
+      letter-spacing: 1.5px; margin-top: 3px;
+    }
+
+    .welcome-banner {
+      position: absolute; top: 20px; width: 100%; text-align: center;
+      font-size: 1.1rem; font-weight: 800; color: #10b981; letter-spacing: 2px;
+      text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+      opacity: 0; transform: translateY(-10px);
+      animation: showWelcome 0.8s ease-out 3.8s forwards; z-index: 6;
+    }
+
+    @keyframes walkToBuilding {
+      0% { left: 15px; opacity: 1; }
+      80% { left: calc(100% - 110px); opacity: 1; transform: scale(1); }
+      100% { left: calc(100% - 85px); opacity: 0; transform: scale(0.6); }
+    }
+
+    @keyframes walkingBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-6px); }
+    }
+
+    @keyframes showWelcome {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scrollbars Custom */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 28, 46, 0.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(120, 160, 220, 0.3); border-radius: 10px; }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   </style>
 </head>
 <body>
 
+<<<<<<< HEAD
   <!-- Partículas de fondo -->
   <div id="tsparticles"></div>
 
@@ -482,12 +716,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
     <div class="flex flex-col items-center justify-center text-center pb-4 border-b border-slate-300">
       <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img mb-2" onerror="this.onerror=null; this.src='https://via.placeholder.com/90/172a45/d4af37?text=M';">
       <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 border border-cyan-500/30 mb-1">Módulo Biométrico RRHH</span>
+=======
+  <div class="glass-card w-full max-w-lg p-6 sm:p-8 space-y-5">
+    
+    <!-- Logo & Header Corporativo -->
+    <div class="flex flex-col items-center justify-center text-center pb-4 border-b border-slate-700/60">
+      <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img mb-2" onerror="this.onerror=null; this.src='https://via.placeholder.com/90/172a45/d4af37?text=M';">
+      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mb-1">Módulo Biométrico RRHH</span>
+     
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     </div>
 
     <!-- Mensaje Status Error -->
     <?php if (!empty($mensaje_status)): ?>
+<<<<<<< HEAD
       <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-600 text-xs flex items-center gap-2">
         <i class="fas fa-circle-exclamation text-rose-500 text-sm"></i>
+=======
+      <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+        <i class="fas fa-circle-exclamation text-rose-400 text-sm"></i>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         <span><?php echo htmlspecialchars($mensaje_status); ?></span>
       </div>
     <?php endif; ?>
@@ -495,6 +743,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
     <!-- CARD DE ÉXITO COMPLETADO -->
     <?php if ($registro_exitoso): ?>
       <div class="text-center space-y-4">
+<<<<<<< HEAD
         <h2 class="text-lg font-bold text-emerald-600 tracking-wide flex items-center justify-center gap-2">
           <i class="fas fa-circle-check"></i> REGISTRO BIOMÉTRICO EXITOSO
         </h2>
@@ -545,6 +794,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
         </div>
 
         <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-600 text-xs font-semibold flex items-center justify-center gap-2">
+=======
+        
+        <div class="stage-container">
+          <div class="stage-grid"></div>
+          <div class="welcome-banner"><i class="fas fa-door-open mr-1"></i> ¡BIENVENIDO A MEDITERRANEAN!</div>
+          <div class="path-line"></div>
+          <i class="fas fa-person-walking walker"></i>
+          <div class="hq-target">
+            <i class="fas fa-building-user"></i>
+            
+          </div>
+        </div>
+
+        <h2 class="text-lg font-bold text-emerald-400 font-garamond tracking-wide flex items-center justify-center gap-2">
+          <i class="fas fa-circle-check"></i> REGISTRO BIOMÉTRICO EXITOSO
+        </h2>
+
+        <div class="bg-slate-950/60 border border-slate-700/60 rounded-xl p-4 text-left space-y-2 text-xs">
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold"><i class="fas fa-user text-cyan-400 mr-1.5"></i>Nombre:</span>
+            <span class="text-slate-200 font-bold"><?php echo htmlspecialchars($usuario_datos['nombre_completo'] ?: 'No registrado'); ?></span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold"><i class="fas fa-envelope text-cyan-400 mr-1.5"></i>Correo:</span>
+            <span class="text-slate-200"><?php echo htmlspecialchars($usuario_datos['correo'] ?: 'No registrado'); ?></span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold"><i class="fas fa-phone text-cyan-400 mr-1.5"></i>Teléfono:</span>
+            <span class="text-slate-200"><?php echo htmlspecialchars($usuario_datos['telefono'] ?: 'No registrado'); ?></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold"><i class="fas fa-id-card text-cyan-400 mr-1.5"></i>Cédula / SS:</span>
+            <span class="text-slate-200 font-medium"><?php echo htmlspecialchars($usuario_datos['seguro_social'] ?: 'No registrado'); ?></span>
+          </div>
+        </div>
+
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           <i class="fas fa-shield-halved"></i> Identidad y Rostro Encriptados Correctamente
         </div>
       </div>
@@ -552,33 +839,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
     <!-- FORMULARIO DE VERIFICACIÓN -->
     <?php else: ?>
 
+<<<<<<< HEAD
       <form action="" method="POST" id="bioForm" class="space-y-4">
+=======
+      <form action="completar_registro.php" method="POST" id="bioForm" class="space-y-4">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
         <input type="hidden" name="foto_base64" id="foto_base64" required>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
+<<<<<<< HEAD
             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Empleado</label>
             <input type="text" value="<?php echo htmlspecialchars($usuario_datos['nombre_completo'] ?? ''); ?>" readonly class="w-full p-2.5 bg-slate-200 rounded-xl border border-slate-300 text-xs text-slate-600 font-semibold focus:outline-none cursor-not-allowed">
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Correo Electrónico</label>
             <input type="email" value="<?php echo htmlspecialchars($usuario_datos['correo'] ?? ''); ?>" readonly class="w-full p-2.5 bg-slate-200 rounded-xl border border-slate-300 text-xs text-slate-600 font-semibold focus:outline-none cursor-not-allowed">
+=======
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Empleado</label>
+            <input type="text" value="<?php echo htmlspecialchars($usuario_datos['nombre_completo']); ?>" readonly class="w-full p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-xs text-slate-300 font-semibold focus:outline-none cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
+            <input type="email" value="<?php echo htmlspecialchars($usuario_datos['correo']); ?>" readonly class="w-full p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-xs text-slate-300 font-semibold focus:outline-none cursor-not-allowed">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
+<<<<<<< HEAD
             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Teléfono</label>
             <input type="text" value="<?php echo htmlspecialchars($usuario_datos['telefono'] ?? ''); ?>" readonly class="w-full p-2.5 bg-slate-200 rounded-xl border border-slate-300 text-xs text-slate-600 font-semibold focus:outline-none cursor-not-allowed">
           </div>
           <div>
             <label class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Seguro Social / Cédula *</label>
             <input type="text" name="seguro_social" value="<?php echo htmlspecialchars($usuario_datos['seguro_social'] ?? ''); ?>" required placeholder="Ej: 8-901-234" class="w-full p-2.5 bg-white rounded-xl border border-slate-300 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition">
+=======
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Teléfono</label>
+            <input type="text" value="<?php echo htmlspecialchars($usuario_datos['telefono']); ?>" readonly class="w-full p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-xs text-slate-300 font-semibold focus:outline-none cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-amber-400/90 uppercase tracking-wider mb-1">Seguro Social / Cédula *</label>
+            <input type="text" name="seguro_social" value="<?php echo htmlspecialchars($usuario_datos['seguro_social']); ?>" required placeholder="Ej: 8-901-234" class="w-full p-2.5 bg-slate-950/90 rounded-xl border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           </div>
         </div>
 
         <div>
+<<<<<<< HEAD
           <label class="block text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Dirección Residencial *</label>
           <textarea name="direccion" rows="2" required placeholder="Ubicación residencia del empleado" class="w-full p-2.5 bg-white rounded-xl border border-slate-300 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition"><?php echo htmlspecialchars($usuario_datos['direccion'] ?? ''); ?></textarea>
         </div>
@@ -586,6 +896,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
         <!-- Escáner Facial Biométrico -->
         <div class="pt-2 border-t border-slate-300 text-center space-y-2">
           <label class="block text-[11px] font-bold text-cyan-600 uppercase tracking-wider">
+=======
+          <label class="block text-[10px] font-bold text-amber-400/90 uppercase tracking-wider mb-1">Dirección Residencial *</label>
+          <textarea name="direccion" rows="2" required placeholder="Ubicación residencia del empleado" class="w-full p-2.5 bg-slate-950/90 rounded-xl border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition"><?php echo htmlspecialchars($usuario_datos['direccion']); ?></textarea>
+        </div>
+
+        <!-- Escáner Facial Biométrico -->
+        <div class="pt-2 border-t border-slate-700/60 text-center space-y-2">
+          <label class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
             <i class="fas fa-expand mr-1"></i> Escaneo Biométrico Facial
           </label>
 
@@ -602,7 +921,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
             </div>
           </div>
 
+<<<<<<< HEAD
           <div class="text-xs font-bold text-cyan-600 min-h-[20px]" id="statusText">Iniciando cámara...</div>
+=======
+          <div class="text-xs font-bold text-cyan-300 min-h-[20px]" id="statusText">Iniciando cámara...</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
           <div class="step-dots">
             <div class="dot active" id="dot0"></div>
@@ -611,7 +934,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
           </div>
         </div>
 
+<<<<<<< HEAD
         <button type="submit" id="btnSubmit" disabled class="w-full py-3 rounded-xl text-xs font-bold opacity-40 cursor-not-allowed bg-slate-300 text-slate-500 border border-slate-300 transition flex items-center justify-center gap-2 mt-4">
+=======
+        <button type="submit" id="btnSubmit" disabled class="w-full py-3 rounded-xl text-xs font-bold opacity-40 cursor-not-allowed bg-slate-800 text-slate-400 border border-slate-700 transition flex items-center justify-center gap-2 mt-4">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           <i class="fas fa-lock"></i> Pendiente de verificación facial
         </button>
       </form>
@@ -619,12 +946,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
     <?php endif; ?>
 
     <!-- Pie de página -->
+<<<<<<< HEAD
     <div class="pt-3 border-t border-slate-300 text-center text-[10px] text-slate-400">
+=======
+    <div class="pt-3 border-t border-slate-800 text-center text-[10px] text-slate-500">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       © 2026 Mediterranean Technologies • Módulo de Seguridad Facial
     </div>
 
   </div>
 
+<<<<<<< HEAD
   <!-- Script de Partículas -->
   <script>
     tsParticles.load("tsparticles", {
@@ -668,6 +1000,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
   </script>
 
   <!-- Script del Escáner Biométrico Facial -->
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   <script>
     const videoElement = document.getElementById('webcam');
     const canvasElement = document.getElementById('meshCanvas');
@@ -759,7 +1093,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
                 laser.style.display = 'none';
                 progressCircle.style.stroke = "#10b981";
                 statusText.innerText = "¡RECONOCIMIENTO EXITOSO!";
+<<<<<<< HEAD
                 statusText.className = "text-xs font-bold text-emerald-600 min-h-[20px]";
+=======
+                statusText.className = "text-xs font-bold text-emerald-400 min-h-[20px]";
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
                 if (canvasCtx) canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
@@ -780,7 +1118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error_db) {
           laser.style.display = 'none';
           if (canvasCtx) canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
           statusText.innerText = "POSICIONE SU ROSTRO EN EL MARCO";
+<<<<<<< HEAD
           statusText.className = "text-xs font-bold text-cyan-600 min-h-[20px]";
+=======
+          statusText.className = "text-xs font-bold text-cyan-300 min-h-[20px]";
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         }
       }
 

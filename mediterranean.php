@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 // Mediterranean ERP - Conexión y Consultas dinámicas
 session_start();
@@ -92,12 +93,18 @@ $sqlMovimientos = "SELECT sku, nombre, stock, sucursal, updated_at FROM ($queryU
 $movimientosStmt = $pdo->query($sqlMovimientos);
 $ultimosMovimientos = $movimientosStmt->fetchAll();
 ?>
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 <title>Mediterranean | Enterprise Inventory</title>
+=======
+<title>Mediterranean | Enterprise Inventory ERP</title>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 <!-- Fuentes Tipográficas -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -161,8 +168,13 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
   height: 100%;
   top: 0;
   left: 0;
+<<<<<<< HEAD
   z-index: -1;
   background-color: #70a2ec;
+=======
+  z-index: -1; /* Para que quede detrás del contenido */
+  background-color: #70a2ec; /* Cambia al color de fondo que desees */
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 }
 
   .app-container {
@@ -613,6 +625,39 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     margin-top: 4px; 
   }
 
+<<<<<<< HEAD
+=======
+  /* BOTONES RÁPIDOS */
+  .quick-actions { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 14px; 
+    margin-top: 24px; 
+  }
+
+  .quick-action {
+    background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+    color: var(--accent-cyan);
+    padding: 12px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    font: 700 13px "Plus Jakarta Sans", sans-serif;
+    text-decoration: none;
+    box-shadow: var(--clay-btn-shadow);
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .quick-action:hover {
+    background: var(--accent-cyan);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);
+  }
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   /* ESTILOS DE TABLAS Y MOVIMIENTOS DE INVENTARIO */
   .table-responsive {
     width: 100%;
@@ -659,7 +704,10 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     font-size: 11px;
     font-weight: 800;
     display: inline-block;
+<<<<<<< HEAD
     text-transform: capitalize;
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   }
 
   .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--green); }
@@ -672,6 +720,69 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     background: linear-gradient(135deg, #e0e8f5 0%, #cbd8ed 100%);
   }
 
+<<<<<<< HEAD
+=======
+  .weather-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .weather-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .weather-temp {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    line-height: 1;
+    text-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+  }
+
+  .weather-icon {
+    font-size: 44px;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.1));
+  }
+
+  .weather-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .weather-item {
+    text-align: center;
+    background: var(--clay-bg);
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: var(--clay-inset-light);
+  }
+
+  .weather-item span {
+    display: block;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .weather-item strong {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-top: 2px;
+    display: block;
+  }
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   .secondary-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -690,7 +801,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     transition: var(--transition);
   }
 
+<<<<<<< HEAD
   .branch-name { font-size: 13px; color: var(--text-primary); font-weight: 700; text-transform: capitalize; }
+=======
+  .branch-name { font-size: 13px; color: var(--text-primary); font-weight: 700; }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   
   .health-bar { 
     height: 12px; 
@@ -910,7 +1025,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
 
     <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
     <button class="side-link active" data-section="inicio" onclick="mostrarSeccion('inicio', this)">
+<<<<<<< HEAD
       <span class="side-icon">⌂</span><span data-es="Panel ERP" data-en="ERP Dashboard">Menu Principal</span>
+=======
+      <span class="side-icon">⌂</span><span data-es="Panel ERP" data-en="ERP Dashboard">Menu principal</span>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     </button>
     
     <a href="stock.html" class="side-link">
@@ -923,12 +1042,28 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
       <span class="side-icon">🔄</span><span data-es="Historial de Movimientos" data-en="Movement Log">Kardex / Movimientos</span>
     </a>
 
+<<<<<<< HEAD
    <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
       
       <a href="configuracion.html" class="side-link">
         <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración</span>
       </a>
 
+=======
+    <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+    <a href="usuarios.html" class="side-link">
+      <span class="side-icon">👤</span><span data-es="Usuarios & Roles" data-en="Users & Roles">Usuarios & Roles</span>
+    </a>
+    <a href="reportes.html" class="side-link">
+      <span class="side-icon">📊</span><span data-es="Reportes BI" data-en="BI Reports">Reportes & Analítica</span>
+    </a>
+    <a href="utilidades.html" class="side-link">
+      <span class="side-icon">🛠</span><span data-es="Auditoría / Ajustes" data-en="Audit / Settings">Auditoría & Ajustes</span>
+    </a>
+    <a href="configuracion.html" class="side-link">
+      <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración ERP</span>
+    </a>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
     <div class="sidebar-footer">
       <div class="system-status-box">
@@ -941,7 +1076,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
         <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
       </div>
 
+<<<<<<< HEAD
       <a href="logout.php" class="logout-btn">
+=======
+      <a href="login.html" class="logout-btn">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         <span class="side-icon">⍈</span>
         <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
       </a>
@@ -953,16 +1092,26 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     <div class="top-left-group">
       <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Plegar/Desplegar Menú">☰</button>
       <div class="welcome">
+<<<<<<< HEAD
         <span>Bienvenido,</span> <strong><?= htmlspecialchars($nombreUsuarioLogueado) ?></strong>
+=======
+        <span data-es="Consola Global ERP" data-en="Global ERP Console">Mediterranean v2.4</span> • <strong>Modulo Principal</strong>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       </div>
     </div>
     
     <div class="top-actions">
       <div class="clock-container">
         <span class="clock-icon">🕒</span>
+<<<<<<< HEAD
         <div class="today" id="currentTime"><?php echo date('H:i:s'); ?></div>
       </div>
       <div class="profile-badge" title="<?= htmlspecialchars($nombreUsuarioLogueado) ?>"><?= htmlspecialchars($inicialesUsuario) ?></div>
+=======
+        <div class="today" id="currentTime">00:00:00</div>
+      </div>
+      <div class="profile-badge" title="Administrador Principal">AD</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     </div>
   </header>
 
@@ -971,14 +1120,29 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     <section id="inicio" class="section active">
       <div class="heading">
         <h1 data-es="Control General de Inventarios" data-en="General Inventory Control">Control General de Inventarios</h1>
+<<<<<<< HEAD
         <p data-es="Métricas unificadas de stock en tiempo real desde Kennedy, Centro y Norte." data-en="Unified real-time stock metrics from Kennedy, Centro, and Norte.">Métricas unificadas de stock en tiempo real desde Kennedy, Centro y Norte.</p>
       </div>
 
       <!-- METRICAS CONECTADAS A MYSQL -->
+=======
+        <p data-es="Indicadores clave de rendimiento (KPIs), métricas de stock y control multialmacén en tiempo real." data-en="Key performance indicators (KPIs), stock metrics and real-time multi-warehouse control.">Indicadores clave de rendimiento (KPIs), métricas de stock y control multialmacén en tiempo real.</p>
+      </div>
+
+      <div class="quick-actions">
+        <a href="productos.html" class="quick-action" data-es="＋ Registrar Entrada" data-en="＋ Stock In">＋ Entrada Stock</a>
+        <a href="productos.html" class="quick-action" data-es="－ Registrar Salida" data-en="－ Stock Out">－ Salida Stock</a>
+        <a href="movimientos.html" class="quick-action" data-es="🔁 Transferencia Almacenes" data-en="🔁 Transfer Warehouse">🔁 Transferencia Inter-Sucursal</a>
+        <a href="reportes.html" class="quick-action" data-es="📄 Generar Kardex PDF" data-en="📄 Export Kardex PDF">📄 Generar Kardex</a>
+      </div>
+
+      <!-- METRICAS DE INVENTARIO -->
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       <div class="metrics">
         <div class="card">
           <span class="metric-icon">💰</span>
           <span class="metric-label" data-es="Valor del Inventario" data-en="Inventory Valuation">Valor del Inventario</span>
+<<<<<<< HEAD
           <span class="metric-value">$<?= number_format($valorInventario, 2) ?></span>
           <span class="metric-change">↑ Cálculo en tiempo real</span>
         </div>
@@ -999,6 +1163,28 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
           <span class="metric-label" data-es="Categorías" data-en="Categories">Categorías</span>
           <span class="metric-value"><?= count($categoriasList) ?></span>
           <span class="metric-change" data-es="Familias de producto" data-en="Product families">Familias de producto</span>
+=======
+          <span class="metric-value">$842,500</span>
+          <span class="metric-change">↑ 4.2% <span data-es="vs mes anterior" data-en="vs last month">vs mes anterior</span></span>
+        </div>
+        <div class="card">
+          <span class="metric-icon">📦</span>
+          <span class="metric-label" data-es="Total de SKUs Activos" data-en="Active SKUs">SKUs Registrados</span>
+          <span class="metric-value">3,420</span>
+          <span class="metric-change" data-es="↑ 28 nuevos este mes" data-en="↑ 28 new this month">↑ 28 nuevos este mes</span>
+        </div>
+        <div class="card">
+          <span class="metric-icon">⚠️</span>
+          <span class="metric-label" data-es="Alertas de Stock Bajo" data-en="Low Stock Alerts">Stock Crítico</span>
+          <span class="metric-value" style="color: var(--danger);">14</span>
+          <span class="metric-change" style="color: var(--danger)" data-es="Reabastecimiento urgente" data-en="Urgent restock needed">Reabastecimiento urgente</span>
+        </div>
+        <div class="card">
+          <span class="metric-icon">🔁</span>
+          <span class="metric-label" data-es="Índice de Rotación" data-en="Turnover Ratio">Rotación Anual</span>
+          <span class="metric-value">6.8x</span>
+          <span class="metric-change" data-es="Eficiencia de stock óptima" data-en="Optimal stock efficiency">Eficiencia óptima</span>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         </div>
       </div>
 
@@ -1009,8 +1195,13 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
         <div class="panel">
           <div class="panel-header">
             <div>
+<<<<<<< HEAD
               <h3 data-es="Flujo de Mercancía" data-en="Stock Flow">Flujo de Mercancía</h3>
               <div class="panel-subtitle" data-es="Movimiento global en almacenes" data-en="Global warehouse movement">Movimiento global en almacenes</div>
+=======
+              <h3 data-es="Flujo de Mercancía (Últimos 6 Meses)" data-en="Stock Flow (Last 6 Months)">Flujo de Mercancía (Mes a Mes)</h3>
+              <div class="panel-subtitle" data-es="Comparativa entre Entradas y Salidas operativas" data-en="Inbound vs Outbound stock balance">Comparativa entre Entradas y Salidas de almacén</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
             </div>
           </div>
           <div style="position: relative; height:280px; width:100%;">
@@ -1018,12 +1209,21 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- PANEL GRÁFICO 2: DISTRIBUCIÓN POR CATEGORÍAS (DINÁMICO CON MYSQL) -->
         <div class="panel">
           <div class="panel-header">
             <div>
               <h3 data-es="Categorías Registradas" data-en="Registered Categories">Categorías Registradas</h3>
               <div class="panel-subtitle" data-es="BD: Categorías activas" data-en="DB: Active categories">BD: Categorías activas</div>
+=======
+        <!-- PANEL GRÁFICO 2: DISTRIBUCIÓN POR CATEGORÍAS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3 data-es="Categorías de Stock" data-en="Stock Categories">Distribución de Productos</h3>
+              <div class="panel-subtitle" data-es="Valoración total según familia de producto" data-en="Valuation split by product family">Porcentaje por familias de productos</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
             </div>
           </div>
           <div style="position: relative; height:280px; width:100%; display:grid; place-items:center;">
@@ -1032,6 +1232,7 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
         </div>
       </div>
 
+<<<<<<< HEAD
       <!-- SECCIÓN SECUNDARIA: TABLA Y ESTADO DE SUCURSALES -->
       <div class="secondary-grid">
         
@@ -1043,12 +1244,26 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
               <div class="panel-subtitle" data-es="Lectura desde tablas de sucursales" data-en="Live read from branch tables">Lectura desde tablas de sucursales</div>
             </div>
             <a href="movimientos.php" style="color:var(--accent-cyan); font-size:12px; font-weight:700; text-decoration:none;">Ver Todo →</a>
+=======
+      <!-- SECCIÓN SECUNDARIA: TABLA KARDEX Y ESTADO DE SUCURSALES -->
+      <div class="secondary-grid">
+        
+        <!-- HISTORIAL DE ÚLTIMOS MOVIMIENTOS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3 data-es="Últimos Movimientos (Kardex)" data-en="Recent Stock Movements">Últimos Movimientos (Kardex)</h3>
+              <div class="panel-subtitle" data-es="Registro continuo de auditoría de inventario" data-en="Real-time inventory audit log">Monitoreo dinámico en tiempo real</div>
+            </div>
+            <a href="movimientos.html" style="color:var(--accent-cyan); font-size:12px; font-weight:700; text-decoration:none;">Ver Todo →</a>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           </div>
 
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
+<<<<<<< HEAD
                   <th data-es="SKU / Producto" data-en="SKU / Product">SKU / Producto</th>
                   <th data-es="Sucursal" data-en="Branch">Sucursal</th>
                   <th data-es="Stock" data-en="Stock">Stock</th>
@@ -1065,11 +1280,62 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
                   <td><?= $mov['stock'] ?> u</td>
                 </tr>
                 <?php endforeach; ?>
+=======
+                  <th data-es="SKU / Producto" data-en="SKU / Product">Producto</th>
+                  <th data-es="Tipo" data-en="Type">Tipo</th>
+                  <th data-es="Cant." data-en="Qty">Cant.</th>
+                  <th data-es="Origen/Destino" data-en="Origin/Dest">Almacén</th>
+                  <th data-es="Usuario" data-en="User">Operador</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>INV-9021</strong><br>
+                    <small style="color:var(--text-muted);">Aceite de Oliva 1L</small>
+                  </td>
+                  <td><span class="badge badge-success" data-es="Entrada" data-en="Inbound">Entrada</span></td>
+                  <td>+150 u</td>
+                  <td>Sucursal Centro</td>
+                  <td>J. Pérez</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>INV-4820</strong><br>
+                    <small style="color:var(--text-muted);">Conservas de Atún 500g</small>
+                  </td>
+                  <td><span class="badge badge-danger" data-es="Salida" data-en="Outbound">Salida</span></td>
+                  <td>-45 u</td>
+                  <td>Sucursal Norte</td>
+                  <td>M. Gómez</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>INV-1102</strong><br>
+                    <small style="color:var(--text-muted);">Vino Tinto Reserva</small>
+                  </td>
+                  <td><span class="badge badge-info" data-es="Traspaso" data-en="Transfer">Traspaso</span></td>
+                  <td>80 u</td>
+                  <td>Norte ➔ Sur</td>
+                  <td>A. Silva</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>INV-3391</strong><br>
+                    <small style="color:var(--text-muted);">Queso Manchego 2kg</small>
+                  </td>
+                  <td><span class="badge badge-warning" data-es="Ajuste" data-en="Adjustment">Ajuste</span></td>
+                  <td>-3 u</td>
+                  <td>Sucursal Sur</td>
+                  <td>C. López</td>
+                </tr>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
               </tbody>
             </table>
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- OCUPACIÓN REAL POR TABLA DE SUCURSAL -->
         <div class="panel">
           <div class="panel-header">
@@ -1086,6 +1352,40 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
             <div style="font-size: 12px; text-align: right; font-weight:bold; color:var(--accent-cyan);"><?= $totalStock ?> u</div>
           </div>
           <?php endforeach; ?>
+=======
+        <!-- CAPACIDAD Y ESTADO DE ALMACENES / SUCURSALES -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3 data-es="Ocupación de Almacenes" data-en="Warehouse Occupancy">Capacidad de Sucursales</h3>
+              <div class="panel-subtitle" data-es="Límite físico de stock almacenado" data-en="Physical storage threshold">Volumen utilizado por ubicación</div>
+            </div>
+          </div>
+
+          <div class="branch-row">
+            <div class="branch-name" data-es="Sucursal Centro" data-en="Central Hub">Sucursal Centro</div>
+            <div class="health-bar"><div class="health-progress" style="width: 82%;"></div></div>
+            <div style="font-size: 12px; text-align: right; font-weight:bold; color:var(--accent-cyan);">82%</div>
+          </div>
+          
+          <div class="branch-row">
+            <div class="branch-name" data-es="Sucursal Norte" data-en="North Depot">Sucursal Norte</div>
+            <div class="health-bar"><div class="health-progress" style="width: 64%;"></div></div>
+            <div style="font-size: 12px; text-align: right; font-weight:bold; color:var(--accent-cyan);">64%</div>
+          </div>
+
+          <div class="branch-row">
+            <div class="branch-name" data-es="Sucursal Sur" data-en="South Depot">Sucursal Sur</div>
+            <div class="health-bar"><div class="health-progress" style="width: 94%; background: var(--danger);"></div></div>
+            <div style="font-size: 12px; text-align: right; font-weight:bold; color:var(--danger);">94%</div>
+          </div>
+
+          <div class="branch-row">
+            <div class="branch-name" data-es="Almacén Puerto" data-en="Port Warehouse">Almacén Puerto</div>
+            <div class="health-bar"><div class="health-progress" style="width: 38%; background: var(--green);"></div></div>
+            <div style="font-size: 12px; text-align: right; font-weight:bold; color:var(--green);">38%</div>
+          </div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
           <!-- PANORAMA CLIMÁTICO REAL DENTRO DEL ERP -->
           <div class="panel weather-panel" style="margin-top:20px; padding:18px; border-radius:20px;">
@@ -1124,7 +1424,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     <button class="chat-close" onclick="toggleChat()">×</button>
   </div>
   <div class="chat-messages" id="chatMessages">
+<<<<<<< HEAD
     <div class="message bot">Hola, soy tu asistente Luxor . ¿Necesitas consultar stock, buscar un SKU o generar una orden de traspaso?</div>
+=======
+    <div class="message bot">Hola, soy tu asistente del ERP. ¿Necesitas consultar stock, buscar un SKU o generar una orden de traspaso?</div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   </div>
   <div class="chat-input">
     <input type="text" id="userInput" placeholder="Ej: ¿Qué productos están sin stock?">
@@ -1134,7 +1438,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
 
 <!-- FOOTER -->
 <footer class="copyright-fixed">
+<<<<<<< HEAD
   <a href="politica-completa.html">© <?php echo date('Y'); ?> Mediterranean Technologies</a>
+=======
+  <a href="politica-completa.html">© 2026 Mediterranean Technologies | Enterprise Inventory System</a>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 </footer>
 
 <script>
@@ -1167,6 +1475,10 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     if(reloj) reloj.textContent = `${h}:${m}:${s}`;
   }
   setInterval(actualizarHora, 1000);
+<<<<<<< HEAD
+=======
+  actualizarHora();
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
   function cambiarIdioma(lang) {
     document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
@@ -1194,7 +1506,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
       let resp = "Entendido. Puedes gestionar los registros desde el módulo de Kardex o Inventario.";
       const lower = msg.toLowerCase();
       if(lower.includes("hola")) resp = "¡Hola! ¿En qué puedo asistirte en la gestión de almacenes?";
+<<<<<<< HEAD
       if(lower.includes("stock") || lower.includes("crítico")) resp = "Actualmente hay <?= $stockCritico ?> SKUs en nivel crítico que requieren reabastecimiento.";
+=======
+      if(lower.includes("stock") || lower.includes("crítico")) resp = "Actualmente hay 14 SKUs en nivel crítico. La Sucursal Sur requiere reabastecimiento inmediato.";
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       addMsg(resp, "bot");
     }, 600);
   }
@@ -1208,6 +1524,7 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     container.scrollTop = container.scrollHeight;
   }
 
+<<<<<<< HEAD
   /* INICIALIZACIÓN DE GRÁFICOS Y SERVICIOS */
   document.addEventListener("DOMContentLoaded", () => {
     initCharts();
@@ -1216,6 +1533,11 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
 
   /* INICIALIZACIÓN DE GRÁFICOS (CHART.JS) */
   function initCharts() {
+=======
+  /* INICIALIZACIÓN DE GRÁFICOS (CHART.JS) */
+  function initCharts() {
+    // 1. Gráfico de Flujo de Mercancías
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     const ctxFlow = document.getElementById('flowChart').getContext('2d');
     new Chart(ctxFlow, {
       type: 'line',
@@ -1255,13 +1577,23 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
       }
     });
 
+<<<<<<< HEAD
+=======
+    // 2. Gráfico de Categorías (Dona)
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     const ctxCat = document.getElementById('categoryChart').getContext('2d');
     new Chart(ctxCat, {
       type: 'doughnut',
       data: {
+<<<<<<< HEAD
         labels: [<?php foreach($categoriasList as $cat) echo "'".htmlspecialchars($cat['nombre'])."',"; ?>],
         datasets: [{
           data: [<?php foreach($categoriasList as$cat) echo "1,"; ?>],
+=======
+        labels: ['Alimentos', 'Bebidas', 'Empaques', 'Insumos', 'Otros'],
+        datasets: [{
+          data: [40, 25, 15, 12, 8],
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           backgroundColor: ['#0284c7', '#2563eb', '#4f46e5', '#10b981', '#f59e0b'],
           borderWidth: 4,
           borderColor: '#ffffff'
@@ -1289,6 +1621,7 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
           getWeatherData(lat, lon);
         },
         error => {
+<<<<<<< HEAD
           document.getElementById("locationName").textContent = "Bogotá, CO (Defecto)";
           getWeatherData(4.6097, -74.0817);
         }
@@ -1296,6 +1629,15 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     } else {
       document.getElementById("locationName").textContent = "Bogotá, CO (Defecto)";
       getWeatherData(4.6097, -74.0817);
+=======
+          document.getElementById("locationName").textContent = "Madrid, ES (Defecto)";
+          getWeatherData(40.4168, -3.7038);
+        }
+      );
+    } else {
+      document.getElementById("locationName").textContent = "Madrid, ES (Defecto)";
+      getWeatherData(40.4168, -3.7038);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
   }
 
@@ -1333,6 +1675,7 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
     return { desc: "Normal", icon: "🌤️" };
   }
 
+<<<<<<< HEAD
   tsParticles.load("tsparticles", {
     particles: {
       number: {
@@ -1378,6 +1721,53 @@ $ultimosMovimientos = $movimientosStmt->fetchAll();
       }
     }
   });
+=======
+ tsParticles.load("tsparticles", {
+  particles: {
+    number: {
+      value: 80,
+      density: {
+        enable: true,
+        value_area: 800
+      }
+    },
+    color: {
+      value: "#ffffff"
+    },
+    shape: {
+      type: "circle"
+    },
+    opacity: {
+      value: 0.5
+    },
+    size: {
+      value: 3,
+      random: true
+    },
+    line_linked: {
+      enable: true,
+      distance: 150,
+      color: "#ffffff",
+      opacity: 0.4,
+      width: 1
+    },
+    move: {
+      enable: true,
+      speed: 2,
+      direction: "none",
+      straight: false
+    }
+  },
+  interactivity: {
+    events: {
+      onhover: {
+        enable: true,
+        mode: "repulse"
+      }
+    }
+  }
+});
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 </script>
 </body>
 </html>

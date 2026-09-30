@@ -30,4 +30,8 @@ $result = $stmt->get_result();
 $usuario = $result->fetch_assoc();
 
 echo json_encode($usuario);
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

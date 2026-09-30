@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Movimientos de Producto - Mediterranean ERP</title>
 
+<<<<<<< HEAD
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -21,6 +22,34 @@
       --text-primary: #0f172a;
       --text-secondary: #334155;
       --text-muted: #64748b;
+=======
+  <!-- CDNs Externe Sdk & Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script type="text/javascript">
+    (function(){
+      emailjs.init({
+        publicKey: "1G-_KS3FktYn6LH0q",
+      });
+    })();
+  </script>
+
+  <style>
+    :root {
+      /* PALETA CLAYMORPHIC AZUL GRISÁCEO (SLATE) */
+      --bg-main: #70a2ec;
+      --clay-bg: #cbd5e1;
+      --clay-surface: #f1f5f9;
+      --clay-card: #e0e7ff; 
+      
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       --accent-cyan: #0284c7;
       --accent-blue: #2563eb;
       --accent-indigo: #4f46e5;
@@ -28,17 +57,33 @@
       --warning: #f59e0b;
       --danger: #ef4444;
 
+<<<<<<< HEAD
       --clay-shadow-outer: 12px 12px 24px #cbd5e1, -8px -8px 20px #ffffff;
       --clay-shadow-card: 14px 14px 28px #cbd5e1, -10px -10px 22px #ffffff;
       --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
       --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
       --clay-btn-shadow: 6px 6px 14px #cbd5e1, -4px -4px 10px #ffffff;
+=======
+      /* SOMBRAS Y RELIEVES CLAYMORPHISM */
+      --clay-shadow-outer: 12px 12px 24px #5b87cb, -8px -8px 20px #85bdff;
+      --clay-shadow-card: 14px 14px 28px #5b87cb, -10px -10px 22px #85bdff;
+      --clay-inset-light: inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -3px -3px 6px rgba(15, 23, 42, 0.08);
+      --clay-inset-glow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(37, 99, 235, 0.2);
+      --clay-btn-shadow: 6px 6px 14px #5b87cb, -4px -4px 10px #85bdff;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
       --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       --sidebar-width: 280px;
     }
 
+<<<<<<< HEAD
     body.sidebar-collapsed { --sidebar-width: 90px; }
+=======
+    body.sidebar-collapsed {
+      --sidebar-width: 90px;
+    }
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
@@ -47,15 +92,32 @@
       min-height: 100vh;
       color: var(--text-primary);
       font-family: "Plus Jakarta Sans", sans-serif;
+<<<<<<< HEAD
       background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #70a2ec 100%);
       background-attachment: fixed;
       overflow-x: hidden;
     }
 
+=======
+      background-color: #70a2ec;
+      overflow-x: hidden;
+    }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     #tsparticles {
       position: fixed;
       width: 100%;
       height: 100%;
+<<<<<<< HEAD
       top: 0; left: 0; z-index: -1;
       background-color: #70a2ec;
     }
@@ -173,10 +235,689 @@
 
     @media (max-width: 1000px) { :root { --sidebar-width: 90px; } .menu-label, .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; } }
     @media (max-width: 620px) { :root { --sidebar-width: 0px; } .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; } body.mobile-open .sidebar { transform: translateX(0); } .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; } }
+=======
+      top: 0;
+      left: 0;
+      z-index: -1;
+      background-color: #70a2ec;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SIDEBAR CLAYMORPHIC */
+    .sidebar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      bottom: 16px;
+      width: var(--sidebar-width);
+      z-index: 5000;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .brand-logo-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+      transition: var(--transition);
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.05) translateY(-3px);
+    }
+
+    .menu-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin: 16px 0 8px 12px;
+      letter-spacing: 1.2px;
+    }
+
+    /* ESTILOS DE ENLACES SIDEBAR Y ANIMACIÓN ACTIVA */
+    .side-link {
+      width: 100%;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      margin-bottom: 6px;
+      border-radius: 18px;
+      color: var(--text-secondary);
+      background: transparent;
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .side-link:hover {
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--accent-cyan);
+      transform: translateX(4px);
+    }
+
+    .side-link.active {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #ffffff;
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    .side-icon {
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+    }
+
+    .sidebar-footer {
+      padding-top: 15px;
+    }
+
+    .system-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      color: var(--green);
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      height: 10px;
+      width: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .languages {
+      display: flex;
+      margin-bottom: 12px;
+      padding: 6px;
+      border-radius: 18px;
+      background: var(--clay-bg);
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .languages button {
+      flex: 1;
+      padding: 8px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--text-muted);
+      background: transparent;
+      font: 800 12px "Plus Jakarta Sans", sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .languages button.active-language {
+      color: var(--text-primary);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .logout-btn {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-radius: 18px;
+      color: var(--danger);
+      background: var(--clay-surface);
+      box-shadow: var(--clay-btn-shadow);
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* MODO COLAPSADO */
+    body.sidebar-collapsed .brand-logo-img { width: 45px; height: 45px; }
+    body.sidebar-collapsed .menu-label { display: none; }
+    body.sidebar-collapsed .side-link span:not(.side-icon),
+    body.sidebar-collapsed .system-status-box span,
+    body.sidebar-collapsed .languages,
+    body.sidebar-collapsed .logout-btn span:not(.side-icon) {
+      display: none;
+    }
+
+    body.sidebar-collapsed .side-link,
+    body.sidebar-collapsed .logout-btn {
+      justify-content: center;
+      padding: 0;
+    }
+
+    /* TOPBAR CLAYMORPHIC */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 28px;
+      box-shadow: var(--clay-shadow-outer);
+      z-index: 4000;
+      transition: var(--transition);
+    }
+
+    .top-left-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toggle-sidebar-btn {
+      background: var(--clay-surface);
+      border: none;
+      color: var(--accent-cyan);
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+    }
+
+    .toggle-sidebar-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      color: #fff;
+      background: var(--accent-cyan);
+    }
+
+    .welcome {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .welcome strong { color: var(--text-primary); }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .clock-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--clay-bg);
+      padding: 8px 18px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+    }
+
+    .clock-icon {
+      color: var(--accent-cyan);
+      font-size: 16px;
+    }
+
+    .today {
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .profile-badge {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--clay-btn-shadow), var(--clay-inset-glow);
+    }
+
+    .profile-badge:hover {
+      transform: scale(1.08) translateY(-2px);
+    }
+
+    /* MAIN CONTENT LAYOUT */
+    .main-content {
+      margin-left: calc(var(--sidebar-width) + 32px);
+      padding-top: 102px;
+      padding-right: 16px;
+      width: 100%;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+
+    .section {
+      padding-bottom: 90px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ANIMACIONES Y ESTILOS PARA LAS CARDS / PANELES */
+    .panel {
+      border-radius: 28px;
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--clay-shadow-card);
+      padding: 28px;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+      margin-bottom: 24px;
+      animation: fadeInCard 0.6s ease-out backwards;
+    }
+
+    .panel:hover {
+      transform: translateY(-6px);
+      box-shadow: 18px 18px 36px #5b87cb, -12px -12px 28px #85bdff;
+    }
+
+    @keyframes fadeInCard {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .panel h3 { 
+      font-size: 20px; 
+      margin: 0 0 16px;
+      color: var(--text-primary);
+    }
+
+    /* FORMULARIO Y ENTRADAS CLAYMORPHIC */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group-full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .clay-input, .clay-select, textarea.clay-input {
+      width: 100%;
+      background: var(--clay-bg);
+      border: none;
+      padding: 12px 16px;
+      border-radius: 16px;
+      box-shadow: var(--clay-inset-light);
+      font: 600 13px "Plus Jakarta Sans", sans-serif;
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .clay-input:focus, .clay-select:focus {
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(2, 132, 199, 0.3), 0 0 0 2px var(--accent-cyan);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* BOTONES */
+    .clay-btn {
+      background: linear-gradient(145deg, #e0e8f5, #cbd8ed);
+      color: var(--accent-cyan);
+      padding: 12px 22px;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      font: 700 13px "Plus Jakarta Sans", sans-serif;
+      text-decoration: none;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .clay-btn:hover {
+      background: var(--accent-cyan);
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);
+    }
+
+    .clay-btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(2, 132, 199, 0.25), var(--clay-inset-glow);
+    }
+
+    .clay-btn-primary:hover {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
+    }
+
+    .clay-btn-ghost {
+      background: var(--clay-surface);
+      color: var(--text-secondary);
+      box-shadow: var(--clay-btn-shadow);
+    }
+
+    .clay-btn-ghost:hover {
+      background: #cbd5e1;
+      color: var(--text-primary);
+    }
+
+    .mensaje {
+      margin-top: 14px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* ESTILOS DE TABLAS DE MOVIMIENTOS */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+    }
+
+    .data-table th {
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 0 16px 10px;
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.65);
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .data-table tr td:first-child {
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+    }
+
+    .data-table tr td:last-child {
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.9);
+      transform: scale(1.002);
+    }
+
+    .entrada { color: var(--green); font-weight: 700; }
+    .salida { color: var(--danger); font-weight: 700; }
+
+    /* FOOTER FIX */
+    .copyright-fixed {
+      position: fixed;
+      left: calc(var(--sidebar-width) + 32px);
+      right: 16px;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      color: var(--text-muted);
+      font-size: 12px;
+      z-index: 3000;
+      border-radius: 20px;
+      box-shadow: var(--clay-shadow-outer);
+      transition: var(--transition);
+    }
+
+    .copyright-fixed a, .copyright-fixed button {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 700;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* MODALES CLAYMORPHIC */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .clay-modal {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), var(--clay-shadow-outer);
+      padding: 28px;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .modal-header h2, .modal-header h3 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: var(--clay-surface);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: var(--clay-btn-shadow);
+      transition: var(--transition);
+      display: grid;
+      place-items: center;
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+      transform: scale(1.05);
+    }
+
+    .modal-field {
+      margin-bottom: 16px;
+    }
+
+    .small-muted {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    /* PREVIEW PANEL FLOTANTE */
+    #previewPanel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      width: 90%;
+      max-width: 850px;
+      max-height: 85vh;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 28px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3), var(--clay-shadow-outer);
+      z-index: 9500;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    #previewPanel.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #previewHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    #previewHeader h4 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .preview-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* ADAPTACIÓN RESPONSIVA */
+    @media (max-width: 1000px) {
+      :root { --sidebar-width: 90px; }
+      .brand-logo-img { width: 45px; height: 45px; }
+      .side-link span:not(.side-icon), .system-status-box span, .languages, .logout-btn span:not(.side-icon) { display: none; }
+      .side-link, .logout-btn { justify-content: center; padding: 0; }
+    }
+
+    @media (max-width: 620px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-110%); width: 270px; left: 10px; top: 10px; bottom: 10px; }
+      body.mobile-open .sidebar { transform: translateX(0); }
+      .top-bar, .main-content, .copyright-fixed { left: 10px; right: 10px; width: auto; }
+      .top-bar { padding: 0 16px; }
+      .main-content { padding-top: 90px; }
+    }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   </style>
 </head>
 
 <body>
+<<<<<<< HEAD
   <div id="tsparticles"></div>
 
   <div class="app-container">
@@ -196,10 +937,59 @@
 
       <div class="sidebar-footer">
         <div class="system-status-box"><span class="online-dot"></span><span>En Línea</span></div>
+=======
+
+  <div id="tsparticles"></div>
+  <canvas id="particles"></canvas>
+
+  <div class="app-container">
+    
+    <!-- SIDEBAR CLAYMORPHIC -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="images/LogoMediterranean1992.png" alt="Mediterranean Logo" class="brand-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/100/e0e7ff/0284c7?text=M';">
+      </div>
+      
+      <div class="menu-label" data-es="PRINCIPAL" data-en="MAIN">PRINCIPAL</div>
+      <a href="mediterranean.php" class="side-link">
+        <span class="side-icon">⌂</span><span data-es="Menu Principal" data-en="Main Menu">Menu Principal</span>
+      </a>
+      <a href="stock.html" class="side-link">
+        <span class="side-icon">📦</span><span data-es="Inventario & Stock" data-en="Stock & Inventory">Inventario & Stock</span>
+      </a>
+      <a href="sucursales.html" class="side-link">
+        <span class="side-icon">🏢</span><span data-es="Sucursales / Almacenes" data-en="Branches / Warehouses">Sucursales / Almacenes</span>
+      </a>
+      <a href="movimientos.html" class="side-link active">
+        <span class="side-icon">🔄</span><span data-es="Kardex / Movimientos" data-en="Movement Log">Kardex / Movimientos</span>
+      </a>
+
+      <div class="menu-label" data-es="ADMINISTRACIÓN" data-en="ADMINISTRATION">ADMINISTRACIÓN</div>
+      <a href="usuarios.html" class="side-link">
+        <span class="side-icon">👤</span><span data-es="Usuarios & Roles" data-en="Users & Roles">Usuarios & Roles</span>
+      </a>
+      <a href="reportes.html" class="side-link">
+        <span class="side-icon">📊</span><span data-es="Reportes & Analítica" data-en="BI Reports">Reportes & Analítica</span>
+      </a>
+      <a href="utilidades.html" class="side-link">
+        <span class="side-icon">🛠</span><span data-es="Auditoría & Ajustes" data-en="Audit & Settings">Auditoría & Ajustes</span>
+      </a>
+      <a href="configuracion.html" class="side-link">
+        <span class="side-icon">⚙</span><span data-es="Configuración ERP" data-en="ERP Settings">Configuración ERP</span>
+      </a>
+
+      <div class="sidebar-footer">
+        <div class="system-status-box">
+          <span class="online-dot"></span>
+          <span data-es="ERP En Línea" data-en="ERP Online">ERP En Línea</span>
+        </div>
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         <div class="languages">
           <button id="btn-es" class="active-language" onclick="cambiarIdioma('es')">ES</button>
           <button id="btn-en" onclick="cambiarIdioma('en')">EN</button>
         </div>
+<<<<<<< HEAD
         <a href="login.html" class="logout-btn"><span class="side-icon">⍈</span><span>Cerrar Sesión</span></a>
       </div>
     </aside>
@@ -325,11 +1115,142 @@
         <label class="small-muted">Sucursal</label>
         <select id="filtroSucursal" class="clay-select">
           <option value="">Todas</option>
+=======
+
+        <a href="login.html" class="logout-btn">
+          <span class="side-icon">⍈</span>
+          <span data-es="Cerrar Sesión" data-en="Logout">Cerrar Sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <div class="top-left-group">
+        <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="welcome">
+          <span data-es="Bienvenido" data-en="Welcome">Bienvenido</span>, <strong>Carlos Mendoza</strong> (ID: EMP-8092)
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="clock-container">
+          <span class="clock-icon">🕒</span>
+          <span class="today" id="current-time">12:00 PM</span>
+        </div>
+        <div class="profile-badge">CM</div>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      <section class="section">
+        
+        <!-- REGISTRO DE MOVIMIENTOS -->
+        <div class="panel">
+          <h3 data-es="📦 Registrar Movimiento de Producto" data-en="📦 Register Product Movement">📦 Registrar Movimiento de Producto</h3>
+          
+          <form id="formMovimiento">
+            <input type="hidden" id="productos" name="productos">
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="tipo" data-es="Tipo de movimiento" data-en="Movement Type">Tipo de movimiento</label>
+                <select name="tipo" id="tipo" class="clay-select" required>
+                  <option value="" data-es="Seleccione..." data-en="Select...">Seleccione...</option>
+                  <option value="Entrada" data-es="Entrada" data-en="Inflow (Entry)">Entrada</option>
+                  <option value="Salida" data-es="Salida" data-en="Outflow (Exit)">Salida</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sucursal" data-es="Sucursal" data-en="Branch">Sucursal</label>
+                <select name="sucursal" id="sucursal" class="clay-select" required>
+                  <option value="Kennedy">Kennedy</option>
+                  <option value="Centro">Centro</option>
+                  <option value="Norte">Norte</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="cantidad" data-es="Cantidad" data-en="Quantity">Cantidad</label>
+                <input type="number" name="cantidad" id="cantidad" class="clay-input" required min="1" placeholder="Ej: 10">
+              </div>
+
+              <div class="form-group form-group-full">
+                <label for="comentario" data-es="Comentario" data-en="Comment">Comentario</label>
+                <textarea name="comentario" id="comentario" class="clay-input" rows="3" placeholder="Ej: Compra a proveedor o ajuste de stock"></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="clay-btn clay-btn-primary" data-es="💾 Registrar Movimiento" data-en="💾 Save Movement">💾 Registrar Movimiento</button>
+            </div>
+
+            <div class="mensaje" id="mensajeMovimiento"></div>
+          </form>
+        </div>
+
+        <!-- LISTADO DE ÚLTIMOS MOVIMIENTOS -->
+        <div class="panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin:0;" data-es="📜 Últimos Movimientos" data-en="📜 Recent Movements">📜 Últimos Movimientos</h3>
+            <button id="btnReporte" class="clay-btn clay-btn-primary" data-es="📄 Generar Reporte" data-en="📄 Generate Report">📄 Generar Reporte</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="tablaMovimientos">
+              <thead>
+                <tr>
+                  <th data-es="Fecha" data-en="Date">Fecha</th>
+                  <th data-es="Tipo" data-en="Type">Tipo</th>
+                  <th data-es="Cantidad" data-en="Quantity">Cantidad</th>
+                  <th data-es="Comentario" data-en="Comment">Comentario</th>
+                  <th data-es="Sucursal" data-en="Branch">Sucursal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Se puebla dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL DE GENERACIÓN DE REPORTES -->
+  <div class="modal-overlay" id="modalReporte">
+    <div class="clay-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h3 id="modalTitle" data-es="📄 Generar Reporte Avanzado" data-en="📄 Generate Advanced Report">📄 Generar Reporte Avanzado</h3>
+        <button class="modal-close" id="btnCerrarReporte" title="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-field">
+        <label class="small-muted" data-es="Desde" data-en="From">Desde</label>
+        <input type="date" id="fechaDesde" class="clay-input" />
+      </div>
+
+      <div class="modal-field">
+        <label class="small-muted" data-es="Hasta" data-en="To">Hasta</label>
+        <input type="date" id="fechaHasta" class="clay-input" />
+      </div>
+
+      <div class="modal-field">
+        <label class="small-muted" data-es="Sucursal" data-en="Branch">Sucursal</label>
+        <select id="filtroSucursal" class="clay-select">
+          <option value="" data-es="Todas" data-en="All">Todas</option>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
           <option value="Kennedy">Kennedy</option>
           <option value="Centro">Centro</option>
           <option value="Norte">Norte</option>
         </select>
       </div>
+<<<<<<< HEAD
       <div class="modal-field">
         <label class="small-muted">Tipo de Movimiento</label>
         <select id="filtroTipo" class="clay-select">
@@ -342,20 +1263,62 @@
       <div class="modal-actions">
         <button id="btnPrevisualizar" class="clay-btn clay-btn-ghost" style="flex: 1;">🔎 Consultar</button>
         <button id="btnGenerarReporte" class="clay-btn clay-btn-primary" style="flex: 1;">📥 Descargar PDF</button>
+=======
+
+      <div class="modal-field">
+        <label class="small-muted" data-es="Tipo" data-en="Type">Tipo</label>
+        <select id="filtroTipo" class="clay-select">
+          <option value="" data-es="Todos" data-en="All">Todos</option>
+          <option value="Entrada" data-es="Entrada" data-en="Inflow">Entrada</option>
+          <option value="Salida" data-es="Salida" data-en="Outflow">Salida</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label class="small-muted" data-es="Formato" data-en="Format">Formato</label>
+        <select id="filtroFormato" class="clay-select">
+          <option value="pdf">PDF</option>
+          <option value="excel">Excel</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btnPrevisualizar" class="clay-btn clay-btn-ghost" style="flex: 1;" data-es="🔎 Consultar" data-en="🔎 Preview">🔎 Consultar</button>
+        <button id="btnGenerarReporte" class="clay-btn clay-btn-primary" style="flex: 1;" data-es="📥 Descargar" data-en="📥 Download">📥 Descargar</button>
+      </div>
+
+      <div style="margin-top:15px; text-align:center;">
+        <span class="small-muted" style="text-transform:none;" data-es="Datos protegidos en base de Datos Mediterranean." data-en="Data protected in Mediterranean Database.">Datos protegidos en base de Datos Mediterranean.</span>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <div id="previewPanel">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <h4 style="margin:0;">Consulta de Movimientos</h4>
       <button id="closePreview" class="modal-close">✕</button>
     </div>
     <div id="previewMeta" class="small-muted" style="margin-bottom:12px;">Mostrando resultados...</div>
+=======
+  <!-- PANEL DE VISTA PREVIA (FLOTANTE) -->
+  <div id="previewPanel" aria-hidden="true">
+    <div id="previewHeader">
+      <h4 data-es="Consulta de Reporte" data-en="Report Preview">Consulta de Reporte</h4>
+      <button id="closePreview" class="modal-close">✕</button>
+    </div>
+
+    <div id="previewMeta" class="small-muted" style="margin-bottom:12px; text-transform:none;" data-es="Mostrando resultados..." data-en="Showing results...">
+      Mostrando resultados...
+    </div>
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     <div class="table-responsive" style="max-height: 50vh; overflow-y: auto;">
       <table class="data-table" id="previewTable">
         <thead>
           <tr>
+<<<<<<< HEAD
             <th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Comentario</th><th>Sucursal</th>
           </tr>
         </thead>
@@ -506,10 +1469,151 @@
           seleccionarTipo('Entrada');
           await cargarProductosPorSucursal();
           await cargarMovimientos();
+=======
+            <th data-es="Fecha" data-en="Date">Fecha</th>
+            <th data-es="Tipo" data-en="Type">Tipo</th>
+            <th data-es="Cantidad" data-en="Quantity">Cantidad</th>
+            <th data-es="Comentario" data-en="Comment">Comentario</th>
+            <th data-es="Sucursal" data-en="Branch">Sucursal</th>
+          </tr>
+        </thead>
+        <tbody id="previewBody">
+          <!-- Carga dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="preview-actions">
+      <button id="downloadFromPreview" class="clay-btn clay-btn-primary" data-es="📥 Descargar Archivo" data-en="📥 Download File">📥 Descargar Archivo</button>
+      <button id="closePreviewFooter" class="clay-btn clay-btn-ghost" data-es="Volver" data-en="Back">Volver</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE POLÍTICAS DE PRIVACIDAD -->
+  <div class="modal-overlay" id="policyModal">
+    <div class="clay-modal">
+      <div class="modal-header">
+        <h3 data-es="Políticas de Privacidad" data-en="Privacy Policy">Políticas de Privacidad</h3>
+        <button class="modal-close" onclick="document.getElementById('policyModal').style.display='none'">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;" data-es="Los datos recopilados en este sistema ERP son de uso estrictamente confidencial y están regulados bajo las políticas corporativas internas de Mediterranean." data-en="The data collected in this ERP system is strictly confidential and governed under Mediterranean internal corporate policies.">
+        Los datos recopilados en este sistema ERP son de uso estrictamente confidencial y están regulados bajo las políticas corporativas internas de Mediterranean.
+      </p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="copyright-fixed">
+    <div>
+      © 2026 Mediterranean ERP. <span data-es="Todos los derechos reservados." data-en="All rights reserved.">Todos los derechos reservados.</span> | <button id="openPolicy" data-es="Política de Privacidad" data-en="Privacy Policy">Política de Privacidad</button>
+    </div>
+  </footer>
+
+  <script>
+    function cambiarIdioma(lang) {
+      document.getElementById('btn-es').classList.toggle('active-language', lang === 'es');
+      document.getElementById('btn-en').classList.toggle('active-language', lang === 'en');
+      document.documentElement.lang = lang;
+
+      const elementos = document.querySelectorAll('[data-es][data-en]');
+      elementos.forEach(el => {
+        if (el.dataset[lang]) {
+          el.textContent = el.dataset[lang];
+        }
+      });
+    }
+
+    // Inicializador del lienzo de partículas completamente blancas
+    window.onload = function() {
+      const canvas = document.getElementById("particles");
+      if(canvas) {
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        class Particle {
+          constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.radius = Math.random() * 2.5 + 1;
+            this.speedX = (Math.random() - 0.5) * 1.2;
+            this.speedY = (Math.random() - 0.5) * 1.2;
+            this.opacity = Math.random() * 0.7 + 0.3;
+          }
+          draw() { 
+            ctx.beginPath(); 
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; 
+            ctx.fill(); 
+          }
+          update() {
+            this.x += this.speedX; 
+            this.y += this.speedY;
+            if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            this.draw();
+          }
+        }
+
+        function initParticles() { 
+          particles = []; 
+          // Más partículas
+          for (let i = 0; i < 120; i++) particles.push(new Particle()); 
+        }
+        function animateParticles() { 
+          ctx.clearRect(0, 0, canvas.width, canvas.height); 
+          particles.forEach(p => p.update()); 
+          requestAnimationFrame(animateParticles); 
+        }
+
+        initParticles();
+        animateParticles();
+        window.addEventListener("resize", () => { 
+          canvas.width = window.innerWidth; 
+          canvas.height = window.innerHeight; 
+          initParticles(); 
+        });
+      }
+      
+      setInterval(updateClock, 1000);
+      updateClock();
+    };
+
+    // Lógica principal de Movimientos
+    document.addEventListener("DOMContentLoaded", async () => {
+      const inputId = document.getElementById("productos");
+      let productoId = localStorage.getItem("productoSeleccionado");
+
+      if (!productoId) {
+        productoId = 20;
+        localStorage.setItem("productoSeleccionado", productoId);
+      }
+
+      if(inputId) inputId.value = productoId;
+      cargarMovimientos(productoId);
+    });
+
+    document.getElementById("formMovimiento").addEventListener("submit", async e => {
+      e.preventDefault();
+      const datos = new FormData(e.target);
+      const mensaje = document.getElementById("mensajeMovimiento");
+      mensaje.innerHTML = "Registrando...";
+
+      try {
+        const resp = await fetch("agregar_movimiento.php", { method: "POST", body: datos });
+        const res = await resp.json();
+
+        if (res.status === "success") {
+          mensaje.innerHTML = `<span style="color:var(--green);">${res.message}</span>`;
+          e.target.reset();
+          cargarMovimientos(localStorage.getItem("productoSeleccionado"));
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         } else {
           mensaje.innerHTML = `<span style="color:var(--danger);">${res.message}</span>`;
         }
       } catch (error) {
+<<<<<<< HEAD
         console.error("Error en la petición AJAX:", error);
         mensaje.innerHTML = `<span style="color:var(--danger);">Error de comunicación con el servidor.</span>`;
       }
@@ -616,6 +1720,201 @@
       updateClock();
       setInterval(updateClock, 1000);
     });
+=======
+        console.error(error);
+        mensaje.innerHTML = `<span style="color:var(--danger);">Error de red o respuesta inválida</span>`;
+      }
+    });
+
+    async function cargarMovimientos(productoId) {
+      const tbody = document.querySelector("#tablaMovimientos tbody");
+      if(!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando...</td></tr>';
+      try {
+        const resp = await fetch(`listar_movimiento.php?productos=${encodeURIComponent(productoId)}`);
+        const data = await resp.json();
+        tbody.innerHTML = "";
+        if (!data.movimientos || data.movimientos.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sin movimientos</td></tr>`;
+          return;
+        }
+        data.movimientos.forEach(m => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${m.fecha}</td>
+            <td class="${m.tipo === 'Entrada' ? 'entrada' : 'salida'}">${m.tipo}</td>
+            <td>${m.cantidad}</td>
+            <td>${m.comentario || '-'}</td>
+            <td>${m.sucursal || '-'}</td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger);">Error al cargar movimientos.</td></tr>';
+      }
+    }
+
+    // Modal de reportes
+    const modal = document.getElementById("modalReporte");
+    const preview = document.getElementById("previewPanel");
+
+    document.getElementById("btnReporte").addEventListener("click", () => {
+      const hoy = new Date().toISOString().slice(0,10);
+      document.getElementById("fechaHasta").value = hoy;
+      const siete = new Date(Date.now() - 7*24*60*60*1000).toISOString().slice(0,10);
+      document.getElementById("fechaDesde").value = siete;
+
+      modal.classList.add("active");
+    });
+
+    document.getElementById("btnCerrarReporte").addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("active");
+    });
+
+    // Vista previa del Reporte
+    document.getElementById("btnPrevisualizar").addEventListener("click", async () => {
+      const desde = document.getElementById("fechaDesde").value;
+      const hasta = document.getElementById("fechaHasta").value;
+      const sucursal = document.getElementById("filtroSucursal").value;
+      const tipo = document.getElementById("filtroTipo").value;
+      const productoId = localStorage.getItem("productoSeleccionado");
+
+      if (!desde || !hasta) {
+        alert("Seleccione rango de fechas (desde / hasta).");
+        return;
+      }
+      if (desde > hasta) {
+        alert("La fecha 'Desde' no puede ser mayor que 'Hasta'.");
+        return;
+      }
+
+      document.getElementById("previewMeta").textContent = `Cargando registros entre ${desde} y ${hasta}...`;
+      preview.classList.add("open");
+
+      try {
+        const url = `listar_movimiento.php?productos=${encodeURIComponent(productoId)}&desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}&sucursal=${encodeURIComponent(sucursal)}&tipo=${encodeURIComponent(tipo)}`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+
+        const body = document.getElementById("previewBody");
+        body.innerHTML = "";
+
+        if (!data.movimientos || data.movimientos.length === 0) {
+          body.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sin registros para este rango.</td></tr>`;
+          document.getElementById("previewMeta").textContent = `0 registros entre ${desde} y ${hasta}.`;
+          return;
+        }
+
+        data.movimientos.forEach(m => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${m.fecha}</td>
+            <td class="${m.tipo === 'Entrada' ? 'entrada' : 'salida'}">${m.tipo}</td>
+            <td>${m.cantidad}</td>
+            <td>${m.comentario || '-'}</td>
+            <td>${m.sucursal || '-'}</td>
+          `;
+          body.appendChild(tr);
+        });
+
+        document.getElementById("previewMeta").textContent = `${data.movimientos.length} registros encontrados entre ${desde} y ${hasta}.`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("previewBody").innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger);">Error al cargar vista previa.</td></tr>`;
+        document.getElementById("previewMeta").textContent = `Error al cargar registros.`;
+      }
+    });
+
+    document.getElementById("closePreview").addEventListener("click", () => {
+      preview.classList.remove("open");
+    });
+    document.getElementById("closePreviewFooter").addEventListener("click", () => {
+      preview.classList.remove("open");
+    });
+
+    // Descarga de reporte desde Modal
+    document.getElementById("btnGenerarReporte").addEventListener("click", async () => {
+      descargarReporte();
+      modal.classList.remove("active");
+    });
+    
+    // Abrir modal política
+    document.getElementById("openPolicy").onclick = (e) => {
+      e.preventDefault();
+      document.getElementById("policyModal").style.display = "flex";
+    };
+
+    window.onclick = (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        e.target.style.display = "none";
+      }
+    };
+
+    // Descarga de reporte desde Preview
+    document.getElementById("downloadFromPreview").addEventListener("click", async () => {
+      descargarReporte();
+    });
+
+    async function descargarReporte() {
+      const desde = document.getElementById("fechaDesde").value;
+      const hasta = document.getElementById("fechaHasta").value;
+      const sucursal = document.getElementById("filtroSucursal").value;
+      const tipoFiltro = document.getElementById("filtroTipo").value;
+      const formato = document.getElementById("filtroFormato").value;
+      const productoId = localStorage.getItem("productoSeleccionado");
+
+      if (!desde || !hasta) {
+        alert("Seleccione un rango de fechas válido.");
+        return;
+      }
+
+      const form = new FormData();
+      form.append("producto", productoId);
+      form.append("desde", desde);
+      form.append("hasta", hasta);
+      form.append("sucursal", sucursal);
+      form.append("tipo", tipoFiltro);
+
+      try {
+        const endpoint = formato === "excel" ? "exportar_excel.php" : "exportar_pdf.php";
+        const resp = await fetch(endpoint, { method: "POST", body: form });
+
+        if (!resp.ok) throw new Error("Respuesta del servidor no OK");
+
+        const blob = await resp.blob();
+        const ext = formato === "excel" ? "xlsx" : "pdf";
+        const filename = `reporte_${productoId}_${desde}_a_${hasta}.${ext}`;
+
+        const urlBlob = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = urlBlob;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(urlBlob);
+        a.remove();
+
+        document.getElementById("previewMeta").textContent = `Archivo descargado con éxito: ${filename}`;
+      } catch (err) {
+        console.error(err);
+        alert("Error al intentar generar el archivo.");
+      }
+    }
+
+    // Auxiliares interfaz
+    function updateClock() {
+      const now = new Date();
+      const timeElem = document.getElementById('current-time');
+      if (timeElem) {
+        timeElem.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 
     function toggleSidebar() {
       if (window.innerWidth <= 620) {
@@ -625,6 +1924,7 @@
       }
     }
 
+<<<<<<< HEAD
     function updateClock() {
       const now = new Date();
       const timeElem = document.getElementById('current-time');
@@ -644,6 +1944,24 @@
     document.getElementById("btnCerrarReporte")?.addEventListener("click", () => modal.classList.remove("active"));
     document.getElementById("closePreview")?.addEventListener("click", () => preview.classList.remove("open"));
     document.getElementById("closePreviewFooter")?.addEventListener("click", () => preview.classList.remove("open"));
+=======
+    // Partículas tsParticles Blancas y más densas
+    if (typeof tsParticles !== "undefined") {
+      tsParticles.load("tsparticles", {
+        background: { color: { value: "#70a2ec" } },
+        particles: {
+          number: { value: 90, density: { enable: true, value_area: 800 } },
+          color: { value: "#ffffff" },
+          shape: { type: "circle" },
+          opacity: { value: 0.6, random: true },
+          size: { value: 3.5, random: true },
+          line_linked: { enable: true, distance: 130, color: "#ffffff", opacity: 0.35, width: 1 },
+          move: { enable: true, speed: 1.5 }
+        },
+        interactivity: { events: { onhover: { enable: true, mode: "grab" } } }
+      });
+    }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   </script>
 </body>
 </html>

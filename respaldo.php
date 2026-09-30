@@ -34,4 +34,8 @@ header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=$nombreArchivo");
 readfile($rutaCompleta);
 exit;
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

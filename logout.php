@@ -24,4 +24,8 @@ session_destroy();
 // Redirigir al login
 header("Location: /Mediterranean_3/login.html");
 exit();
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f

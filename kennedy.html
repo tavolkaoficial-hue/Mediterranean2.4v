@@ -667,7 +667,11 @@
     <div class="sidebar-footer">
       <div class="system-status-box">
         <span class="online-dot"></span>
+<<<<<<< HEAD
         <span data-i18n="erp_online">En Línea</span>
+=======
+        <span data-i18n="erp_online">ERP En Línea</span>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       </div>
 
       <div class="languages">
@@ -826,11 +830,26 @@
   </div>
 </div>
 
+<<<<<<< HEAD
   <!-- FOOTER -->
 <footer class="copyright-fixed">
   <a href="politica-completa.html">© <?php echo date('Y'); ?> 2026 Mediterranean Technologies</a>
 </footer>
 
+=======
+<!-- MODAL POLÍTICAS -->
+<div id="policyModal" class="modal-overlay">
+  <div class="modal-card" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2 data-i18n="privacy_policy">Política de Privacidad y Seguridad</h2>
+      <div class="close-modal" onclick="cerrarModal('policyModal')">&times;</div>
+    </div>
+    <div class="modal-body">
+      <p data-i18n="policy_text">En Mediterranean Technologies, valoramos tu privacidad. Todos los datos son tratados conforme al RGPD y nuestras medidas de seguridad garantizan la integridad de la información.</p>
+      <p><a href="politica-completa.html" style="color: var(--accent-cyan); font-weight: bold;" data-i18n="read_full_policy">Leer política completa</a></p>
+    </div>
+  </div>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 </div>
 
 <!-- JAVASCRIPT CONSOLIDADO Y FUNCIONAL -->
@@ -902,7 +921,11 @@
   };
 
   let currentLang = 'es';
+<<<<<<< HEAD
   let globalProductos = [];
+=======
+  let globalMovimientos = [];
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   let globalEntradas = [];
   let globalSalidas = [];
   let globalStockMap = new Map();
@@ -964,6 +987,7 @@
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   L.marker([4.6281, -74.1485]).addTo(map).bindPopup('<b>Sucursal Kennedy</b>').openPopup();
 
+<<<<<<< HEAD
   // Carga de Datos desde Backend PHP (productos.php con filtro por sucursal Kennedy)
   async function cargarDatosKennedy() {
     try {
@@ -1002,12 +1026,48 @@
         // Entradas y Salidas simuladas basándose en el inventario registrado
         globalEntradas.push({ producto: nombre, cantidad: cant, fecha: hoy });
         globalSalidas.push({ producto: nombre, cantidad: Math.floor(cant * 0.2), fecha: hoy });
+=======
+  // Carga de Datos desde Backend PHP
+  async function cargarDatosKennedy() {
+    try {
+      let data;
+      try {
+        const resp = await fetch('listar_movimiento.php?sucursal=Kennedy');
+        data = await resp.json();
+      } catch (err) {
+        // Fallback simulado por si no se ejecuta en servidor PHP activo
+        data = {
+          status: "success",
+          movimientos: [
+            { producto: "Aceite de Oliva Extra Virgen 1L", tipo: "Entrada", cantidad: 100, fecha: "2025-02-10" },
+            { producto: "Pasta Penne Rigate 500g", tipo: "Entrada", cantidad: 200, fecha: "2025-02-11" },
+            { producto: "Salsa de Tomate Bolognesa", tipo: "Salida", cantidad: 30, fecha: "2025-02-13" },
+            { producto: "Aceite de Oliva Extra Virgen 1L", tipo: "Salida", cantidad: 15, fecha: "2025-02-15" }
+          ]
+        };
+      }
+
+      globalMovimientos = data.movimientos || [];
+      globalEntradas = globalMovimientos.filter(m => m.tipo === "Entrada");
+      globalSalidas = globalMovimientos.filter(m => m.tipo === "Salida");
+
+      globalStockMap.clear();
+      globalMovimientos.forEach(m => {
+        const nombre = m.producto;
+        const cantidad = parseInt(m.cantidad);
+        if (!globalStockMap.has(nombre)) globalStockMap.set(nombre, 0);
+        globalStockMap.set(nombre, globalStockMap.get(nombre) + (m.tipo === "Entrada" ? cantidad : -cantidad));
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       });
 
       renderTabla(globalEntradas, globalSalidas, globalStockMap);
       renderGrafico(globalStockMap, globalEntradas, globalSalidas);
     } catch (e) {
+<<<<<<< HEAD
       console.error("Error general en cargarDatosKennedy:", e);
+=======
+      console.error(e);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
   }
 
@@ -1018,9 +1078,15 @@
     stockBody.innerHTML = entBody.innerHTML = salBody.innerHTML = "";
 
     // Muestra resumida en la vista principal (máximo 4 elementos)
+<<<<<<< HEAD
     Array.from(stockMap.entries()).slice(0, 4).forEach(([prod, info]) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td>${info.stock}</td><td>${new Date().toLocaleDateString()}</td>`;
+=======
+    Array.from(stockMap.entries()).slice(0, 4).forEach(([prod, cant]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${prod}</td><td>General</td><td>${cant}</td><td>${new Date().toLocaleDateString()}</td>`;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       stockBody.appendChild(tr);
     });
 
@@ -1051,9 +1117,15 @@
       title.innerHTML = `<i class="fa-solid fa-boxes-stacked"></i> ${t.modal_stock_title}`;
       head.innerHTML = `<tr><th>${t.th_product}</th><th>${t.th_category}</th><th>${t.th_quantity}</th><th>${t.th_last_update}</th></tr>`;
       
+<<<<<<< HEAD
       globalStockMap.forEach((info, prod) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `<td>${prod}</td><td>${info.categoria}</td><td><strong>${info.stock}</strong></td><td>${new Date().toLocaleDateString()}</td>`;
+=======
+      globalStockMap.forEach((cant, prod) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${prod}</td><td>General</td><td><strong>${cant}</strong></td><td>${new Date().toLocaleDateString()}</td>`;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
         body.appendChild(tr);
       });
     } else if (tipo === 'entradas') {
@@ -1090,7 +1162,11 @@
     if (chart) chart.destroy();
 
     const labels = Array.from(stockMap.keys());
+<<<<<<< HEAD
     const stockData = Array.from(stockMap.values()).map(item => item.stock);
+=======
+    const stockData = Array.from(stockMap.values());
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     const entradaData = entradas.map(e => e.cantidad);
     const salidaData = salidas.map(s => -Math.abs(s.cantidad));
 
@@ -1168,6 +1244,7 @@
     },
     interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
   });
+<<<<<<< HEAD
   document.addEventListener('DOMContentLoaded', function() {
   fetch('get_user.php')
     .then(response => response.json())
@@ -1189,6 +1266,8 @@
     })
     .catch(err => console.error('Error al cargar datos del usuario:', err));
 });
+=======
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
 </script>
 </body>
 </html>

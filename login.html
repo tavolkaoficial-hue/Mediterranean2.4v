@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Biométrico | Mediterranean Core</title>
 
+<<<<<<< HEAD
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,10 +161,256 @@
       padding: 8px;
       background: linear-gradient(145deg, #ffffff, #cbd5e1);
       box-shadow: var(--clay-shadow-btn), var(--clay-inset-light);
+=======
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+          crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"
+          crossorigin="anonymous"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+
+      background:
+        linear-gradient(
+          135deg,
+          #0d1117,
+          #004e92,
+          #00c6ff
+        );
+
+      background-size: 300% 300%;
+      animation: moverFondo 12s ease infinite;
+
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 10;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
+      min-height: 100vh;
+
+      padding: 20px;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.08);
+
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+
+      border-radius: 24px;
+
+      padding: 35px;
+
+      width: 420px;
+      max-width: 92%;
+
+      text-align: center;
+
+      border: 1px solid rgba(0, 242, 254, 0.3);
+
+      box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(0, 242, 254, 0.2);
+
+      animation: aparecer 0.8s ease;
+    }
+
+    /* =========================================================
+       LOGO
+    ========================================================= */
+
+    .login-card img.logo {
+      width: 160px;
+      max-width: 100%;
+
+      margin-bottom: 15px;
+
+      filter:
+        drop-shadow(0 0 10px rgba(0, 242, 254, 0.8))
+        drop-shadow(0 0 20px rgba(0, 242, 254, 0.35));
+
+      transition: transform 0.3s ease;
+    }
+
+    .login-card img.logo:hover {
+      transform: scale(1.03);
+    }
+
+    .login-card h2 {
+      font-size: 22px;
+
+      color: #00f2fe;
+
+      text-shadow:
+        0 0 10px rgba(0, 242, 254, 0.5),
+        0 0 20px rgba(0, 242, 254, 0.15);
+
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+
+      color: #00ffcc;
+
+      margin-bottom: 20px;
+
+      letter-spacing: 2px;
+
+      text-transform: uppercase;
+    }
+
+    /* =========================================================
+       BOTÓN SELECCIONAR USUARIO
+    ========================================================= */
+
+    .btn-select-user {
+      background: rgba(0, 0, 0, 0.4);
+
+      border: 1px dashed rgba(0, 242, 254, 0.5);
+
+      color: #00f2fe;
+
+      padding: 10px 15px;
+
+      border-radius: 12px;
+
+      cursor: pointer;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      margin-bottom: 15px;
+
+      transition: all 0.3s ease;
+
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 8px;
+    }
+
+    .btn-select-user:hover {
+      background: rgba(0, 242, 254, 0.15);
+
+      border-color: #00f2fe;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 0 15px rgba(0, 242, 254, 0.15);
+    }
+
+    /* =========================================================
+       AVATAR / BIOMETRÍA
+    ========================================================= */
+
+    .avatar-wrapper {
+      position: relative;
+
+      width: 170px;
+      height: 170px;
+
+      margin: 10px auto 15px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-view {
+      width: 150px;
+      height: 150px;
+
+      border-radius: 50%;
+
+      overflow: hidden;
+
+      position: relative;
+
+      background: #000;
+
+      border: 3px solid #00f2fe;
+
+      box-shadow:
+        0 0 20px rgba(0, 242, 254, 0.4),
+        inset 0 0 20px rgba(0, 242, 254, 0.15);
+
+      z-index: 2;
+    }
+
+    #webcam,
+    #userAvatar {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+
+    #webcam {
+      display: none;
+
+      transform: scaleX(-1);
+    }
+
+    #meshCanvas {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      transform: scaleX(-1);
+
+      pointer-events: none;
+
+      z-index: 5;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .biometric-scanner-ring {
       position: absolute;
+<<<<<<< HEAD
       inset: -4px;
       border-radius: 50%;
       border: 3px dashed var(--accent-cyan);
@@ -230,10 +477,76 @@
       font-weight: 800;
       font-size: 16px;
       color: var(--text-primary);
+=======
+
+      top: 0;
+      left: 0;
+
+      width: 170px;
+      height: 170px;
+
+      border: 2px dashed #00ffcc;
+
+      border-radius: 50%;
+
+      animation: spin 10s linear infinite;
+
+      pointer-events: none;
+
+      opacity: 0.9;
+
+      z-index: 1;
+    }
+
+    .scanner-laser {
+      position: absolute;
+
+      width: 100%;
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          #00ffcc,
+          #00f2fe,
+          transparent
+        );
+
+      top: 0;
+      left: 0;
+
+      box-shadow:
+        0 0 15px #00ffcc,
+        0 0 5px #00f2fe;
+
+      animation: scanLaser 1.8s infinite ease-in-out;
+
+      display: none;
+
+      z-index: 10;
+    }
+
+    /* =========================================================
+       DATOS DEL USUARIO
+    ========================================================= */
+
+    .user-name {
+      font-size: 18px;
+
+      font-weight: 700;
+
+      color: #ffffff;
+
+      margin-bottom: 2px;
+
+      min-height: 22px;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .user-email {
       font-size: 12px;
+<<<<<<< HEAD
       color: var(--text-muted);
       margin-top: 2px;
       margin-bottom: 20px;
@@ -324,10 +637,206 @@
       display: none;
       align-items: center;
       justify-content: center;
+=======
+
+      color: #00ffcc;
+
+      margin-bottom: 15px;
+
+      min-height: 18px;
+    }
+
+    /* =========================================================
+       BOTÓN FACE ID PREMIUM Y DINÁMICO
+    ========================================================= */
+
+    .bio-btn {
+      position: relative;
+      width: 100%;
+
+      padding: 16px;
+
+      border: none;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #00f2fe 0%,
+          #0072ff 50%,
+          #00c6ff 100%
+        );
+      background-size: 200% 200%;
+
+      color: #001220;
+
+      font-size: 15px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 12px;
+
+      box-shadow:
+        0 6px 20px rgba(0, 242, 254, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+
+      letter-spacing: 1.5px;
+
+      text-transform: uppercase;
+
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+    }
+
+    .bio-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+      );
+      transform: skewX(-20deg);
+      transition: none;
+    }
+
+    .bio-btn:hover:not(:disabled)::before {
+      animation: btnShine 1.5s infinite;
+    }
+
+    .bio-btn:hover:not(:disabled) {
+      background-position: right center;
+      transform: translateY(-3px) scale(1.02);
+      color: #ffffff;
+      box-shadow:
+        0 10px 30px rgba(0, 242, 254, 0.7),
+        0 0 20px rgba(0, 255, 204, 0.5);
+    }
+
+    .bio-btn:active:not(:disabled) {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .bio-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes btnShine {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    /* =========================================================
+       ESTADO
+    ========================================================= */
+
+    #bio-status {
+      margin-top: 12px;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+      color: #00f2fe;
+
+      min-height: 18px;
+
+      text-shadow:
+        0 0 8px rgba(0, 242, 254, 0.35);
+    }
+
+    .step-dots {
+      display: flex;
+
+      justify-content: center;
+
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: rgba(255, 255, 255, 0.2);
+
+      transition: all 0.25s ease;
+    }
+
+    .dot.active {
+      background: #00f2fe;
+
+      box-shadow:
+        0 0 10px #00f2fe;
+
+      transform: scale(1.3);
+    }
+
+    .dot.completed {
+      background: #00ffcc;
+
+      box-shadow:
+        0 0 10px #00ffcc;
+    }
+
+    /* =========================================================
+       MODAL MEJORADO (AMPLIO, DINÁMICO Y SIN RECORTES)
+    ========================================================= */
+
+    .modal-overlay {
+      position: fixed;
+
+      top: 0;
+      left: 0;
+
+      width: 100vw;
+      height: 100vh;
+
+      background: rgba(5, 10, 20, 0.85);
+
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+
+      z-index: 1000;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       padding: 20px;
     }
 
     .modal-overlay.active {
+<<<<<<< HEAD
       display: flex;
       animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -345,10 +854,50 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
       padding: 24px;
       border: 1px solid rgba(255, 255, 255, 0.8);
+=======
+      opacity: 1;
+
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: linear-gradient(
+        145deg,
+        rgba(13, 20, 33, 0.95),
+        rgba(8, 12, 22, 0.98)
+      );
+
+      border: 1px solid rgba(0, 242, 254, 0.35);
+
+      border-radius: 28px;
+
+      width: 720px;
+      max-width: 95vw;
+
+      max-height: 85vh;
+
+      padding: 30px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(0, 242, 254, 0.25);
+      
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1) translateY(0);
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .modal-header {
       display: flex;
+<<<<<<< HEAD
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
@@ -387,10 +936,94 @@
       flex-direction: column;
       gap: 10px;
       padding-right: 4px;
+=======
+
+      justify-content: space-between;
+      align-items: center;
+
+      margin-bottom: 20px;
+
+      border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+
+      padding-bottom: 15px;
+    }
+
+    .modal-header h3 {
+      color: #00f2fe;
+
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
+
+    .close-modal {
+      background: rgba(255, 255, 255, 0.05);
+
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+      color: #fff;
+
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+
+      font-size: 18px;
+
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 77, 77, 0.2);
+      border-color: #ff4d4d;
+      color: #ff4d4d;
+      transform: rotate(90deg);
+    }
+
+    /* =========================================================
+       LISTA DE USUARIOS (GRID DINÁMICO)
+    ========================================================= */
+
+    .user-list {
+      overflow-y: auto;
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+      gap: 16px;
+
+      padding: 5px 8px 10px 2px;
+    }
+
+    .user-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .user-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+    }
+
+    .user-list::-webkit-scrollbar-thumb {
+      background: rgba(0, 242, 254, 0.4);
+
+      border-radius: 10px;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .user-item {
       display: flex;
+<<<<<<< HEAD
       align-items: center;
       gap: 12px;
       padding: 10px 14px;
@@ -411,14 +1044,91 @@
       height: 42px;
       border-radius: 50%;
       object-fit: cover;
+=======
+
+      align-items: center;
+
+      gap: 15px;
+
+      background: rgba(255, 255, 255, 0.03);
+
+      padding: 14px 18px;
+
+      border-radius: 18px;
+
+      border: 1px solid rgba(0, 242, 254, 0.12);
+
+      cursor: pointer;
+
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #00f2fe;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .user-item:hover {
+      background: rgba(0, 242, 254, 0.12);
+
+      border-color: rgba(0, 242, 254, 0.6);
+
+      transform: translateY(-3px) scale(1.02);
+
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(0, 242, 254, 0.25);
+    }
+
+    .user-item:hover::before {
+      opacity: 1;
+    }
+
+    .user-item img {
+      width: 52px;
+      height: 52px;
+
+      min-width: 52px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+
+      border: 2px solid #00f2fe;
+
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .user-item:hover img {
+      transform: scale(1.08);
+      border-color: #00ffcc;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .user-item-info {
       text-align: left;
+<<<<<<< HEAD
+=======
+
+      min-width: 0;
+
+      flex-grow: 1;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .user-item-info .name {
       font-weight: 700;
+<<<<<<< HEAD
       font-size: 13px;
       color: var(--text-primary);
     }
@@ -464,10 +1174,58 @@
     .welcome-content {
       position: relative;
       z-index: 2; /* Para que quede por encima de las partículas del overlay */
+=======
+
+      font-size: 15px;
+
+      color: #fff;
+
+      word-break: break-word;
+      margin-bottom: 3px;
+    }
+
+    .user-item-info .email {
+      font-size: 12px;
+
+      color: #00ffcc;
+
+      word-break: break-word;
+      opacity: 0.85;
+    }
+
+    /* =========================================================
+       PANTALLA DE BIENVENIDA / SPLASH ACCESO AUTORIZADO
+    ========================================================= */
+
+    .welcome-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #080c14;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .welcome-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .welcome-content {
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
+<<<<<<< HEAD
     }
 
     /* LOGO GRANDE Y LLAMATIVO */
@@ -520,11 +1278,40 @@
       overflow: hidden;
       margin: 0 auto;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+=======
+      gap: 20px;
+    }
+
+    .welcome-logo {
+      width: 260px;
+      max-width: 80vw;
+      filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.8));
+      animation: logoPulse 2s infinite ease-in-out;
+    }
+
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #00ffcc;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+    }
+
+    .welcome-loader {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
 
     .welcome-progress {
       width: 0%;
       height: 100%;
+<<<<<<< HEAD
       background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
       box-shadow: 0 0 12px var(--accent-cyan);
       animation: progressAnim 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -532,12 +1319,176 @@
 
     @keyframes progressAnim {
       to { width: 100%; }
+=======
+      background: linear-gradient(90deg, #00f2fe, #00ffcc);
+      animation: loadBar 3s linear forwards;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.8));
+      }
+      50% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 45px rgba(0, 255, 204, 1));
+      }
+    }
+
+    @keyframes loadBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* =========================================================
+       MENSAJES
+    ========================================================= */
+
+    .loading-message {
+      grid-column: 1 / -1;
+      text-align: center;
+
+      padding: 30px;
+
+      color: #00f2fe;
+
+      font-size: 15px;
+    }
+
+    .empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+
+      padding: 30px;
+
+      color: #8892a6;
+
+      font-size: 14px;
+    }
+
+    .error-message {
+      grid-column: 1 / -1;
+      text-align: center;
+
+      padding: 30px;
+
+      color: #ff4d4d;
+
+      font-size: 14px;
+    }
+
+    /* =========================================================
+       ANIMACIONES
+    ========================================================= */
+
+    @keyframes moverFondo {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes scanLaser {
+      0% {
+        top: 0%;
+      }
+
+      50% {
+        top: 98%;
+      }
+
+      100% {
+        top: 0%;
+      }
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 500px) {
+
+      .login-container {
+        padding: 12px;
+      }
+
+      .login-card {
+        padding: 25px 20px;
+
+        border-radius: 20px;
+      }
+
+      .login-card img.logo {
+        width: 140px;
+      }
+
+      .login-card h2 {
+        font-size: 20px;
+      }
+
+      .subtitle {
+        font-size: 10px;
+      }
+
+      .avatar-wrapper {
+        width: 160px;
+        height: 160px;
+      }
+
+      .avatar-view {
+        width: 140px;
+        height: 140px;
+      }
+
+      .biometric-scanner-ring {
+        width: 160px;
+        height: 160px;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+
+      .user-list {
+        grid-template-columns: 1fr;
+      }
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     }
   </style>
 </head>
 
 <body>
 
+<<<<<<< HEAD
   <!-- FONDO CON PARTICULAS PRINCIPAL -->
   <div id="tsparticles"></div>
 
@@ -546,20 +1497,56 @@
     <div class="login-card">
 
       <!-- LOGO -->
+=======
+  <!-- =========================================================
+       CANVAS DE PARTÍCULAS
+  ========================================================== -->
+
+  <canvas id="bgCanvas"></canvas>
+
+
+  <!-- =========================================================
+       LOGIN
+  ========================================================== -->
+
+  <div class="login-container">
+
+    <div class="login-card">
+
+      <!-- LOGO -->
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       <img
         src="images/LogoMediterranean1992.png"
         alt="Mediterranean Logo"
         class="logo"
+<<<<<<< HEAD
         onerror="this.onerror=null; this.src='https://via.placeholder.com/160x60/38bdf8/ffffff?text=MEDITERRANEAN';"
       >
 
       <!-- TÍTULO -->
       <h2>Acceso Biométrico</h2>
+=======
+        onerror="
+          this.onerror=null;
+          this.src='https://via.placeholder.com/160x60?text=MEDITERRANEAN';
+        "
+      >
+
+
+      <!-- TITULO -->
+
+      <h2>
+        Acceso Biométrico
+      </h2>
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       <div class="subtitle">
         <i class="fas fa-shield-halved"></i>
         Facial ID Verification
       </div>
 
+<<<<<<< HEAD
       <!-- BOTÓN SELECCIÓN USUARIO -->
       <button type="button" class="btn-select-user" id="openUserModal">
         <i class="fas fa-users"></i>
@@ -625,16 +1612,238 @@
   <!-- OVERLAY DE BIENVENIDA CON SUS PROPIAS PARTÍCULAS -->
   <div class="welcome-overlay" id="welcomeOverlay">
     <div id="welcome-particles"></div>
+=======
+
+      <!-- =====================================================
+           BOTÓN SELECCIÓN
+      ====================================================== -->
+
+      <button
+        type="button"
+        class="btn-select-user"
+        id="openUserModal"
+      >
+        <i class="fas fa-users"></i>
+
+        Seleccionar Empleado Registrado
+      </button>
+
+
+      <!-- =====================================================
+           AVATAR / CÁMARA
+      ====================================================== -->
+
+      <div class="avatar-wrapper">
+
+        <div class="biometric-scanner-ring"></div>
+
+        <div class="avatar-view">
+
+          <!-- FOTO DEL EMPLEADO -->
+
+          <img
+            src="https://ui-avatars.com/api/?name=Seleccionar+Usuario&background=0D8ABC&color=fff&size=128"
+            alt="Usuario"
+            id="userAvatar"
+          >
+
+          <!-- WEBCAM -->
+
+          <video
+            id="webcam"
+            autoplay
+            playsinline
+            muted
+          ></video>
+
+          <!-- MESH -->
+
+          <canvas id="meshCanvas"></canvas>
+
+          <!-- LASER -->
+
+          <div
+            class="scanner-laser"
+            id="laser"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           DATOS DEL EMPLEADO
+      ====================================================== -->
+
+      <div
+        class="user-name"
+        id="displayName"
+      >
+        Seleccione un Usuario
+      </div>
+
+      <div
+        class="user-email"
+        id="displayEmail"
+      >
+        Haga clic en el botón superior
+      </div>
+
+
+      <!-- =====================================================
+           BOTÓN FACE ID
+      ====================================================== -->
+
+      <button
+        type="button"
+        class="bio-btn"
+        id="startBiometricBtn"
+        disabled
+      >
+        <i class="fas fa-face-smile"></i>
+
+        Iniciar Face ID
+      </button>
+
+
+      <!-- ESTADO -->
+
+      <div id="bio-status">
+        Selección de usuario requerida
+      </div>
+
+
+      <!-- =====================================================
+           DÍAS DE PASOS
+      ====================================================== -->
+
+      <div
+        class="step-dots"
+        id="stepDotsContainer"
+        style="display:none;"
+      >
+
+        <div
+          class="dot active"
+          id="dot0"
+        ></div>
+
+        <div
+          class="dot"
+          id="dot1"
+        ></div>
+
+        <div
+          class="dot"
+          id="dot2"
+        ></div>
+
+      </div>
+
+
+      <!-- =====================================================
+           FORMULARIO DE RESPALDO
+      ====================================================== -->
+
+      <form
+        id="loginForm"
+        action="login.php"
+        method="POST"
+        style="display:none;"
+      >
+
+        <input
+          type="hidden"
+          name="biometric_login"
+          value="1"
+        >
+
+        <input
+          type="hidden"
+          name="user_id"
+          id="userIdInput"
+        >
+
+        <input
+          type="hidden"
+          name="correo"
+          id="userCorreoInput"
+        >
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       MODAL EMPLEADOS
+  ========================================================== -->
+
+  <div
+    class="modal-overlay"
+    id="userModal"
+  >
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h3>
+          <i class="fas fa-user-check"></i>
+
+          Usuarios Registrados
+        </h3>
+
+        <button
+          type="button"
+          class="close-modal"
+          id="closeUserModal"
+        >
+          &times;
+        </button>
+
+      </div>
+
+
+      <div
+        class="user-list"
+        id="userListContainer"
+      >
+        <!-- Usuarios cargados mediante login.php -->
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       OVERLAY DE BIENVENIDA / ACCESO AUTORIZADO (3 SEGUNDOS)
+  ========================================================== -->
+
+  <div class="welcome-overlay" id="welcomeOverlay">
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
     <div class="welcome-content">
       <img
         src="images/LogoMediterranean1992.png"
         alt="Mediterranean Logo"
         class="welcome-logo"
+<<<<<<< HEAD
         onerror="this.onerror=null; this.src='https://via.placeholder.com/350x140/38bdf8/ffffff?text=MEDITERRANEAN';"
       >
       <div class="welcome-badge">
         <i class="fas fa-circle-check"></i> Autenticación Biométrica Exitosa
       </div>
+=======
+        onerror="
+          this.onerror=null;
+          this.src='https://via.placeholder.com/260x100?text=MEDITERRANEAN';
+        "
+      >
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
       <div class="welcome-title">Bienvenido a Mediterranean</div>
       <div class="welcome-loader">
         <div class="welcome-progress"></div>
@@ -642,6 +1851,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <script>
     const openModalBtn = document.getElementById('openUserModal');
     const closeModalBtn = document.getElementById('closeUserModal');
@@ -996,6 +2206,1435 @@
         move: { enable: true, speed: 1.5, direction: "none", straight: false }
       }
     });
+=======
+
+
+  <script>
+
+    /* =========================================================
+       ELEMENTOS PRINCIPALES
+    ========================================================== */
+
+    const openModalBtn =
+      document.getElementById('openUserModal');
+
+    const closeModalBtn =
+      document.getElementById('closeUserModal');
+
+    const userModal =
+      document.getElementById('userModal');
+
+    const userListContainer =
+      document.getElementById('userListContainer');
+
+    const displayName =
+      document.getElementById('displayName');
+
+    const displayEmail =
+      document.getElementById('displayEmail');
+
+    const userAvatar =
+      document.getElementById('userAvatar');
+
+    const userIdInput =
+      document.getElementById('userIdInput');
+
+    const userCorreoInput =
+      document.getElementById('userCorreoInput');
+
+    const startBiometricBtn =
+      document.getElementById('startBiometricBtn');
+
+    const bioStatus =
+      document.getElementById('bio-status');
+
+    const videoElement =
+      document.getElementById('webcam');
+
+    const canvasElement =
+      document.getElementById('meshCanvas');
+
+    const laser =
+      document.getElementById('laser');
+
+    const stepDotsContainer =
+      document.getElementById('stepDotsContainer');
+
+    const welcomeOverlay =
+      document.getElementById('welcomeOverlay');
+
+
+    let selectedUserData = null;
+
+    let faceMesh = null;
+
+    let mediaStream = null;
+
+    let currentStep = 0;
+
+    let isCompleted = false;
+
+    let isStepChanging = false;
+
+    let cameraRunning = false;
+
+
+    /* =========================================================
+       MODAL - CARGAR EMPLEADOS
+    ========================================================== */
+
+    openModalBtn.addEventListener(
+      'click',
+      async () => {
+
+        userModal.classList.add('active');
+
+        userListContainer.innerHTML = `
+          <div class="loading-message">
+            <i class="fas fa-spinner fa-spin"></i>
+            Cargando empleados...
+          </div>
+        `;
+
+
+        try {
+
+          const response =
+            await fetch(
+              'login.php?get_users=1',
+              {
+                method: 'GET',
+                cache: 'no-store'
+              }
+            );
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              'HTTP ' + response.status
+            );
+          }
+
+
+          const usuarios =
+            await response.json();
+
+
+          if (
+            !Array.isArray(usuarios) ||
+            usuarios.length === 0
+          ) {
+
+            userListContainer.innerHTML = `
+              <div class="empty-message">
+                <i class="fas fa-user-slash"></i>
+                <br><br>
+                No hay empleados activos con biometría registrada.
+              </div>
+            `;
+
+            return;
+          }
+
+
+          userListContainer.innerHTML = '';
+
+
+          usuarios.forEach(
+            usr => {
+
+              const fotoSrc =
+                usr.foto_biometrica &&
+                usr.foto_biometrica.trim() !== ''
+                  ? usr.foto_biometrica
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      usr.nombre_completo || 'Usuario'
+                    )}&background=0D8ABC&color=fff`;
+
+
+              const item =
+                document.createElement('div');
+
+              item.className =
+                'user-item';
+
+
+              item.innerHTML = `
+
+                <img
+                  src="${fotoSrc}"
+                  alt="Foto de ${escapeHtml(
+                    usr.nombre_completo || 'Usuario'
+                  )}"
+                  onerror="
+                    this.onerror=null;
+                    this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      usr.nombre_completo || 'Usuario'
+                    )}&background=0D8ABC&color=fff';
+                  "
+                >
+
+                <div class="user-item-info">
+
+                  <div class="name">
+                    ${escapeHtml(
+                      usr.nombre_completo || 'Sin nombre'
+                    )}
+                  </div>
+
+                  <div class="email">
+                    ${escapeHtml(
+                      usr.correo || 'Sin correo'
+                    )}
+                  </div>
+
+                </div>
+              `;
+
+
+              item.addEventListener(
+                'click',
+                () => {
+
+                  seleccionarUsuario(usr, fotoSrc);
+
+                }
+              );
+
+
+              userListContainer.appendChild(item);
+
+            }
+          );
+
+        }
+
+        catch (error) {
+
+          console.error(
+            'Error cargando empleados:',
+            error
+          );
+
+
+          userListContainer.innerHTML = `
+            <div class="error-message">
+              <i class="fas fa-triangle-exclamation"></i>
+              <br><br>
+              Error al obtener los empleados.
+              <br>
+              Verifique que login.php esté funcionando.
+            </div>
+          `;
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       SELECCIONAR USUARIO
+    ========================================================== */
+
+    function seleccionarUsuario(
+      usuario,
+      fotoSrc
+    ) {
+
+      selectedUserData =
+        usuario;
+
+
+      displayName.textContent =
+        usuario.nombre_completo ||
+        'Usuario seleccionado';
+
+
+      displayEmail.textContent =
+        usuario.correo ||
+        'Sin correo';
+
+
+      userAvatar.src =
+        fotoSrc;
+
+
+      userAvatar.style.display =
+        'block';
+
+
+      userIdInput.value =
+        usuario.id || '';
+
+
+      userCorreoInput.value =
+        usuario.correo || '';
+
+
+      startBiometricBtn.disabled =
+        false;
+
+
+      startBiometricBtn.innerHTML = `
+        <i class="fas fa-face-smile"></i>
+        Iniciar Face ID
+      `;
+
+
+      bioStatus.innerText =
+        'Usuario preparado. Haga clic en Iniciar Face ID';
+
+
+      bioStatus.style.color =
+        '#00f2fe';
+
+
+      currentStep =
+        0;
+
+
+      isCompleted =
+        false;
+
+
+      isStepChanging =
+        false;
+
+
+      cameraRunning =
+        false;
+
+
+      updateStepDots(0);
+
+
+      stepDotsContainer.style.display =
+        'none';
+
+
+      userModal.classList.remove(
+        'active'
+      );
+
+    }
+
+
+    /* =========================================================
+       CERRAR MODAL
+    ========================================================== */
+
+    closeModalBtn.addEventListener(
+      'click',
+      () => {
+
+        userModal.classList.remove(
+          'active'
+        );
+
+      }
+    );
+
+
+    userModal.addEventListener(
+      'click',
+      event => {
+
+        if (
+          event.target ===
+          userModal
+        ) {
+
+          userModal.classList.remove(
+            'active'
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================== */
+
+    function escapeHtml(value) {
+
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =========================================================
+       PASOS BIOMÉTRICOS
+    ========================================================== */
+
+    const steps = [
+
+      {
+        text:
+          '1. MIRE DE FRENTE AL CENTRO',
+
+        check:
+          yaw => Math.abs(yaw) < 0.07
+      },
+
+      {
+        text:
+          '2. GIRE A LA IZQUIERDA',
+
+        check:
+          yaw => yaw > 0.10
+      },
+
+      {
+        text:
+          '3. GIRE A LA DERECHA',
+
+        check:
+          yaw => yaw < -0.10
+      }
+
+    ];
+
+
+    /* =========================================================
+       ACTUALIZAR DOTS
+    ========================================================== */
+
+    function updateStepDots(
+      step
+    ) {
+
+      for (
+        let i = 0;
+        i < 3;
+        i++
+      ) {
+
+        const dot =
+          document.getElementById(
+            `dot${i}`
+          );
+
+
+        if (!dot) {
+          continue;
+        }
+
+
+        if (i < step) {
+
+          dot.className =
+            'dot completed';
+
+        }
+
+        else if (i === step) {
+
+          dot.className =
+            'dot active';
+
+        }
+
+        else {
+
+          dot.className =
+            'dot';
+
+        }
+
+      }
+
+    }
+
+
+    /* =========================================================
+       DIBUJAR PUNTOS FACIALES
+    ========================================================== */
+
+    function drawMesh(
+      landmarks
+    ) {
+
+      if (!canvasElement) {
+        return;
+      }
+
+
+      const canvasCtx =
+        canvasElement.getContext('2d');
+
+
+      if (!canvasCtx) {
+        return;
+      }
+
+
+      canvasCtx.clearRect(
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+      );
+
+
+      canvasCtx.fillStyle =
+        '#00f2fe';
+
+
+      const keyPoints = [
+        1,
+        33,
+        263,
+        61,
+        291,
+        199,
+        10,
+        152,
+        234,
+        454
+      ];
+
+
+      keyPoints.forEach(
+        idx => {
+
+          const pt =
+            landmarks[idx];
+
+
+          if (!pt) {
+            return;
+          }
+
+
+          const x =
+            pt.x *
+            canvasElement.width;
+
+
+          const y =
+            pt.y *
+            canvasElement.height;
+
+
+          canvasCtx.beginPath();
+
+          canvasCtx.arc(
+            x,
+            y,
+            2,
+            0,
+            2 * Math.PI
+          );
+
+          canvasCtx.fill();
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       RESULTADOS DE MEDIAPIPE
+    ========================================================== */
+
+    function onResults(
+      results
+    ) {
+
+      if (isCompleted) {
+        return;
+      }
+
+
+      if (
+        videoElement.videoWidth &&
+        canvasElement.width !==
+          videoElement.videoWidth
+      ) {
+
+        canvasElement.width =
+          videoElement.videoWidth;
+
+        canvasElement.height =
+          videoElement.videoHeight;
+
+      }
+
+
+      if (
+        results.multiFaceLandmarks &&
+        results.multiFaceLandmarks.length > 0
+      ) {
+
+        laser.style.display =
+          'block';
+
+
+        const landmarks =
+          results.multiFaceLandmarks[0];
+
+
+        drawMesh(
+          landmarks
+        );
+
+
+        /* =====================================================
+           CÁLCULO DEL YAW
+        ====================================================== */
+
+        const nose =
+          landmarks[1];
+
+        const leftCheek =
+          landmarks[234];
+
+        const rightCheek =
+          landmarks[454];
+
+
+        const yaw =
+          nose.x -
+          (
+            leftCheek.x +
+            rightCheek.x
+          ) /
+            2;
+
+
+        /* =====================================================
+           CONTROL DE PASOS
+        ====================================================== */
+
+        if (
+          currentStep <
+            steps.length &&
+          !isStepChanging
+        ) {
+
+          bioStatus.innerText =
+            steps[currentStep].text;
+
+
+          if (
+            steps[currentStep]
+              .check(yaw)
+          ) {
+
+            isStepChanging =
+              true;
+
+
+            currentStep++;
+
+
+            updateStepDots(
+              currentStep
+            );
+
+
+            if (
+              currentStep ===
+              steps.length
+            ) {
+
+              isCompleted =
+                true;
+
+
+              laser.style.display =
+                'none';
+
+
+              const ctx =
+                canvasElement.getContext(
+                  '2d'
+                );
+
+
+              if (ctx) {
+
+                ctx.clearRect(
+                  0,
+                  0,
+                  canvasElement.width,
+                  canvasElement.height
+                );
+
+              }
+
+
+              detenerCamara();
+
+
+              procesarLoginBiometrico();
+
+            }
+
+            else {
+
+              setTimeout(
+                () => {
+
+                  isStepChanging =
+                    false;
+
+                },
+                1000
+              );
+
+            }
+
+          }
+
+        }
+
+      }
+
+      else {
+
+        laser.style.display =
+          'none';
+
+
+        const ctx =
+          canvasElement.getContext(
+            '2d'
+          );
+
+
+        if (ctx) {
+
+          ctx.clearRect(
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+          );
+
+        }
+
+
+        bioStatus.innerText =
+          'UBIQUE SU ROSTRO EN LA CÁMARA';
+
+
+        bioStatus.style.color =
+          '#00f2fe';
+
+      }
+
+    }
+
+
+    /* =========================================================
+       INICIAR FACE ID
+    ========================================================== */
+
+    startBiometricBtn.addEventListener(
+      'click',
+      async () => {
+
+        if (
+          !selectedUserData ||
+          !selectedUserData.id
+        ) {
+
+          bioStatus.innerText =
+            'Seleccione primero un empleado.';
+
+          return;
+        }
+
+
+        currentStep =
+          0;
+
+
+        isCompleted =
+          false;
+
+
+        isStepChanging =
+          false;
+
+
+        updateStepDots(
+          0
+        );
+
+
+        userAvatar.style.display =
+          'none';
+
+
+        videoElement.style.display =
+          'block';
+
+
+        stepDotsContainer.style.display =
+          'flex';
+
+
+        startBiometricBtn.disabled =
+          true;
+
+
+        startBiometricBtn.innerHTML = `
+          <i class="fas fa-spinner fa-spin"></i>
+          Analizando...
+        `;
+
+
+        bioStatus.innerText =
+          'Solicitando acceso a la cámara...';
+
+
+        try {
+
+          mediaStream =
+            await navigator.mediaDevices.getUserMedia(
+              {
+                video: {
+                  width: {
+                    ideal: 480
+                  },
+
+                  height: {
+                    ideal: 480
+                  },
+
+                  facingMode:
+                    'user'
+                },
+
+                audio:
+                  false
+              }
+            );
+
+
+          videoElement.srcObject =
+            mediaStream;
+
+
+          await videoElement.play();
+
+
+          /* ===================================================
+             CONFIGURACIÓN MEDIAPIPE
+          ==================================================== */
+
+          faceMesh =
+            new FaceMesh(
+              {
+                locateFile:
+                  file =>
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+              }
+            );
+
+
+          faceMesh.setOptions(
+            {
+              maxNumFaces:
+                1,
+
+              refineLandmarks:
+                false,
+
+              minDetectionConfidence:
+                0.5,
+
+              minTrackingConfidence:
+                0.5
+            }
+          );
+
+
+          faceMesh.onResults(
+            onResults
+          );
+
+
+          cameraRunning =
+            true;
+
+
+          bioStatus.innerText =
+            'UBIQUE SU ROSTRO EN LA CÁMARA';
+
+
+          iniciarProcesamientoFrames();
+
+        }
+
+        catch (error) {
+
+          console.error(
+            'Error cámara:',
+            error
+          );
+
+
+          detenerCamara();
+
+
+          userAvatar.style.display =
+            'block';
+
+
+          videoElement.style.display =
+            'none';
+
+
+          startBiometricBtn.disabled =
+            false;
+
+
+          startBiometricBtn.innerHTML = `
+            <i class="fas fa-face-smile"></i>
+            Intentar nuevamente
+          `;
+
+
+          if (
+            error.name ===
+            'NotAllowedError'
+          ) {
+
+            bioStatus.innerText =
+              'Permiso de cámara rechazado.';
+
+          }
+
+          else if (
+            error.name ===
+            'NotFoundError'
+          ) {
+
+            bioStatus.innerText =
+              'No se encontró ninguna cámara.';
+
+          }
+
+          else {
+
+            bioStatus.innerText =
+              'Error al acceder a la cámara.';
+
+          }
+
+
+          bioStatus.style.color =
+            '#ff4d4d';
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       PROCESAMIENTO DE FRAMES
+    ========================================================== */
+
+    async function iniciarProcesamientoFrames() {
+
+      if (!cameraRunning) {
+        return;
+      }
+
+
+      try {
+
+        if (
+          faceMesh &&
+          videoElement.readyState >= 2 &&
+          !isCompleted
+        ) {
+
+          await faceMesh.send(
+            {
+              image: videoElement
+            }
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(
+          'Error procesando rostro:',
+          error
+        );
+
+      }
+
+
+      if (
+        cameraRunning &&
+        !isCompleted
+      ) {
+
+        requestAnimationFrame(
+          iniciarProcesamientoFrames
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       DETENER CÁMARA
+    ========================================================== */
+
+    function detenerCamara() {
+
+      cameraRunning =
+        false;
+
+
+      if (mediaStream) {
+
+        mediaStream
+          .getTracks()
+          .forEach(
+            track => {
+              track.stop();
+            }
+          );
+
+        mediaStream =
+          null;
+
+      }
+
+
+      videoElement.srcObject =
+        null;
+
+    }
+
+
+    /* =========================================================
+       AUTENTICACIÓN FINAL
+    ========================================================== */
+
+    async function procesarLoginBiometrico() {
+
+    bioStatus.innerText =
+        "VERIFICACIÓN CORRECTA — VALIDANDO ACCESO...";
+
+    bioStatus.style.color =
+        "#00ffcc";
+
+
+    startBiometricBtn.innerHTML = `
+        <i class="fas fa-spinner fa-spin"></i>
+        VALIDANDO...
+    `;
+
+
+    if (!selectedUserData) {
+
+        bioStatus.innerText =
+            "No se ha seleccionado ningún empleado.";
+
+        bioStatus.style.color =
+            "#ff4d4d";
+
+        return;
+    }
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "biometric_login",
+        "1"
+    );
+
+
+    formData.append(
+        "user_id",
+        selectedUserData.id
+    );
+
+
+    formData.append(
+        "correo",
+        selectedUserData.correo
+    );
+
+
+    console.log(
+        "Enviando autenticación:",
+        {
+            user_id:
+                selectedUserData.id,
+
+            correo:
+                selectedUserData.correo
+        }
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "login.php",
+                {
+                    method: "POST",
+
+                    body: formData,
+
+                    credentials: "same-origin",
+
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Servidor respondió HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Respuesta login.php:",
+            data
+        );
+
+
+        if (
+            data.status ===
+            "success"
+        ) {
+
+            bioStatus.innerText =
+                "ACCESO AUTORIZADO";
+
+
+            bioStatus.style.color =
+                "#00ffcc";
+
+
+            startBiometricBtn.innerHTML = `
+                <i class="fas fa-circle-check"></i>
+                ACCESO AUTORIZADO
+            `;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SPLASH ANIMATION & REDIRECCIÓN (3 SEGUNDOS)
+            |--------------------------------------------------------------------------
+            */
+
+            welcomeOverlay.classList.add('active');
+
+            setTimeout(
+                () => {
+
+                    window.location.replace(
+                        data.redirect ||
+                        "mediterranean.php"
+                    );
+
+                },
+                3000
+            );
+
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ERROR DEVUELTO POR PHP
+        |--------------------------------------------------------------------------
+        */
+
+        throw new Error(
+            data.message ||
+            "La autenticación fue rechazada."
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "ERROR LOGIN:",
+            error
+        );
+
+
+        bioStatus.innerText =
+            error.message ||
+            "Error al autenticar.";
+
+        bioStatus.style.color =
+            "#ff4d4d";
+
+
+        startBiometricBtn.disabled =
+            false;
+
+
+        startBiometricBtn.innerHTML = `
+            <i class="fas fa-face-smile"></i>
+            INTENTAR NUEVAMENTE
+        `;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORTANTE
+        |--------------------------------------------------------------------------
+        |
+        | NO enviamos aquí el formulario HTML tradicional.
+        |
+        | login.php devuelve JSON.
+        |
+        */
+
+        alert(
+            "⚠ " +
+            (
+                error.message ||
+                "No fue posible iniciar sesión."
+            )
+        );
+
+    }
+
+}
+
+    /* =========================================================
+       PARTÍCULAS DEL FONDO
+    ========================================================== */
+
+    const bgCanvas =
+      document.getElementById(
+        'bgCanvas'
+      );
+
+
+    const bgCtx =
+      bgCanvas.getContext(
+        '2d'
+      );
+
+
+    let particles =
+      [];
+
+
+    function resizeBackgroundCanvas() {
+
+      bgCanvas.width =
+        window.innerWidth;
+
+      bgCanvas.height =
+        window.innerHeight;
+
+    }
+
+
+    resizeBackgroundCanvas();
+
+
+    window.addEventListener(
+      'resize',
+      resizeBackgroundCanvas
+    );
+
+
+    class Particle {
+
+      constructor() {
+
+        this.x =
+          Math.random() *
+          bgCanvas.width;
+
+
+        this.y =
+          Math.random() *
+          bgCanvas.height;
+
+
+        this.radius =
+          Math.random() *
+          2 +
+          1;
+
+
+        this.speedX =
+          (Math.random() - 0.5);
+
+
+        this.speedY =
+          (Math.random() - 0.5);
+
+      }
+
+
+      draw() {
+
+        bgCtx.beginPath();
+
+
+        bgCtx.arc(
+          this.x,
+          this.y,
+          this.radius,
+          0,
+          Math.PI * 2
+        );
+
+
+        bgCtx.fillStyle =
+          'rgba(255,255,255,0.7)';
+
+
+        bgCtx.fill();
+
+      }
+
+
+      update() {
+
+        this.x +=
+          this.speedX;
+
+
+        this.y +=
+          this.speedY;
+
+
+        if (
+          this.x < 0 ||
+          this.x >
+            bgCanvas.width
+        ) {
+
+          this.speedX *=
+            -1;
+
+        }
+
+
+        if (
+          this.y < 0 ||
+          this.y >
+            bgCanvas.height
+        ) {
+
+          this.speedY *=
+            -1;
+
+        }
+
+
+        this.draw();
+
+      }
+
+    }
+
+
+    function initParticles() {
+
+      particles = [];
+
+
+      for (
+        let i = 0;
+        i < 80;
+        i++
+      ) {
+
+        particles.push(
+          new Particle()
+        );
+
+      }
+
+    }
+
+
+    function animateParticles() {
+
+      bgCtx.clearRect(
+        0,
+        0,
+        bgCanvas.width,
+        bgCanvas.height
+      );
+
+
+      particles.forEach(
+        particle =>
+          particle.update()
+      );
+
+
+      requestAnimationFrame(
+        animateParticles
+      );
+
+    }
+
+
+    initParticles();
+
+    animateParticles();
+
+
+    /* =========================================================
+       LIMPIEZA AL SALIR
+    ========================================================== */
+
+    window.addEventListener(
+      'beforeunload',
+      () => {
+
+        detenerCamara();
+
+      }
+    );
+
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
   </script>
 
 </body>

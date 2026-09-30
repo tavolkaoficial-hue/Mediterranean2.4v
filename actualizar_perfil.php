@@ -74,4 +74,8 @@ if (!$ok) {
 }
 
 echo json_encode(["success" => true]);
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> cd4f4f931e399817bdd82fefcf81c8d48407574f
